@@ -1,27 +1,26 @@
-# Dati Match Serie A — prototipo GitHub Pages
+# Serie A DataLab – V3
 
-Prototipo statico costruito dallo snapshot `Pronostici_v12_auditata_sbloccata.xlsx`.
+Dashboard statica per GitHub Pages basata sullo snapshot Excel del progetto Pronostici Serie A.
 
-## Cosa fa ora
+## Pagine
+- **Dati Match**: confronto tra due squadre con dati generali, ultime gare dinamiche, casa/fuori dinamico e livello avversario.
+- **Pronostici**: bozza attuale dei mercati del modello.
+- **Classifica**: classifica e forma recente.
+- **Andamento scommesse**: bozza personale con ricariche, schedine, vincite/perdite, saldo e attivo/passivo.
 
-- selezione **Squadra Casa** e **Squadra Trasferta** tra tutte le 20 squadre;
-- confronto **Generale**;
-- confronto **Ultime 5**;
-- confronto **Casa / Fuori** (ultime gare disponibili in casa per la prima squadra e in trasferta per la seconda);
-- confronto **Livello avversario** usando i livelli già presenti nel file Excel;
-- dati calcolati con la stessa logica delle tabelle di confronto del foglio PRONOSTICI.
+## Nota sul portafoglio
+I movimenti della pagina **Andamento scommesse** vengono salvati nel `localStorage` del browser. Restano quindi sul singolo browser/dispositivo e non vengono caricati su GitHub.
 
-Lo snapshot contiene dati giocati fino alla **giornata 6**.
+## Pubblicazione
+Caricare nella root del repository GitHub questi file:
+- `index.html`
+- `styles.css`
+- `app.js`
+- `data.js`
+- `README.md`
 
-## Pubblicazione su GitHub Pages
+GitHub Pages può continuare a usare `main / (root)`.
 
-1. Crea un repository, ad esempio `dati-match-serie-a`.
-2. Carica nella radice del repository questi quattro file: `index.html`, `styles.css`, `app.js`, `data.js`.
-3. Apri **Settings → Pages**.
-4. In **Build and deployment**, scegli **Deploy from a branch**.
-5. Seleziona `main` e cartella `/ (root)`, quindi **Save**.
-6. Dopo la pubblicazione GitHub mostrerà l'indirizzo del sito.
 
-## Aggiornamento dati
-
-Per questo primo test `data.js` è uno snapshot. Quando il layout sarà approvato, il passo successivo sarà creare un piccolo esportatore che rigenera `data.js` dal nuovo Excel senza toccare il sito.
+## V4
+Andamento scommesse ridisegnato con Attivo/Passivo, grafico cumulato per giornata, riepilogo ricariche/giocate/vincite/perdite/credito/ritiri e inserimento compatto dei movimenti.

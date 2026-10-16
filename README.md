@@ -1,22 +1,27 @@
-# Serie A DataLab – V3
+# Dati Match Serie A — prototipo GitHub Pages
 
-Dashboard statica per GitHub Pages basata sullo snapshot Excel del progetto Pronostici Serie A.
+Prototipo statico costruito dallo snapshot `Pronostici_v12_auditata_sbloccata.xlsx`.
 
-## Pagine
-- **Dati Match**: confronto tra due squadre con dati generali, ultime gare dinamiche, casa/fuori dinamico e livello avversario.
-- **Pronostici**: bozza attuale dei mercati del modello.
-- **Classifica**: classifica e forma recente.
-- **Andamento scommesse**: bozza personale con ricariche, schedine, vincite/perdite, saldo e attivo/passivo.
+## Cosa fa ora
 
-## Nota sul portafoglio
-I movimenti della pagina **Andamento scommesse** vengono salvati nel `localStorage` del browser. Restano quindi sul singolo browser/dispositivo e non vengono caricati su GitHub.
+- selezione **Squadra Casa** e **Squadra Trasferta** tra tutte le 20 squadre;
+- confronto **Generale**;
+- confronto **Ultime 5**;
+- confronto **Casa / Fuori** (ultime gare disponibili in casa per la prima squadra e in trasferta per la seconda);
+- confronto **Livello avversario** usando i livelli già presenti nel file Excel;
+- dati calcolati con la stessa logica delle tabelle di confronto del foglio PRONOSTICI.
 
-## Pubblicazione
-Caricare nella root del repository GitHub questi file:
-- `index.html`
-- `styles.css`
-- `app.js`
-- `data.js`
-- `README.md`
+Lo snapshot contiene dati giocati fino alla **giornata 6**.
 
-GitHub Pages può continuare a usare `main / (root)`.
+## Pubblicazione su GitHub Pages
+
+1. Crea un repository, ad esempio `dati-match-serie-a`.
+2. Carica nella radice del repository questi quattro file: `index.html`, `styles.css`, `app.js`, `data.js`.
+3. Apri **Settings → Pages**.
+4. In **Build and deployment**, scegli **Deploy from a branch**.
+5. Seleziona `main` e cartella `/ (root)`, quindi **Save**.
+6. Dopo la pubblicazione GitHub mostrerà l'indirizzo del sito.
+
+## Aggiornamento dati
+
+Per questo primo test `data.js` è uno snapshot. Quando il layout sarà approvato, il passo successivo sarà creare un piccolo esportatore che rigenera `data.js` dal nuovo Excel senza toccare il sito.

@@ -2,150 +2,54 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#08111f">
-  <title>Serie A DataLab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f172a">
+  <title>Dati Match Serie A</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap header-inner">
+  <header class="hero">
+    <div class="wrap hero-inner">
       <div>
-        <div class="eyebrow">SERIE A • DATA LAB</div>
-        <h1>Serie A DataLab</h1>
-        <p>Dati, confronto squadre, pronostici del modello e classifica.</p>
+        <div class="eyebrow">SERIE A • DATA VIEW</div>
+        <h1>Dati Match Serie A</h1>
+        <p>Confronto diretto dei dati già presenti nel modello Excel.</p>
       </div>
       <div id="snapshot" class="snapshot"></div>
     </div>
   </header>
 
-  <nav class="main-nav" aria-label="Navigazione principale">
-    <div class="wrap nav-inner">
-      <button class="nav-btn active" data-page="match">Dati Match</button>
-      <button class="nav-btn" data-page="predictions">Pronostici</button>
-      <button class="nav-btn" data-page="standings">Classifica</button>
-      <button class="nav-btn" data-page="wallet">Andamento scommesse</button>
-    </div>
-  </nav>
-
-  <main class="wrap main-content">
-    <section id="page-match" class="page active">
-      <section class="match-picker card">
-        <div class="team-picker home-picker">
-          <span class="side-label">CASA</span>
-          <select id="homeTeam" aria-label="Squadra casa"></select>
-          <div id="homeMeta" class="team-meta"></div>
-        </div>
-        <div class="vs">VS</div>
-        <div class="team-picker away-picker">
-          <span class="side-label">TRASFERTA</span>
-          <select id="awayTeam" aria-label="Squadra trasferta"></select>
-          <div id="awayMeta" class="team-meta"></div>
-        </div>
-      </section>
-
-      <nav class="tabs" aria-label="Sezioni confronto">
-        <button class="tab active" data-view="general">Dati generali</button>
-        <button class="tab" data-view="last5">Dati ultime gare</button>
-        <button class="tab" data-view="venue5">Casa / Fuori</button>
-        <button class="tab" data-view="level">Livello avversario</button>
-      </nav>
-
-      <section class="context card">
-        <div>
-          <div class="context-title" id="contextTitle"></div>
-          <div class="context-note" id="contextNote"></div>
-        </div>
-        <div class="sample"><span>Campione</span><strong id="sampleInfo"></strong></div>
-      </section>
-
-      <section id="comparison"></section>
+  <main class="wrap">
+    <section class="match-picker card">
+      <div class="team-picker home-picker">
+        <span class="side-label">CASA</span>
+        <select id="homeTeam" aria-label="Squadra casa"></select>
+        <div id="homeMeta" class="team-meta"></div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="team-picker away-picker">
+        <span class="side-label">TRASFERTA</span>
+        <select id="awayTeam" aria-label="Squadra trasferta"></select>
+        <div id="awayMeta" class="team-meta"></div>
+      </div>
     </section>
 
-    <section id="page-predictions" class="page">
-      <section class="page-head">
-        <div>
-          <div class="kicker">MODELLO</div>
-          <h2>Pronostici</h2>
-          <p>Output salvati nell'Excel. Le percentuali indicano l'attendibilità del singolo mercato.</p>
-        </div>
-        <label class="round-filter">Giornata
-          <select id="predictionRound"></select>
-        </label>
-      </section>
-      <div id="predictionGrid" class="prediction-grid"></div>
+    <nav class="tabs" aria-label="Sezioni confronto">
+      <button class="tab active" data-view="general">Generale</button>
+      <button class="tab" data-view="last5">Ultime 5</button>
+      <button class="tab" data-view="venue5">Casa / Fuori</button>
+      <button class="tab" data-view="level">Livello avversario</button>
+    </nav>
+
+    <section class="context card">
+      <div>
+        <div class="context-title" id="contextTitle"></div>
+        <div class="context-note" id="contextNote"></div>
+      </div>
+      <div class="sample"><span>Campione</span><strong id="sampleInfo"></strong></div>
     </section>
 
-    <section id="page-standings" class="page">
-      <section class="page-head">
-        <div>
-          <div class="kicker">STAGIONE</div>
-          <h2>Classifica</h2>
-          <p>Classifica e numeri ricavati dallo stesso snapshot usato per il confronto squadre.</p>
-        </div>
-      </section>
-      <section class="standings-card card">
-        <div class="table-scroll">
-          <table class="standings-table">
-            <thead>
-              <tr><th>#</th><th>Squadra</th><th>PG</th><th>Pt</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Forma</th></tr>
-            </thead>
-            <tbody id="standingsBody"></tbody>
-          </table>
-        </div>
-      </section>
-    </section>
-
-
-    <section id="page-wallet" class="page">
-      <section class="page-head">
-        <div>
-          <div class="kicker">PERSONALE</div>
-          <h2>Andamento scommesse</h2>
-          <p>Bozza del portafoglio personale. I dati inseriti qui restano salvati solo in questo browser/dispositivo.</p>
-        </div>
-      </section>
-
-      <section class="wallet-summary">
-        <article class="wallet-kpi card"><span>Saldo portafoglio</span><strong id="walletBalance">€ 0,00</strong><small>Ricariche − giocate + vincite</small></article>
-        <article class="wallet-kpi card"><span>Attivo / Passivo</span><strong id="walletNet">€ 0,00</strong><small>Vincite − importi giocati</small></article>
-        <article class="wallet-kpi card"><span>Ricaricato</span><strong id="walletTopups">€ 0,00</strong></article>
-        <article class="wallet-kpi card"><span>Giocato</span><strong id="walletStaked">€ 0,00</strong></article>
-        <article class="wallet-kpi card"><span>Vinto</span><strong id="walletWon">€ 0,00</strong></article>
-        <article class="wallet-kpi card"><span>Perso</span><strong id="walletLost">€ 0,00</strong><small>Somma delle schedine chiuse perse</small></article>
-      </section>
-
-      <section class="wallet-entry card">
-        <div class="wallet-entry-head">
-          <div>
-            <div class="kicker">NUOVO MOVIMENTO</div>
-            <h3>Aggiungi ricarica o schedina</h3>
-          </div>
-        </div>
-        <form id="walletForm">
-          <div class="wallet-form-grid">
-            <label>Data<input id="walletDate" type="date" required></label>
-            <label>Tipo<select id="walletType"><option value="topup">Ricarica</option><option value="bet">Schedina</option></select></label>
-            <label class="wallet-wide">Descrizione<input id="walletDescription" type="text" placeholder="Es. Serie A - schedina sabato"></label>
-            <label>Importo €<input id="walletAmount" type="number" min="0" step="0.01" inputmode="decimal" required></label>
-            <label id="walletStatusWrap" class="wallet-bet-only">Stato<select id="walletStatus"><option value="open">Aperta</option><option value="won">Vinta</option><option value="lost">Persa</option></select></label>
-            <label id="walletPayoutWrap" class="wallet-bet-only">Vincita €<input id="walletPayout" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
-          </div>
-          <div class="wallet-actions"><button class="primary-action" type="submit">Salva movimento</button><span class="wallet-local-note">Salvataggio locale sul dispositivo</span></div>
-        </form>
-      </section>
-
-      <section class="wallet-ledger card">
-        <div class="wallet-ledger-head"><div><div class="kicker">STORICO</div><h3>Movimenti</h3></div><button id="walletClear" class="ghost-danger" type="button">Azzera bozza</button></div>
-        <div id="walletEmpty" class="empty">Nessun movimento inserito.</div>
-        <div id="walletTableWrap" class="table-scroll" hidden>
-          <table class="wallet-table">
-            <thead><tr><th>Data</th><th>Movimento</th><th>Descrizione</th><th>Stato</th><th>Importo</th><th>Vincita</th><th></th></tr></thead>
-            <tbody id="walletBody"></tbody>
-          </table>
-        </div>
-      </section>
-    </section>
+    <section id="comparison"></section>
 
     <footer>
       <p>Dati elaborati esclusivamente dallo snapshot Excel del progetto. Nessun dato esterno.</p>

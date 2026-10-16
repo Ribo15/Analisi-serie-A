@@ -1,24 +1,22 @@
-# Serie A DataLab
+# Serie A DataLab – V3
 
-Dashboard statica GitHub Pages basata sul file Excel del progetto Pronostici Serie A.
+Dashboard statica per GitHub Pages basata sullo snapshot Excel del progetto Pronostici Serie A.
 
-## Sezioni
+## Pagine
+- **Dati Match**: confronto tra due squadre con dati generali, ultime gare dinamiche, casa/fuori dinamico e livello avversario.
+- **Pronostici**: bozza attuale dei mercati del modello.
+- **Classifica**: classifica e forma recente.
+- **Andamento scommesse**: bozza personale con ricariche, schedine, vincite/perdite, saldo e attivo/passivo.
 
-- **Dati Match**: confronto tra due squadre su generale, ultime 5, casa/fuori e livello avversario.
-- **Pronostici**: output del modello salvati nello snapshot Excel per la giornata disponibile, con attendibilità e dati attesi.
-- **Classifica**: posizione, punti, V/N/P, gol e forma recente.
+## Nota sul portafoglio
+I movimenti della pagina **Andamento scommesse** vengono salvati nel `localStorage` del browser. Restano quindi sul singolo browser/dispositivo e non vengono caricati su GitHub.
 
-## Pubblicazione su GitHub Pages
-
-Caricare nella root del repository:
-
+## Pubblicazione
+Caricare nella root del repository GitHub questi file:
 - `index.html`
 - `styles.css`
 - `app.js`
 - `data.js`
+- `README.md`
 
-Poi: **Settings → Pages → Deploy from a branch → main → /(root)**.
-
-## Aggiornamento dati
-
-`data.js` contiene lo snapshot dei dati. Quando si aggiorna l'Excel, il file può essere rigenerato e sostituito nel repository senza cambiare gli altri file, salvo modifiche alla struttura del sito.
+GitHub Pages può continuare a usare `main / (root)`.

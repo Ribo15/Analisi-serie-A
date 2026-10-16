@@ -23,12 +23,12 @@
       ['gf','Gol fatti / partita','n2','high'],['ga','Gol subiti / partita','n2','low'],['cleanSheet','Clean sheet','pct','high'],['scored1','Segna almeno 1 gol','pct','high'],['scored2','Segna almeno 2 gol','pct','high']
     ]},
     {title:'Tiri', metrics:[
-      ['shots','Tiri / partita','n1','neutral'],['shotsAgainst','Tiri subiti / partita','n1','low'],['shotsDiff','Differenza tiri','signed1','high'],
-      ['sot','Tiri in porta / partita','n1','high'],['sotAgainst','Tiri in porta subiti','n1','low'],['sotDiff','Differenza tiri in porta','signed1','high'],
+      ['shots','Tiri / partita','n1','neutral'],['shotsAgainst','Tiri subiti / partita','n1','low'],
+      ['sot','Tiri in porta / partita','n1','high'],['sotAgainst','Tiri in porta subiti','n1','low'],
       ['conversion','Conversione tiri → gol','pct','high'],['sotShare','Quota tiri in porta','pct','high']
     ]},
     {title:'Angoli', metrics:[
-      ['corners','Angoli / partita','n1','neutral'],['cornersAgainst','Angoli concessi','n1','low'],['cornersDiff','Differenza angoli','signed1','high']
+      ['corners','Angoli / partita','n1','neutral'],['cornersAgainst','Angoli concessi','n1','low']
     ]},
     {title:'Disciplina', metrics:[
       ['yellow','Gialli / partita','n2','neutral'],['oppYellow','Gialli avversari','n2','neutral'],['red','Rossi / partita','n2','neutral'],['oppRed','Rossi avversari','n2','neutral']
@@ -72,12 +72,12 @@
     $('#homeMeta').innerHTML=metaLine(home); $('#awayMeta').innerHTML=metaLine(away);
     const H=getData(home,away,true), A=getData(away,home,false);
     const labels={
-      general:['Andamento generale','Tutte le partite giocate nello snapshot.'],
-      last5:['Forma recente','Ultime 5 gare, senza distinzione casa/trasferta.'],
-      venue5:['Casa / Fuori',`${home}: ultime gare in casa • ${away}: ultime gare in trasferta.`],
-      level:['Livello avversario',`${home} contro squadre di livello ${D.meta[away].level} • ${away} contro squadre di livello ${D.meta[home].level}.`]
+      general:['Dati generali','Tutte le partite giocate nello snapshot.'],
+      last5:[H.games===A.games?`Dati ultime ${H.games} gare`:'Dati ultime gare disponibili',`${home}: ultime ${H.games} gare • ${away}: ultime ${A.games} gare`],
+      venue5:['Casa / Fuori',`<span class="context-line"><strong>${home}</strong> – Dati ultime ${H.games} gare giocate in casa</span><span class="context-line"><strong>${away}</strong> – Dati ultime ${A.games} gare giocate in trasferta</span>`],
+      level:['Livello avversario',`<span class="context-line">Dati <strong>${home}</strong> contro squadre con livello di forza simile a <strong>${away}</strong></span><span class="context-line">Dati <strong>${away}</strong> contro squadre con livello di forza simile a <strong>${home}</strong></span>`]
     };
-    $('#contextTitle').textContent=labels[view][0]; $('#contextNote').textContent=labels[view][1];
+    $('#contextTitle').textContent=labels[view][0]; $('#contextNote').innerHTML=labels[view][1];
     $('#sampleInfo').textContent=`${home} ${H.games} • ${away} ${A.games}`;
     if(!H.games && !A.games){ $('#comparison').innerHTML='<div class="empty">Nessun dato disponibile per questo confronto.</div>'; return; }
     $('#comparison').innerHTML=groups.map(g=>{
@@ -151,12 +151,53 @@
     </tr>`).join('');
   }
 
+
+  const WALLET_KEY='serieADataLab.wallet.v1';
+  const euro = v => new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(v)||0);
+  function loadWallet(){
+    try { return JSON.parse(localStorage.getItem(WALLET_KEY) || '[]'); } catch(e){ return []; }
+  }
+  function saveWallet(rows){ localStorage.setItem(WALLET_KEY,JSON.stringify(rows)); }
+  function walletStatusLabel(v){ return v==='won'?'Vinta':v==='lost'?'Persa':v==='open'?'Aperta':'—'; }
+  function renderWallet(){
+    const rows=loadWallet();
+    const topups=rows.filter(x=>x.type==='topup').reduce((s,x)=>s+x.amount,0);
+    const bets=rows.filter(x=>x.type==='bet');
+    const staked=bets.reduce((s,x)=>s+x.amount,0);
+    const won=bets.filter(x=>x.status==='won').reduce((s,x)=>s+(x.payout||0),0);
+    const lost=bets.filter(x=>x.status==='lost').reduce((s,x)=>s+x.amount,0);
+    const balance=topups-staked+won;
+    const net=won-staked;
+    $('#walletBalance').textContent=euro(balance);
+    $('#walletNet').textContent=euro(net);
+    $('#walletNet').classList.toggle('positive',net>0); $('#walletNet').classList.toggle('negative',net<0);
+    $('#walletTopups').textContent=euro(topups); $('#walletStaked').textContent=euro(staked); $('#walletWon').textContent=euro(won); $('#walletLost').textContent=euro(lost);
+    $('#walletEmpty').hidden=rows.length>0; $('#walletTableWrap').hidden=rows.length===0;
+    $('#walletBody').innerHTML=rows.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'') || b.id-a.id).map(x=>`<tr>
+      <td>${x.date?new Date(x.date+'T12:00:00').toLocaleDateString('it-IT'):'—'}</td>
+      <td><span class="wallet-type ${x.type}">${x.type==='topup'?'Ricarica':'Schedina'}</span></td>
+      <td class="wallet-desc">${x.description||'—'}</td>
+      <td>${x.type==='bet'?`<span class="bet-status ${x.status}">${walletStatusLabel(x.status)}</span>`:'—'}</td>
+      <td>${euro(x.amount)}</td><td>${x.type==='bet'&&x.status==='won'?euro(x.payout):'—'}</td>
+      <td><button class="delete-move" data-id="${x.id}" aria-label="Elimina movimento">×</button></td>
+    </tr>`).join('');
+    $$('.delete-move').forEach(b=>b.addEventListener('click',()=>{
+      const id=Number(b.dataset.id); saveWallet(loadWallet().filter(x=>x.id!==id)); renderWallet();
+    }));
+  }
+  function syncWalletFields(){
+    const isBet=$('#walletType').value==='bet';
+    $('#walletStatusWrap').hidden=!isBet;
+    $('#walletPayoutWrap').hidden=!isBet || $('#walletStatus').value!=='won';
+  }
+
   function showPage(page){
     $$('.page').forEach(p=>p.classList.remove('active'));
     $(`#page-${page}`).classList.add('active');
     $$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
     if(page==='predictions') renderPredictions();
     if(page==='standings') renderStandings();
+    if(page==='wallet') renderWallet();
   }
 
   homeSel.addEventListener('change',renderMatch); awaySel.addEventListener('change',renderMatch);
@@ -164,6 +205,25 @@
   $$('.nav-btn').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
   $('#predictionRound').addEventListener('change',renderPredictions);
 
+  $('#walletDate').value=new Date().toISOString().slice(0,10);
+  $('#walletType').addEventListener('change',syncWalletFields);
+  $('#walletStatus').addEventListener('change',()=>{ $('#walletPayoutWrap').hidden=$('#walletType').value!=='bet'||$('#walletStatus').value!=='won'; });
+  $('#walletForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const type=$('#walletType').value, amount=Number($('#walletAmount').value||0);
+    if(amount<=0) return;
+    const status=type==='bet'?$('#walletStatus').value:null;
+    const payout=type==='bet'&&status==='won'?Number($('#walletPayout').value||0):0;
+    const rows=loadWallet();
+    rows.push({id:Date.now(),date:$('#walletDate').value,type,description:$('#walletDescription').value.trim(),amount,status,payout});
+    saveWallet(rows); e.target.reset(); $('#walletDate').value=new Date().toISOString().slice(0,10); syncWalletFields(); $('#walletPayoutWrap').hidden=true; renderWallet();
+  });
+  $('#walletClear').addEventListener('click',()=>{
+    if(confirm('Vuoi cancellare tutti i movimenti salvati in questa bozza?')){ saveWallet([]); renderWallet(); }
+  });
+  syncWalletFields(); $('#walletPayoutWrap').hidden=true;
+
   renderMatch();
   renderStandings();
+  renderWallet();
 })();

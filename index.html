@@ -24,6 +24,7 @@
       <button class="nav-btn active" data-page="match">Dati Match</button>
       <button class="nav-btn" data-page="predictions">Pronostici</button>
       <button class="nav-btn" data-page="standings">Classifica</button>
+      <button class="nav-btn" data-page="wallet">Andamento scommesse</button>
     </div>
   </nav>
 
@@ -44,8 +45,8 @@
       </section>
 
       <nav class="tabs" aria-label="Sezioni confronto">
-        <button class="tab active" data-view="general">Generale</button>
-        <button class="tab" data-view="last5">Ultime 5</button>
+        <button class="tab active" data-view="general">Dati generali</button>
+        <button class="tab" data-view="last5">Dati ultime gare</button>
         <button class="tab" data-view="venue5">Casa / Fuori</button>
         <button class="tab" data-view="level">Livello avversario</button>
       </nav>
@@ -90,6 +91,57 @@
               <tr><th>#</th><th>Squadra</th><th>PG</th><th>Pt</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Forma</th></tr>
             </thead>
             <tbody id="standingsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+
+    <section id="page-wallet" class="page">
+      <section class="page-head">
+        <div>
+          <div class="kicker">PERSONALE</div>
+          <h2>Andamento scommesse</h2>
+          <p>Bozza del portafoglio personale. I dati inseriti qui restano salvati solo in questo browser/dispositivo.</p>
+        </div>
+      </section>
+
+      <section class="wallet-summary">
+        <article class="wallet-kpi card"><span>Saldo portafoglio</span><strong id="walletBalance">€ 0,00</strong><small>Ricariche − giocate + vincite</small></article>
+        <article class="wallet-kpi card"><span>Attivo / Passivo</span><strong id="walletNet">€ 0,00</strong><small>Vincite − importi giocati</small></article>
+        <article class="wallet-kpi card"><span>Ricaricato</span><strong id="walletTopups">€ 0,00</strong></article>
+        <article class="wallet-kpi card"><span>Giocato</span><strong id="walletStaked">€ 0,00</strong></article>
+        <article class="wallet-kpi card"><span>Vinto</span><strong id="walletWon">€ 0,00</strong></article>
+        <article class="wallet-kpi card"><span>Perso</span><strong id="walletLost">€ 0,00</strong><small>Somma delle schedine chiuse perse</small></article>
+      </section>
+
+      <section class="wallet-entry card">
+        <div class="wallet-entry-head">
+          <div>
+            <div class="kicker">NUOVO MOVIMENTO</div>
+            <h3>Aggiungi ricarica o schedina</h3>
+          </div>
+        </div>
+        <form id="walletForm">
+          <div class="wallet-form-grid">
+            <label>Data<input id="walletDate" type="date" required></label>
+            <label>Tipo<select id="walletType"><option value="topup">Ricarica</option><option value="bet">Schedina</option></select></label>
+            <label class="wallet-wide">Descrizione<input id="walletDescription" type="text" placeholder="Es. Serie A - schedina sabato"></label>
+            <label>Importo €<input id="walletAmount" type="number" min="0" step="0.01" inputmode="decimal" required></label>
+            <label id="walletStatusWrap" class="wallet-bet-only">Stato<select id="walletStatus"><option value="open">Aperta</option><option value="won">Vinta</option><option value="lost">Persa</option></select></label>
+            <label id="walletPayoutWrap" class="wallet-bet-only">Vincita €<input id="walletPayout" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
+          </div>
+          <div class="wallet-actions"><button class="primary-action" type="submit">Salva movimento</button><span class="wallet-local-note">Salvataggio locale sul dispositivo</span></div>
+        </form>
+      </section>
+
+      <section class="wallet-ledger card">
+        <div class="wallet-ledger-head"><div><div class="kicker">STORICO</div><h3>Movimenti</h3></div><button id="walletClear" class="ghost-danger" type="button">Azzera bozza</button></div>
+        <div id="walletEmpty" class="empty">Nessun movimento inserito.</div>
+        <div id="walletTableWrap" class="table-scroll" hidden>
+          <table class="wallet-table">
+            <thead><tr><th>Data</th><th>Movimento</th><th>Descrizione</th><th>Stato</th><th>Importo</th><th>Vincita</th><th></th></tr></thead>
+            <tbody id="walletBody"></tbody>
           </table>
         </div>
       </section>

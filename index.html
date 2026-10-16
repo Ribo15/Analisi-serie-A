@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f172a">
+  <title>Dati Match Serie A</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <div>
+        <div class="eyebrow">SERIE A • DATA VIEW</div>
+        <h1>Dati Match Serie A</h1>
+        <p>Confronto diretto dei dati già presenti nel modello Excel.</p>
+      </div>
+      <div id="snapshot" class="snapshot"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="match-picker card">
+      <div class="team-picker home-picker">
+        <span class="side-label">CASA</span>
+        <select id="homeTeam" aria-label="Squadra casa"></select>
+        <div id="homeMeta" class="team-meta"></div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="team-picker away-picker">
+        <span class="side-label">TRASFERTA</span>
+        <select id="awayTeam" aria-label="Squadra trasferta"></select>
+        <div id="awayMeta" class="team-meta"></div>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Sezioni confronto">
+      <button class="tab active" data-view="general">Generale</button>
+      <button class="tab" data-view="last5">Ultime 5</button>
+      <button class="tab" data-view="venue5">Casa / Fuori</button>
+      <button class="tab" data-view="level">Livello avversario</button>
+    </nav>
+
+    <section class="context card">
+      <div>
+        <div class="context-title" id="contextTitle"></div>
+        <div class="context-note" id="contextNote"></div>
+      </div>
+      <div class="sample"><span>Campione</span><strong id="sampleInfo"></strong></div>
+    </section>
+
+    <section id="comparison"></section>
+
+    <footer>
+      <p>Dati elaborati esclusivamente dallo snapshot Excel del progetto. Nessun dato esterno.</p>
+    </footer>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

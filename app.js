@@ -1,7 +1,8 @@
 (() => {
   const D = window.SERIE_A_DATA;
-  const teams = Object.keys(D.meta).sort((a,b) => D.meta[a].position - D.meta[b].position);
   const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const teams = Object.keys(D.meta).sort((a,b) => D.meta[a].position - D.meta[b].position);
   const homeSel = $('#homeTeam'), awaySel = $('#awayTeam');
   let view = 'general';
 
@@ -9,9 +10,11 @@
     pct: v => v == null ? '—' : `${(v*100).toFixed(v*100 % 1 === 0 ? 0 : 1)}%`,
     n1: v => v == null ? '—' : Number(v).toFixed(1),
     n2: v => v == null ? '—' : Number(v).toFixed(2),
-    signed1: v => v == null ? '—' : `${v>0?'+':''}${Number(v).toFixed(1)}`
+    signed1: v => v == null ? '—' : `${v>0?'+':''}${Number(v).toFixed(1)}`,
+    score: v => v == null ? '—' : String(Math.round(v))
   };
 
+  const clean = s => (s || '').replace(/SegnaCasa\s*/i,'').replace(/SegnaTrasferta\s*/i,'').replace(/Multigoal\s*/i,'').replace(/totale\s*/i,'').replace(/Casa\s*/i,'').replace(/Trasferta\s*/i,'').trim();
   const groups = [
     {title:'Risultati', metrics:[
       ['winPct','Vittorie','pct','high'],['drawPct','Pareggi','pct','neutral'],['lossPct','Sconfitte','pct','low'],['possession','Possesso medio','pct','neutral']
@@ -43,6 +46,7 @@
       scored1:arr.filter(x=>x.gf>=1).length/n,scored2:arr.filter(x=>x.gf>=2).length/n,corners:avg('corners'),
       cornersAgainst:avg('cornersAgainst'),cornersDiff:avg('corners')-avg('cornersAgainst'),yellow:avg('yellow'),oppYellow:avg('oppYellow'),red:avg('red'),oppRed:avg('oppRed')};
   }
+
   const allGames = team => D.games.filter(g=>g.team===team).sort((a,b)=>a.round-b.round);
   function getData(team, opponent, isHome){
     const arr=allGames(team), targetLevel=D.meta[opponent].level;
@@ -62,7 +66,7 @@
   $('#snapshot').textContent=`Snapshot Excel • dati fino alla giornata ${D.lastRound}`;
 
   function metaLine(team){ const m=D.meta[team]; return `<strong>${m.position}°</strong> • ${m.points} pt • ${m.played} giocate • livello ${m.level}`; }
-  function render(){
+  function renderMatch(){
     let home=homeSel.value, away=awaySel.value;
     if(home===away){ away=teams.find(t=>t!==home); awaySel.value=away; }
     $('#homeMeta').innerHTML=metaLine(home); $('#awayMeta').innerHTML=metaLine(away);
@@ -84,7 +88,82 @@
       return `<div class="metric-group"><div class="group-title">${g.title}</div><div class="metric-list">${rows}</div></div>`;
     }).join('');
   }
-  homeSel.addEventListener('change',render); awaySel.addEventListener('change',render);
-  document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');view=b.dataset.view;render();}));
-  render();
+
+  function confClass(v){ return v>=.70?'conf-high':v>=.58?'conf-mid':'conf-low'; }
+  function market(label,value,conf,emph=false){
+    return `<div class="market ${emph?'market-emph':''}"><span class="market-label">${label}</span><strong>${value||'—'}</strong>${conf!=null?`<span class="confidence ${confClass(conf)}">${fmt.pct(conf)}</span>`:''}</div>`;
+  }
+  function renderPredictions(){
+    const sel=$('#predictionRound');
+    const rounds=(D.predictionRounds||[]).slice().sort((a,b)=>b-a);
+    if(!sel.options.length){ sel.innerHTML=rounds.map(r=>`<option value="${r}">Giornata ${r}</option>`).join(''); }
+    const round=Number(sel.value || rounds[0]);
+    const list=(D.predictions||[]).filter(p=>p.round===round);
+    $('#predictionGrid').innerHTML=list.map(p=>{
+      const score=(p.scoreHome==null||p.scoreAway==null)?'—':`${Math.round(p.scoreHome)}-${Math.round(p.scoreAway)}`;
+      return `<article class="prediction-card card">
+        <div class="prediction-head"><div><span class="round-tag">G${p.round}</span><h3>${p.home} <span>vs</span> ${p.away}</h3></div><button class="compare-btn" data-home="${p.home}" data-away="${p.away}">Confronta dati</button></div>
+        <div class="primary-markets">
+          ${market('1X2 modello',p.oneXtwo,p.oneXtwoConf,true)}
+          ${market('1X2 Poisson',p.poisson,p.poissonConf,true)}
+          ${market('Doppia chance',p.doubleChance,p.doubleChanceConf)}
+          ${market('Gol / No Gol',p.btts,p.bttsConf)}
+          ${market('U/O 2,5',p.uo25,p.uo25Conf)}
+          ${market('Score',score,p.scoreConf)}
+        </div>
+        <details>
+          <summary>Altri mercati e dati attesi</summary>
+          <div class="details-grid">
+            ${market('Doppia chance Poisson',p.doubleChancePoisson,p.doubleChancePoissonConf)}
+            ${market('U/O 1,5',p.uo15,p.uo15Conf)}
+            ${market('U/O 3,5',p.uo35,p.uo35Conf)}
+            ${market(`${p.home} segna`,clean(p.scoreHomeYN),p.scoreHomeYNConf)}
+            ${market(`${p.away} segna`,clean(p.scoreAwayYN),p.scoreAwayYNConf)}
+            ${market('Multigol totale',clean(p.multiTotal),p.multiTotalConf)}
+            ${market(`Multigol ${p.home}`,clean(p.multiHome),p.multiHomeConf)}
+            ${market(`Multigol ${p.away}`,clean(p.multiAway),p.multiAwayConf)}
+          </div>
+          <div class="expected-box">
+            <div><span>Gol attesi</span><strong>${fmt.n2(p.xgHome)} – ${fmt.n2(p.xgAway)}</strong></div>
+            <div><span>Tiri attesi</span><strong>${fmt.n1(p.shotsHome)} – ${fmt.n1(p.shotsAway)}</strong></div>
+            <div><span>Tiri in porta attesi</span><strong>${fmt.n1(p.sotHome)} – ${fmt.n1(p.sotAway)}</strong></div>
+          </div>
+        </details>
+      </article>`;
+    }).join('') || '<div class="empty">Nessun pronostico salvato per questa giornata.</div>';
+    $$('.compare-btn').forEach(b=>b.addEventListener('click',()=>{
+      homeSel.value=b.dataset.home; awaySel.value=b.dataset.away; renderMatch(); showPage('match'); window.scrollTo({top:0,behavior:'smooth'});
+    }));
+  }
+
+  function formBadge(g){ return g.win?'V':g.draw?'N':'P'; }
+  function renderStandings(){
+    const rows=teams.map(team=>{
+      const games=allGames(team), a=aggregate(games), m=D.meta[team];
+      const gf=games.reduce((s,g)=>s+g.gf,0), ga=games.reduce((s,g)=>s+g.ga,0), gd=gf-ga;
+      const form=games.slice(-5).map(g=>`<span class="form-dot ${g.win?'w':g.draw?'d':'l'}">${formBadge(g)}</span>`).join('');
+      return {team,m,games,a,gf,ga,gd,form};
+    }).sort((a,b)=>a.m.position-b.m.position);
+    $('#standingsBody').innerHTML=rows.map(r=>`<tr>
+      <td class="pos">${r.m.position}</td><td class="team-name">${r.team}</td><td>${r.m.played}</td><td class="points">${r.m.points}</td>
+      <td>${Math.round(r.a.winPct*r.a.games)}</td><td>${Math.round(r.a.drawPct*r.a.games)}</td><td>${Math.round(r.a.lossPct*r.a.games)}</td>
+      <td>${r.gf}</td><td>${r.ga}</td><td class="${r.gd>0?'pos-gd':r.gd<0?'neg-gd':''}">${r.gd>0?'+':''}${r.gd}</td><td><div class="form">${r.form}</div></td>
+    </tr>`).join('');
+  }
+
+  function showPage(page){
+    $$('.page').forEach(p=>p.classList.remove('active'));
+    $(`#page-${page}`).classList.add('active');
+    $$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+    if(page==='predictions') renderPredictions();
+    if(page==='standings') renderStandings();
+  }
+
+  homeSel.addEventListener('change',renderMatch); awaySel.addEventListener('change',renderMatch);
+  $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); view=b.dataset.view; renderMatch(); }));
+  $$('.nav-btn').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+  $('#predictionRound').addEventListener('change',renderPredictions);
+
+  renderMatch();
+  renderStandings();
 })();

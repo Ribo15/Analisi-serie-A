@@ -1,27 +1,24 @@
-# Dati Match Serie A — prototipo GitHub Pages
+# Serie A DataLab
 
-Prototipo statico costruito dallo snapshot `Pronostici_v12_auditata_sbloccata.xlsx`.
+Dashboard statica GitHub Pages basata sul file Excel del progetto Pronostici Serie A.
 
-## Cosa fa ora
+## Sezioni
 
-- selezione **Squadra Casa** e **Squadra Trasferta** tra tutte le 20 squadre;
-- confronto **Generale**;
-- confronto **Ultime 5**;
-- confronto **Casa / Fuori** (ultime gare disponibili in casa per la prima squadra e in trasferta per la seconda);
-- confronto **Livello avversario** usando i livelli già presenti nel file Excel;
-- dati calcolati con la stessa logica delle tabelle di confronto del foglio PRONOSTICI.
-
-Lo snapshot contiene dati giocati fino alla **giornata 6**.
+- **Dati Match**: confronto tra due squadre su generale, ultime 5, casa/fuori e livello avversario.
+- **Pronostici**: output del modello salvati nello snapshot Excel per la giornata disponibile, con attendibilità e dati attesi.
+- **Classifica**: posizione, punti, V/N/P, gol e forma recente.
 
 ## Pubblicazione su GitHub Pages
 
-1. Crea un repository, ad esempio `dati-match-serie-a`.
-2. Carica nella radice del repository questi quattro file: `index.html`, `styles.css`, `app.js`, `data.js`.
-3. Apri **Settings → Pages**.
-4. In **Build and deployment**, scegli **Deploy from a branch**.
-5. Seleziona `main` e cartella `/ (root)`, quindi **Save**.
-6. Dopo la pubblicazione GitHub mostrerà l'indirizzo del sito.
+Caricare nella root del repository:
+
+- `index.html`
+- `styles.css`
+- `app.js`
+- `data.js`
+
+Poi: **Settings → Pages → Deploy from a branch → main → /(root)**.
 
 ## Aggiornamento dati
 
-Per questo primo test `data.js` è uno snapshot. Quando il layout sarà approvato, il passo successivo sarà creare un piccolo esportatore che rigenera `data.js` dal nuovo Excel senza toccare il sito.
+`data.js` contiene lo snapshot dei dati. Quando si aggiorna l'Excel, il file può essere rigenerato e sostituito nel repository senza cambiare gli altri file, salvo modifiche alla struttura del sito.

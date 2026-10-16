@@ -2,54 +2,98 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0f172a">
-  <title>Dati Match Serie A</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#08111f">
+  <title>Serie A DataLab</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="hero">
-    <div class="wrap hero-inner">
+  <header class="site-header">
+    <div class="wrap header-inner">
       <div>
-        <div class="eyebrow">SERIE A • DATA VIEW</div>
-        <h1>Dati Match Serie A</h1>
-        <p>Confronto diretto dei dati già presenti nel modello Excel.</p>
+        <div class="eyebrow">SERIE A • DATA LAB</div>
+        <h1>Serie A DataLab</h1>
+        <p>Dati, confronto squadre, pronostici del modello e classifica.</p>
       </div>
       <div id="snapshot" class="snapshot"></div>
     </div>
   </header>
 
-  <main class="wrap">
-    <section class="match-picker card">
-      <div class="team-picker home-picker">
-        <span class="side-label">CASA</span>
-        <select id="homeTeam" aria-label="Squadra casa"></select>
-        <div id="homeMeta" class="team-meta"></div>
-      </div>
-      <div class="vs">VS</div>
-      <div class="team-picker away-picker">
-        <span class="side-label">TRASFERTA</span>
-        <select id="awayTeam" aria-label="Squadra trasferta"></select>
-        <div id="awayMeta" class="team-meta"></div>
-      </div>
+  <nav class="main-nav" aria-label="Navigazione principale">
+    <div class="wrap nav-inner">
+      <button class="nav-btn active" data-page="match">Dati Match</button>
+      <button class="nav-btn" data-page="predictions">Pronostici</button>
+      <button class="nav-btn" data-page="standings">Classifica</button>
+    </div>
+  </nav>
+
+  <main class="wrap main-content">
+    <section id="page-match" class="page active">
+      <section class="match-picker card">
+        <div class="team-picker home-picker">
+          <span class="side-label">CASA</span>
+          <select id="homeTeam" aria-label="Squadra casa"></select>
+          <div id="homeMeta" class="team-meta"></div>
+        </div>
+        <div class="vs">VS</div>
+        <div class="team-picker away-picker">
+          <span class="side-label">TRASFERTA</span>
+          <select id="awayTeam" aria-label="Squadra trasferta"></select>
+          <div id="awayMeta" class="team-meta"></div>
+        </div>
+      </section>
+
+      <nav class="tabs" aria-label="Sezioni confronto">
+        <button class="tab active" data-view="general">Generale</button>
+        <button class="tab" data-view="last5">Ultime 5</button>
+        <button class="tab" data-view="venue5">Casa / Fuori</button>
+        <button class="tab" data-view="level">Livello avversario</button>
+      </nav>
+
+      <section class="context card">
+        <div>
+          <div class="context-title" id="contextTitle"></div>
+          <div class="context-note" id="contextNote"></div>
+        </div>
+        <div class="sample"><span>Campione</span><strong id="sampleInfo"></strong></div>
+      </section>
+
+      <section id="comparison"></section>
     </section>
 
-    <nav class="tabs" aria-label="Sezioni confronto">
-      <button class="tab active" data-view="general">Generale</button>
-      <button class="tab" data-view="last5">Ultime 5</button>
-      <button class="tab" data-view="venue5">Casa / Fuori</button>
-      <button class="tab" data-view="level">Livello avversario</button>
-    </nav>
-
-    <section class="context card">
-      <div>
-        <div class="context-title" id="contextTitle"></div>
-        <div class="context-note" id="contextNote"></div>
-      </div>
-      <div class="sample"><span>Campione</span><strong id="sampleInfo"></strong></div>
+    <section id="page-predictions" class="page">
+      <section class="page-head">
+        <div>
+          <div class="kicker">MODELLO</div>
+          <h2>Pronostici</h2>
+          <p>Output salvati nell'Excel. Le percentuali indicano l'attendibilità del singolo mercato.</p>
+        </div>
+        <label class="round-filter">Giornata
+          <select id="predictionRound"></select>
+        </label>
+      </section>
+      <div id="predictionGrid" class="prediction-grid"></div>
     </section>
 
-    <section id="comparison"></section>
+    <section id="page-standings" class="page">
+      <section class="page-head">
+        <div>
+          <div class="kicker">STAGIONE</div>
+          <h2>Classifica</h2>
+          <p>Classifica e numeri ricavati dallo stesso snapshot usato per il confronto squadre.</p>
+        </div>
+      </section>
+      <section class="standings-card card">
+        <div class="table-scroll">
+          <table class="standings-table">
+            <thead>
+              <tr><th>#</th><th>Squadra</th><th>PG</th><th>Pt</th><th>V</th><th>N</th><th>P</th><th>GF</th><th>GS</th><th>DR</th><th>Forma</th></tr>
+            </thead>
+            <tbody id="standingsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
 
     <footer>
       <p>Dati elaborati esclusivamente dallo snapshot Excel del progetto. Nessun dato esterno.</p>

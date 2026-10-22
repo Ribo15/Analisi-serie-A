@@ -1,26 +1,22 @@
-# Serie A DataLab – V3
+# Serie A DataLab — V5
 
-Dashboard statica per GitHub Pages basata sullo snapshot Excel del progetto Pronostici Serie A.
+Dashboard statica per GitHub Pages basata sul file Excel del progetto.
 
-## Pagine
-- **Dati Match**: confronto tra due squadre con dati generali, ultime gare dinamiche, casa/fuori dinamico e livello avversario.
-- **Pronostici**: bozza attuale dei mercati del modello.
-- **Classifica**: classifica e forma recente.
-- **Andamento scommesse**: bozza personale con ricariche, schedine, vincite/perdite, saldo e attivo/passivo.
+## Novità V5
+- **Calendario**: 38 giornate e 380 match letti dal foglio `SCHEDINE/CALENDARIO` dell’Excel aggiornato.
+- **Pronostici Match**: stessa logica di selezione Casa/Trasferta della pagina Dati Match; viene mostrato un solo match alla volta.
+- **Possibili puntate**: blocco condiviso tra Dati Match e Pronostici con mercato, quota, fiducia, stato e nota.
+- Le possibili puntate sono visibili anche nel Calendario come conteggio per partita.
+- Per ora puntate e portafoglio sono salvati in `localStorage` del browser.
 
-## Nota sul portafoglio
-I movimenti della pagina **Andamento scommesse** vengono salvati nel `localStorage` del browser. Restano quindi sul singolo browser/dispositivo e non vengono caricati su GitHub.
-
-## Pubblicazione
-Caricare nella root del repository GitHub questi file:
+## File da caricare nella root del repository GitHub
 - `index.html`
 - `styles.css`
 - `app.js`
 - `data.js`
 - `README.md`
 
-GitHub Pages può continuare a usare `main / (root)`.
+GitHub Pages continua a usare lo stesso link del repository.
 
-
-## V4
-Andamento scommesse ridisegnato con Attivo/Passivo, grafico cumulato per giornata, riepilogo ricariche/giocate/vincite/perdite/credito/ritiri e inserimento compatto dei movimenti.
+## Nota dati
+I pronostici mostrati sono quelli **salvati/congelati nel Pannello A** del file, non il calcolo live del match attualmente aperto nel foglio `PRONOSTICI`.

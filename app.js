@@ -4,6 +4,7 @@
   const $$ = s => [...document.querySelectorAll(s)];
   const teams = Object.keys(D.meta).sort((a,b) => D.meta[a].position - D.meta[b].position);
   const homeSel = $('#homeTeam'), awaySel = $('#awayTeam');
+  const predHomeSel = $('#predictionHomeTeam'), predAwaySel = $('#predictionAwayTeam');
   let view = 'general';
 
   const fmt = {
@@ -14,6 +15,7 @@
     score: v => v == null ? '—' : String(Math.round(v))
   };
 
+  const esc = v => String(v ?? '').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));
   const clean = s => (s || '').replace(/SegnaCasa\s*/i,'').replace(/SegnaTrasferta\s*/i,'').replace(/Multigoal\s*/i,'').replace(/totale\s*/i,'').replace(/Casa\s*/i,'').replace(/Trasferta\s*/i,'').trim();
   const groups = [
     {title:'Risultati', metrics:[
@@ -63,6 +65,11 @@
   homeSel.innerHTML=teams.map(opt).join(''); awaySel.innerHTML=teams.map(opt).join('');
   homeSel.value = teams.includes('Monza') ? 'Monza' : teams[0];
   awaySel.value = teams.includes('Cagliari') ? 'Cagliari' : teams[1];
+  if(predHomeSel && predAwaySel){
+    predHomeSel.innerHTML=teams.map(opt).join(''); predAwaySel.innerHTML=teams.map(opt).join('');
+    const fp=(D.predictions||[])[0];
+    predHomeSel.value=fp?.home || homeSel.value; predAwaySel.value=fp?.away || awaySel.value;
+  }
   $('#snapshot').textContent=`Snapshot Excel • dati fino alla giornata ${D.lastRound}`;
 
   function metaLine(team){ const m=D.meta[team]; return `<strong>${m.position}°</strong> • ${m.points} pt • ${m.played} giocate • livello ${m.level}`; }
@@ -79,6 +86,7 @@
     };
     $('#contextTitle').textContent=labels[view][0]; $('#contextNote').innerHTML=labels[view][1];
     $('#sampleInfo').textContent=`${home} ${H.games} • ${away} ${A.games}`;
+    renderIdeaBox('matchIdeas',home,away);
     if(!H.games && !A.games){ $('#comparison').innerHTML='<div class="empty">Nessun dato disponibile per questo confronto.</div>'; return; }
     $('#comparison').innerHTML=groups.map(g=>{
       const rows=g.metrics.map(([key,label,kind,dir])=>{
@@ -89,51 +97,109 @@
     }).join('');
   }
 
+  const IDEAS_KEY='serieADataLab.ideas.v1';
+  function loadIdeas(){
+    try { return JSON.parse(localStorage.getItem(IDEAS_KEY)||'[]'); } catch(e){ return []; }
+  }
+  function saveIdeas(rows){ localStorage.setItem(IDEAS_KEY,JSON.stringify(rows)); }
+  function ideaStatusLabel(v){ return v==='interesting'?'Interessante':v==='discarded'?'Scartata':'Da valutare'; }
+  function ideaConfidenceLabel(v){ return v==='high'?'Alta':v==='low'?'Bassa':'Media'; }
+  function matchIdeas(home,away){ return loadIdeas().filter(x=>x.home===home && x.away===away); }
+  function refreshIdeaViews(){
+    if(homeSel?.value && awaySel?.value) renderIdeaBox('matchIdeas',homeSel.value,awaySel.value);
+    if(predHomeSel?.value && predAwaySel?.value) renderIdeaBox('predictionIdeas',predHomeSel.value,predAwaySel.value);
+    renderCalendar();
+  }
+  function renderIdeaBox(hostId,home,away){
+    const host=$(`#${hostId}`); if(!host || !home || !away) return;
+    const rows=matchIdeas(home,away).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    host.innerHTML=`<section class="ideas-card card">
+      <div class="ideas-head">
+        <div><div class="kicker">APPUNTI OPERATIVI</div><h3>Possibili puntate</h3><p>${esc(home)} vs ${esc(away)} · le annotazioni sono condivise tra Dati Match e Pronostici.</p></div>
+        <span class="idea-count">${rows.length} ${rows.length===1?'idea':'idee'}</span>
+      </div>
+      <form class="idea-form">
+        <label>Pronostico / mercato<input name="market" required placeholder="Es. Gol, 1X, Over 2,5"></label>
+        <label>Quota<input name="odds" type="number" min="1" step="0.01" inputmode="decimal" placeholder="1,75"></label>
+        <label>Fiducia<select name="confidence"><option value="high">Alta</option><option value="medium" selected>Media</option><option value="low">Bassa</option></select></label>
+        <label>Stato<select name="status"><option value="evaluate">Da valutare</option><option value="interesting">Interessante</option><option value="discarded">Scartata</option></select></label>
+        <label class="idea-note">Nota<input name="note" placeholder="Perché potrebbe essere interessante"></label>
+        <button class="primary-action idea-save" type="submit">Salva idea</button>
+      </form>
+      <div class="idea-list">${rows.length?rows.map(x=>`<article class="idea-row ${esc(x.status)}">
+        <div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span><span class="idea-status ${esc(x.status)}">${ideaStatusLabel(x.status)}</span></div>
+        ${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}
+        <button class="idea-delete" data-id="${esc(x.id)}" type="button" aria-label="Elimina idea">×</button>
+      </article>`).join(''):'<div class="idea-empty">Nessuna possibile puntata annotata per questo match.</div>'}</div>
+      <div class="idea-local-note">Per ora queste annotazioni restano salvate sul browser. Più avanti verranno sincronizzate nel database.</div>
+    </section>`;
+    const form=host.querySelector('.idea-form');
+    form.addEventListener('submit',e=>{
+      e.preventDefault();
+      const fd=new FormData(form), market=String(fd.get('market')||'').trim(); if(!market) return;
+      const all=loadIdeas(); all.push({id:String(Date.now())+Math.random().toString(16).slice(2),home,away,market,odds:Number(fd.get('odds')||0)||null,confidence:String(fd.get('confidence')||'medium'),status:String(fd.get('status')||'evaluate'),note:String(fd.get('note')||'').trim(),createdAt:Date.now()});
+      saveIdeas(all); refreshIdeaViews();
+    });
+    host.querySelectorAll('.idea-delete').forEach(b=>b.addEventListener('click',()=>{ saveIdeas(loadIdeas().filter(x=>String(x.id)!==String(b.dataset.id))); refreshIdeaViews(); }));
+  }
+
+  function formatCalendarDate(v){
+    if(!v) return 'Data non disponibile';
+    const d=new Date(v+'T12:00:00');
+    const txt=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+    return txt.charAt(0).toUpperCase()+txt.slice(1);
+  }
+  function renderCalendar(){
+    const sel=$('#calendarRound'), grid=$('#calendarGrid'), summary=$('#calendarSummary');
+    if(!sel || !grid || !summary) return;
+    const rounds=(D.calendarRounds||[...new Set((D.calendar||[]).map(x=>x.round))]).slice().sort((a,b)=>a-b);
+    if(!sel.options.length){
+      sel.innerHTML=rounds.map(r=>`<option value="${r}">Giornata ${r}</option>`).join('');
+      const preferred=(D.predictionRounds||[]).slice().sort((a,b)=>b-a)[0] || Math.min(38,(D.lastRound||0)+1) || rounds[0];
+      if(rounds.includes(preferred)) sel.value=String(preferred);
+    }
+    const round=Number(sel.value||rounds[0]);
+    const list=(D.calendar||[]).filter(x=>+x.round===round);
+    const ideaCount=list.reduce((n,m)=>n+matchIdeas(m.home,m.away).length,0);
+    const predCount=list.filter(m=>(D.predictions||[]).some(p=>p.home===m.home&&p.away===m.away)).length;
+    summary.innerHTML=`<div><span>GIORNATA ${round}</span><strong>${list.length} partite</strong></div><div><span>PRONOSTICI SALVATI</span><strong>${predCount}</strong></div><div><span>POSSIBILI PUNTATE</span><strong>${ideaCount}</strong></div>`;
+    const dates=[...new Set(list.map(x=>x.date||''))];
+    grid.innerHTML=dates.map(date=>`<section class="calendar-day"><div class="calendar-day-title">${formatCalendarDate(date)}</div><div class="calendar-match-list">${list.filter(x=>(x.date||'')===date).map(m=>{
+      const n=matchIdeas(m.home,m.away).length, hasPred=(D.predictions||[]).some(p=>p.home===m.home&&p.away===m.away);
+      return `<article class="calendar-match card"><div class="calendar-teams"><strong>${esc(m.home)}</strong><span>vs</span><strong>${esc(m.away)}</strong></div><div class="calendar-badges">${hasPred?'<span class="calendar-badge pred">Pronostico disponibile</span>':''}${n?`<span class="calendar-badge idea">${n} ${n===1?'idea':'idee'}</span>`:''}</div><div class="calendar-actions"><button data-cal-action="match" data-home="${esc(m.home)}" data-away="${esc(m.away)}">Dati Match</button><button data-cal-action="pred" data-home="${esc(m.home)}" data-away="${esc(m.away)}" ${hasPred?'':'disabled'}>Pronostici</button></div></article>`;
+    }).join('')}</div></section>`).join('') || '<div class="empty">Nessuna partita disponibile.</div>';
+    grid.querySelectorAll('[data-cal-action="match"]').forEach(b=>b.addEventListener('click',()=>{homeSel.value=b.dataset.home;awaySel.value=b.dataset.away;renderMatch();showPage('match');window.scrollTo({top:0,behavior:'smooth'});}));
+    grid.querySelectorAll('[data-cal-action="pred"]').forEach(b=>b.addEventListener('click',()=>{if(b.disabled)return;predHomeSel.value=b.dataset.home;predAwaySel.value=b.dataset.away;renderPredictions();showPage('predictions');window.scrollTo({top:0,behavior:'smooth'});}));
+  }
+
   function confClass(v){ return v>=.70?'conf-high':v>=.58?'conf-mid':'conf-low'; }
   function market(label,value,conf,emph=false){
     return `<div class="market ${emph?'market-emph':''}"><span class="market-label">${label}</span><strong>${value||'—'}</strong>${conf!=null?`<span class="confidence ${confClass(conf)}">${fmt.pct(conf)}</span>`:''}</div>`;
   }
   function renderPredictions(){
-    const sel=$('#predictionRound');
-    const rounds=(D.predictionRounds||[]).slice().sort((a,b)=>b-a);
-    if(!sel.options.length){ sel.innerHTML=rounds.map(r=>`<option value="${r}">Giornata ${r}</option>`).join(''); }
-    const round=Number(sel.value || rounds[0]);
-    const list=(D.predictions||[]).filter(p=>p.round===round);
-    $('#predictionGrid').innerHTML=list.map(p=>{
-      const score=(p.scoreHome==null||p.scoreAway==null)?'—':`${Math.round(p.scoreHome)}-${Math.round(p.scoreAway)}`;
-      return `<article class="prediction-card card">
-        <div class="prediction-head"><div><span class="round-tag">G${p.round}</span><h3>${p.home} <span>vs</span> ${p.away}</h3></div><button class="compare-btn" data-home="${p.home}" data-away="${p.away}">Confronta dati</button></div>
-        <div class="primary-markets">
-          ${market('1X2 modello',p.oneXtwo,p.oneXtwoConf,true)}
-          ${market('1X2 Poisson',p.poisson,p.poissonConf,true)}
-          ${market('Doppia chance',p.doubleChance,p.doubleChanceConf)}
-          ${market('Gol / No Gol',p.btts,p.bttsConf)}
-          ${market('U/O 2,5',p.uo25,p.uo25Conf)}
-          ${market('Score',score,p.scoreConf)}
-        </div>
-        <details>
-          <summary>Altri mercati e dati attesi</summary>
-          <div class="details-grid">
-            ${market('Doppia chance Poisson',p.doubleChancePoisson,p.doubleChancePoissonConf)}
-            ${market('U/O 1,5',p.uo15,p.uo15Conf)}
-            ${market('U/O 3,5',p.uo35,p.uo35Conf)}
-            ${market(`${p.home} segna`,clean(p.scoreHomeYN),p.scoreHomeYNConf)}
-            ${market(`${p.away} segna`,clean(p.scoreAwayYN),p.scoreAwayYNConf)}
-            ${market('Multigol totale',clean(p.multiTotal),p.multiTotalConf)}
-            ${market(`Multigol ${p.home}`,clean(p.multiHome),p.multiHomeConf)}
-            ${market(`Multigol ${p.away}`,clean(p.multiAway),p.multiAwayConf)}
-          </div>
-          <div class="expected-box">
-            <div><span>Gol attesi</span><strong>${fmt.n2(p.xgHome)} – ${fmt.n2(p.xgAway)}</strong></div>
-            <div><span>Tiri attesi</span><strong>${fmt.n1(p.shotsHome)} – ${fmt.n1(p.shotsAway)}</strong></div>
-            <div><span>Tiri in porta attesi</span><strong>${fmt.n1(p.sotHome)} – ${fmt.n1(p.sotAway)}</strong></div>
-          </div>
-        </details>
-      </article>`;
-    }).join('') || '<div class="empty">Nessun pronostico salvato per questa giornata.</div>';
-    $$('.compare-btn').forEach(b=>b.addEventListener('click',()=>{
-      homeSel.value=b.dataset.home; awaySel.value=b.dataset.away; renderMatch(); showPage('match'); window.scrollTo({top:0,behavior:'smooth'});
-    }));
+    if(!predHomeSel || !predAwaySel) return;
+    let home=predHomeSel.value, away=predAwaySel.value;
+    if(home===away){ away=teams.find(t=>t!==home); predAwaySel.value=away; }
+    $('#predictionHomeMeta').innerHTML=metaLine(home); $('#predictionAwayMeta').innerHTML=metaLine(away);
+    const p=(D.predictions||[]).find(x=>x.home===home&&x.away===away);
+    const target=$('#predictionSingle');
+    if(!p){
+      target.innerHTML=`<div class="empty prediction-empty"><strong>Nessun pronostico salvato per ${esc(home)} – ${esc(away)}.</strong><span>Puoi comunque analizzare i dati e annotare una possibile puntata.</span><button class="compare-btn" id="emptyCompare">Apri Dati Match</button></div>`;
+      $('#emptyCompare')?.addEventListener('click',()=>{homeSel.value=home;awaySel.value=away;renderMatch();showPage('match');});
+      renderIdeaBox('predictionIdeas',home,away); return;
+    }
+    const score=(p.scoreHome==null||p.scoreAway==null)?'—':`${Math.round(p.scoreHome)}-${Math.round(p.scoreAway)}`;
+    target.innerHTML=`<article class="prediction-card prediction-card-single card">
+      <div class="prediction-head"><div><span class="round-tag">GIORNATA ${p.round}</span><h3>${esc(p.home)} <span>vs</span> ${esc(p.away)}</h3></div><button class="compare-btn" id="singleCompare">Confronta dati</button></div>
+      <div class="primary-markets">
+        ${market('1X2 modello',p.oneXtwo,p.oneXtwoConf,true)}${market('1X2 Poisson',p.poisson,p.poissonConf,true)}${market('Doppia chance',p.doubleChance,p.doubleChanceConf)}${market('Gol / No Gol',p.btts,p.bttsConf)}${market('U/O 2,5',p.uo25,p.uo25Conf)}${market('Score',score,p.scoreConf)}
+      </div>
+      <details><summary>Altri mercati e dati attesi</summary><div class="details-grid">
+        ${market('Doppia chance Poisson',p.doubleChancePoisson,p.doubleChancePoissonConf)}${market('U/O 1,5',p.uo15,p.uo15Conf)}${market('U/O 3,5',p.uo35,p.uo35Conf)}${market(`${p.home} segna`,clean(p.scoreHomeYN),p.scoreHomeYNConf)}${market(`${p.away} segna`,clean(p.scoreAwayYN),p.scoreAwayYNConf)}${market('Multigol totale',clean(p.multiTotal),p.multiTotalConf)}${market(`Multigol ${p.home}`,clean(p.multiHome),p.multiHomeConf)}${market(`Multigol ${p.away}`,clean(p.multiAway),p.multiAwayConf)}
+      </div><div class="expected-box"><div><span>Gol attesi</span><strong>${fmt.n2(p.xgHome)} – ${fmt.n2(p.xgAway)}</strong></div><div><span>Tiri attesi</span><strong>${fmt.n1(p.shotsHome)} – ${fmt.n1(p.shotsAway)}</strong></div><div><span>Tiri in porta attesi</span><strong>${fmt.n1(p.sotHome)} – ${fmt.n1(p.sotAway)}</strong></div></div></details>
+    </article>`;
+    $('#singleCompare').addEventListener('click',()=>{homeSel.value=home;awaySel.value=away;renderMatch();showPage('match');window.scrollTo({top:0,behavior:'smooth'});});
+    renderIdeaBox('predictionIdeas',home,away);
   }
 
   function formBadge(g){ return g.win?'V':g.draw?'N':'P'; }
@@ -152,13 +218,14 @@
   }
 
 
-  const WALLET_KEY='serieADataLab.wallet.v2';
-  const WALLET_OLD_KEY='serieADataLab.wallet.v1';
+  const WALLET_KEY='serieADataLab.wallet.v3';
+  const WALLET_OLD_KEY='serieADataLab.wallet.v2';
   const euro = v => new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(v)||0);
   function walletSeed(){
     return [
       {id:6001,round:6,date:'2026-10-04',type:'topup',description:'Ricarica',amount:10,status:null,payout:0},
-      {id:6002,round:6,date:'2026-10-04',type:'bet',description:'Schedina giornata 6',amount:10,status:'won',payout:65}
+      {id:6002,round:6,date:'2026-10-04',type:'bet',description:'Schedina giornata 6',amount:10,status:'won',payout:65},
+      {id:6003,round:7,date:'2026-10-16',type:'bet',description:'Giocate giornata 7',amount:25,status:'open',payout:0}
     ];
   }
   function loadWallet(){
@@ -168,6 +235,8 @@
       const old=localStorage.getItem(WALLET_OLD_KEY);
       if(old!==null){
         const migrated=JSON.parse(old||'[]').map(x=>({...x,round:x.round||null}));
+        const isOldDemo=migrated.length===2 && migrated.some(x=>+x.id===6001) && migrated.some(x=>+x.id===6002);
+        if(isOldDemo) migrated.push({id:6003,round:7,date:'2026-10-16',type:'bet',description:'Giocate giornata 7',amount:25,status:'open',payout:0});
         localStorage.setItem(WALLET_KEY,JSON.stringify(migrated));
         return migrated;
       }
@@ -266,6 +335,7 @@
     $$('.page').forEach(p=>p.classList.remove('active'));
     $(`#page-${page}`).classList.add('active');
     $$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
+    if(page==='calendar') renderCalendar();
     if(page==='predictions') renderPredictions();
     if(page==='standings') renderStandings();
     if(page==='wallet') renderWallet();
@@ -274,7 +344,8 @@
   homeSel.addEventListener('change',renderMatch); awaySel.addEventListener('change',renderMatch);
   $$('.tab').forEach(b=>b.addEventListener('click',()=>{ $$('.tab').forEach(x=>x.classList.remove('active')); b.classList.add('active'); view=b.dataset.view; renderMatch(); }));
   $$('.nav-btn').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
-  $('#predictionRound').addEventListener('change',renderPredictions);
+  predHomeSel?.addEventListener('change',renderPredictions); predAwaySel?.addEventListener('change',renderPredictions);
+  $('#calendarRound')?.addEventListener('change',renderCalendar);
 
   $('#walletDate').value=new Date().toISOString().slice(0,10);
   $('#walletRound').value=Math.max(...Object.values(D.meta||{}).map(x=>+x.played||0),1);
@@ -299,6 +370,8 @@
   syncWalletFields(); $('#walletPayoutWrap').hidden=true;
 
   renderMatch();
+  renderPredictions();
+  renderCalendar();
   renderStandings();
   renderWallet();
 })();

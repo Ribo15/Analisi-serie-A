@@ -13,7 +13,7 @@
       <div>
         <div class="eyebrow">SERIE A • DATA LAB</div>
         <h1>Serie A DataLab</h1>
-        <p>Dati, confronto squadre, pronostici del modello e classifica.</p>
+        <p>Analisi match, pronostici, calendario, possibili puntate e andamento scommesse.</p>
       </div>
       <div id="snapshot" class="snapshot"></div>
     </div>
@@ -21,6 +21,7 @@
 
   <nav class="main-nav" aria-label="Navigazione principale">
     <div class="wrap nav-inner">
+      <button class="nav-btn" data-page="calendar">Calendario</button>
       <button class="nav-btn active" data-page="match">Dati Match</button>
       <button class="nav-btn" data-page="predictions">Pronostici</button>
       <button class="nav-btn" data-page="standings">Classifica</button>
@@ -60,20 +61,49 @@
       </section>
 
       <section id="comparison"></section>
+      <section id="matchIdeas" class="idea-host"></section>
+    </section>
+
+    <section id="page-calendar" class="page">
+      <section class="page-head">
+        <div>
+          <div class="kicker">STAGIONE</div>
+          <h2>Calendario</h2>
+          <p>Partite della giornata, accesso rapido all’analisi e alle possibili puntate annotate.</p>
+        </div>
+        <label class="round-filter">Giornata
+          <select id="calendarRound"></select>
+        </label>
+      </section>
+      <section id="calendarSummary" class="calendar-summary card"></section>
+      <div id="calendarGrid" class="calendar-grid"></div>
     </section>
 
     <section id="page-predictions" class="page">
       <section class="page-head">
         <div>
           <div class="kicker">MODELLO</div>
-          <h2>Pronostici</h2>
-          <p>Output salvati nell'Excel. Le percentuali indicano l'attendibilità del singolo mercato.</p>
+          <h2>Pronostici Match</h2>
+          <p>Seleziona le due squadre e visualizza soltanto i pronostici salvati per quel match.</p>
         </div>
-        <label class="round-filter">Giornata
-          <select id="predictionRound"></select>
-        </label>
       </section>
-      <div id="predictionGrid" class="prediction-grid"></div>
+
+      <section class="match-picker card prediction-picker">
+        <div class="team-picker home-picker">
+          <span class="side-label">CASA</span>
+          <select id="predictionHomeTeam" aria-label="Squadra casa pronostici"></select>
+          <div id="predictionHomeMeta" class="team-meta"></div>
+        </div>
+        <div class="vs">VS</div>
+        <div class="team-picker away-picker">
+          <span class="side-label">TRASFERTA</span>
+          <select id="predictionAwayTeam" aria-label="Squadra trasferta pronostici"></select>
+          <div id="predictionAwayMeta" class="team-meta"></div>
+        </div>
+      </section>
+
+      <div id="predictionSingle" class="prediction-single"></div>
+      <section id="predictionIdeas" class="idea-host"></section>
     </section>
 
     <section id="page-standings" class="page">

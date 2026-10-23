@@ -105,7 +105,7 @@
     $('#homeMeta').innerHTML=metaLine(home); $('#awayMeta').innerHTML=metaLine(away);
     const hLogo=teamLogo(home), aLogo=teamLogo(away);
     const setLogo=(id,src)=>{ const el=$(id); if(!el) return; el.src=src||''; el.style.display=src?'block':'none'; };
-    setLogo('#homeLogo',hLogo); setLogo('#awayLogo',aLogo); setLogo('#contextHomeLogo',hLogo); setLogo('#contextAwayLogo',aLogo);
+    setLogo('#homeLogo',hLogo); setLogo('#awayLogo',aLogo); setLogo('#contextHomeLogo',hLogo); setLogo('#contextAwayLogo',aLogo); setLogo('#stickyHomeLogo',hLogo); setLogo('#stickyAwayLogo',aLogo);
     const H=getData(home,away,true), A=getData(away,home,false);
     const labels={
       general:['Dati generali','Tutte le partite giocate nella stagione in corso.'],
@@ -562,4 +562,21 @@
   renderIdeasPage();
   renderStandings();
   renderWallet();
+
+
+  function updateMatchSticky(){
+    const sticky=$('#matchSticky'), picker=document.querySelector('#page-match .match-picker-v9'), page=$('#page-match'), nav=document.querySelector('.main-nav');
+    if(!sticky||!picker||!page) return;
+    const active=page.classList.contains('active');
+    const navH=nav?nav.getBoundingClientRect().height:0;
+    const pickerRect=picker.getBoundingClientRect();
+    const pageRect=page.getBoundingClientRect();
+    const shouldFix=active && pickerRect.bottom <= navH + 4 && pageRect.bottom > navH + 90;
+    sticky.classList.toggle('is-fixed',shouldFix);
+    document.body.classList.toggle('match-sticky-active',shouldFix);
+  }
+  window.addEventListener('scroll',updateMatchSticky,{passive:true});
+  window.addEventListener('resize',updateMatchSticky);
+  document.addEventListener('click',()=>requestAnimationFrame(updateMatchSticky));
+  requestAnimationFrame(updateMatchSticky);
 })();

@@ -75,3 +75,92 @@ button,select{font:inherit}.wrap{width:min(1120px,calc(100% - 28px));margin:0 au
   .played-slip-row{align-items:flex-start}
 }
 .played-slip-status{min-width:120px}.played-slip-actions{display:flex;justify-content:flex-end;gap:5px;margin-top:6px}.played-slip-actions button{border:1px solid var(--line);background:#fff;color:#455266;border-radius:7px;padding:5px 7px;font-size:8px;font-weight:850;cursor:pointer}.played-slip-actions button:first-child{background:var(--goodbg);color:var(--good);border-color:#cfe8da}.played-slip-actions button:last-child{background:var(--lowbg);color:var(--low);border-color:#efd3d3}
+
+/* V8 — identità visiva approvata + calendario compatto */
+:root{
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --ink:#071831;
+  --muted:#66778f;
+  --line:#dbe5f0;
+  --navy:#031326;
+  --navy2:#0a3977;
+  --blue:#1278f6;
+  --blue2:#0d63d7;
+  --home:#0d5ea8;
+  --away:#143c8e;
+}
+body{background:linear-gradient(180deg,#f7f9fc 0,#f2f6fb 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif}
+.site-header{height:112px;padding:0;background:radial-gradient(110% 170% at 86% -20%,#1682ff 0%,#0a4b9e 31%,transparent 60%),linear-gradient(135deg,#020b18 0%,#061b38 48%,#0b3f82 100%)}
+.header-spacer{height:100%}
+.main-nav{top:0;background:radial-gradient(130% 230% at 88% -90%,#1682ff 0%,#0a4b9e 34%,transparent 62%),linear-gradient(135deg,#020b18 0%,#061b38 48%,#0b3f82 100%);border:0;box-shadow:0 8px 22px rgba(4,24,52,.14);backdrop-filter:none}
+.nav-inner{gap:12px;padding:10px 0 12px}
+.nav-btn{color:rgba(235,243,255,.77);padding:11px 17px;border-radius:13px;font-weight:850;transition:.18s ease}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,.07)}
+.nav-btn.active{background:linear-gradient(135deg,#1490ff,#0b6ee9);color:#fff;box-shadow:0 7px 17px rgba(20,120,246,.25)}
+.main-content{padding-top:24px}
+.card{border-color:#dce6f1;border-radius:20px;box-shadow:0 10px 30px rgba(21,51,91,.065)}
+.page-head h2{color:#071831;letter-spacing:-.035em;font-weight:900}
+.kicker,.round-filter{color:#64758e}
+.round-filter select{border-color:#d7e3ef;border-radius:14px;padding:12px 16px;background:#fff;box-shadow:0 6px 18px rgba(21,51,91,.05)}
+.tab.active,.idea-page-actions button:first-child{background:#071831;border-color:#071831}
+.primary-action{background:linear-gradient(135deg,#1278f6,#0d63d7)!important;border-color:#0d63d7!important}
+.standings-table th{background:#071831}
+.expected-box{background:#071831}
+footer{display:none!important}
+
+/* Calendario */
+#page-calendar .calendar-page-head{align-items:end;margin:2px 0 18px}
+#page-calendar .calendar-page-head h2{font-size:34px;margin-top:7px}
+#calendarSummary{display:none!important}
+.calendar-day{margin:18px 0 20px;padding:12px;background:linear-gradient(135deg,#eef4fb 0%,#f6f9fc 72%);border:1px solid #e5edf6;border-radius:22px}
+.calendar-day-title{font-size:15px;letter-spacing:.015em;color:#405e86;margin:0 6px 10px;font-weight:900}
+.calendar-match-list{display:grid;grid-template-columns:1fr;gap:9px}
+.calendar-match{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:12px;align-items:center;padding:11px 13px;border-radius:18px;min-height:76px}
+.calendar-teams{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);align-items:center;gap:8px;min-width:0}
+.calendar-team{display:flex;align-items:center;gap:7px;min-width:0}
+.calendar-team strong{font-size:15px;font-weight:900;color:#071831;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.calendar-logo{width:22px;height:22px;object-fit:contain;flex:0 0 22px}
+.calendar-vs{display:block;text-align:center;color:#91a0b4;font-size:11px;font-weight:900;text-transform:lowercase}
+.calendar-actions{display:flex;flex-direction:column;gap:6px;margin:0}
+.calendar-actions button{width:100%;min-height:34px;border:1px solid #cbd9e8;background:#fff;color:#071831;border-radius:11px;padding:7px 9px;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:none}
+.calendar-actions button.calendar-primary{background:#071831;color:#fff;border-color:#071831}
+.calendar-action-icon{width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 15px}
+.calendar-action-icon svg{width:15px;height:15px;display:block;fill:currentColor;stroke:currentColor;stroke-width:1.8}
+.calendar-action-icon svg circle{fill:none}
+.calendar-action-icon svg path{stroke:none}
+
+/* Rende coerenti anche le altre pagine */
+.match-picker,.context,.next-fixtures,.ideas-card,.prediction-card,.standings-card,.wallet-result-card,.wallet-chart-card,.wallet-data-card,.wallet-entry,.wallet-ledger,.slip-card,.played-slips-card,.all-ideas-card{border-radius:20px}
+.team-picker select,.idea-form input,.idea-form select,.wallet-form-grid input,.wallet-form-grid select{border-radius:13px}
+.match-sticky{top:66px;border-radius:14px;box-shadow:0 8px 22px rgba(21,51,91,.09)}
+
+@media (max-width:760px){
+  .site-header{height:88px}
+  .main-nav{overflow-x:auto}
+  .nav-inner{gap:5px;padding:8px 0 10px}
+  .nav-btn{padding:10px 13px;border-radius:12px;font-size:13px}
+  .main-content{padding-top:18px}
+  #page-calendar .calendar-page-head{align-items:flex-end;gap:12px}
+  #page-calendar .calendar-page-head h2{font-size:29px;white-space:nowrap}
+  .round-filter select{padding:10px 12px;min-width:124px}
+  .calendar-day{padding:10px;margin:14px 0 18px;border-radius:19px}
+  .calendar-day-title{font-size:14px;margin-bottom:9px}
+  .calendar-match{grid-template-columns:minmax(0,1fr) 118px;padding:10px 11px;min-height:70px;gap:9px}
+  .calendar-teams{grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);gap:5px}
+  .calendar-team{gap:6px}
+  .calendar-team strong{font-size:13px}
+  .calendar-logo{width:19px;height:19px;flex-basis:19px}
+  .calendar-vs{font-size:10px}
+  .calendar-actions{gap:5px}
+  .calendar-actions button{min-height:31px;border-radius:10px;padding:6px 7px;font-size:9px;gap:5px}
+  .calendar-action-icon,.calendar-action-icon svg{width:13px;height:13px;flex-basis:13px}
+  .match-sticky{top:60px}
+}
+@media (max-width:390px){
+  .calendar-match{grid-template-columns:minmax(0,1fr) 108px}
+  .calendar-team strong{font-size:12px}
+  .calendar-logo{width:18px;height:18px;flex-basis:18px}
+  .calendar-actions button{font-size:8.5px}
+  #page-calendar .calendar-page-head h2{font-size:27px}
+}

@@ -265,6 +265,36 @@
     renderPlayedSlips();
   }
 
+  const TEAM_LOGOS = {
+    "Atalanta":"https://assets.football-logos.cc/logos/italy/256x256/atalanta.45225436.png",
+    "Bologna":"https://assets.football-logos.cc/logos/italy/256x256/bologna.a78d435f.png",
+    "Cagliari":"https://assets.football-logos.cc/logos/italy/256x256/cagliari.1c3353f1.png",
+    "Como":"https://assets.football-logos.cc/logos/italy/256x256/como-1907.1a1430cd.png",
+    "Fiorentina":"https://assets.football-logos.cc/logos/italy/256x256/fiorentina.7ba101c2.png",
+    "Frosinone":"https://assets.football-logos.cc/logos/italy/256x256/frosinone.8cc89626.png",
+    "Genoa":"https://assets.football-logos.cc/logos/italy/256x256/genoa.a5ec9be4.png",
+    "Inter":"https://assets.football-logos.cc/logos/italy/256x256/inter.3a7ce90c.png",
+    "Juventus":"https://assets.football-logos.cc/logos/italy/256x256/juventus.a8baf848.png",
+    "Lazio":"https://assets.football-logos.cc/logos/italy/256x256/lazio.2386d28d.png",
+    "Lecce":"https://assets.football-logos.cc/logos/italy/256x256/lecce.18baee06.png",
+    "Milan":"https://assets.football-logos.cc/logos/italy/256x256/milan.75d56f90.png",
+    "Monza":"https://assets.football-logos.cc/logos/italy/256x256/monza.a0b0c166.png",
+    "Napoli":"https://assets.football-logos.cc/logos/italy/256x256/napoli.ee47a50b.png",
+    "Parma":"https://assets.football-logos.cc/logos/italy/256x256/parma.ca4e3120.png",
+    "Roma":"https://assets.football-logos.cc/logos/italy/256x256/roma.034a933e.png",
+    "Sassuolo":"https://assets.football-logos.cc/logos/italy/256x256/sassuolo.1b38db1d.png",
+    "Torino":"https://assets.football-logos.cc/logos/italy/256x256/torino.a6c78dd6.png",
+    "Udinese":"https://assets.football-logos.cc/logos/italy/256x256/udinese.a69e0bef.png",
+    "Venezia":"https://assets.football-logos.cc/logos/italy/256x256/venezia.b006ee57.png"
+  };
+  function teamLogo(name){ return TEAM_LOGOS[name] || ''; }
+  function logoImg(name){ const src=teamLogo(name); return src?`<img class="calendar-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`:''; }
+  function calIcon(type){
+    return type==='match'
+      ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10H4Zm6 0V4h4v16h-4Zm6 0v-7h4v7h-4Z"/></svg>'
+      : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/><path d="M12 2v4M22 12h-4"/></svg>';
+  }
+
   function formatCalendarDate(v){
     if(!v) return 'Data non disponibile';
     const d=new Date(v+'T12:00:00');
@@ -286,10 +316,18 @@
     const predCount=list.filter(m=>(D.predictions||[]).some(p=>p.home===m.home&&p.away===m.away)).length;
     summary.innerHTML=`<div><span>GIORNATA ${round}</span><strong>${list.length} partite</strong></div><div><span>PRONOSTICI SALVATI</span><strong>${predCount}</strong></div><div><span>POSSIBILI PUNTATE</span><strong>${ideaCount}</strong></div>`;
     const dates=[...new Set(list.map(x=>x.date||''))];
-    grid.innerHTML=dates.map(date=>`<section class="calendar-day"><div class="calendar-day-title">${formatCalendarDate(date)}</div><div class="calendar-match-list">${list.filter(x=>(x.date||'')===date).map(m=>{
-      const n=matchIdeas(m.home,m.away).length, hasPred=(D.predictions||[]).some(p=>p.home===m.home&&p.away===m.away);
-      return `<article class="calendar-match card"><div class="calendar-teams"><strong>${esc(m.home)}</strong><span>vs</span><strong>${esc(m.away)}</strong></div><div class="calendar-badges">${hasPred?'<span class="calendar-badge pred">Pronostico disponibile</span>':''}${n?`<span class="calendar-badge idea">${n} ${n===1?'idea':'idee'}</span>`:''}</div><div class="calendar-actions"><button data-cal-action="match" data-home="${esc(m.home)}" data-away="${esc(m.away)}">Dati Match</button><button data-cal-action="pred" data-home="${esc(m.home)}" data-away="${esc(m.away)}">Pronostici</button></div></article>`;
-    }).join('')}</div></section>`).join('') || '<div class="empty">Nessuna partita disponibile.</div>';
+    grid.innerHTML=dates.map(date=>`<section class="calendar-day"><div class="calendar-day-title">${formatCalendarDate(date)}</div><div class="calendar-match-list">${list.filter(x=>(x.date||'')===date).map(m=>`
+      <article class="calendar-match card">
+        <div class="calendar-teams">
+          <div class="calendar-team home">${logoImg(m.home)}<strong>${esc(m.home)}</strong></div>
+          <span class="calendar-vs">vs</span>
+          <div class="calendar-team away">${logoImg(m.away)}<strong>${esc(m.away)}</strong></div>
+        </div>
+        <div class="calendar-actions">
+          <button data-cal-action="match" data-home="${esc(m.home)}" data-away="${esc(m.away)}"><span class="calendar-action-icon">${calIcon('match')}</span><span>Dati Match</span></button>
+          <button class="calendar-primary" data-cal-action="pred" data-home="${esc(m.home)}" data-away="${esc(m.away)}"><span class="calendar-action-icon">${calIcon('pred')}</span><span>Pronostici</span></button>
+        </div>
+      </article>`).join('')}</div></section>`).join('') || '<div class="empty">Nessuna partita disponibile.</div>';
     grid.querySelectorAll('[data-cal-action="match"]').forEach(b=>b.addEventListener('click',()=>{homeSel.value=b.dataset.home;awaySel.value=b.dataset.away;renderMatch();showPage('match');window.scrollTo({top:0,behavior:'smooth'});}));
     grid.querySelectorAll('[data-cal-action="pred"]').forEach(b=>b.addEventListener('click',()=>{predHomeSel.value=b.dataset.home;predAwaySel.value=b.dataset.away;renderPredictions();showPage('predictions');window.scrollTo({top:0,behavior:'smooth'});}));
   }

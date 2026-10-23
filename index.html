@@ -4,20 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#08111f">
-  <title>L'Analista</title>
+  <title>Analisi Serie A</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap header-inner simple-brand">
-      <h1>L'Analista</h1>
-    </div>
+  <header class="site-header" aria-hidden="true">
+    <div class="wrap header-spacer"></div>
   </header>
 
   <nav class="main-nav" aria-label="Navigazione principale">
     <div class="wrap nav-inner">
-      <button class="nav-btn" data-page="calendar">Calendario</button>
-      <button class="nav-btn active" data-page="match">Dati Match</button>
+      <button class="nav-btn active" data-page="calendar">Calendario</button>
+      <button class="nav-btn" data-page="match">Dati Match</button>
       <button class="nav-btn" data-page="predictions">Pronostici</button>
       <button class="nav-btn" data-page="ideas">Puntate</button>
       <button class="nav-btn" data-page="standings">Classifica</button>
@@ -26,7 +24,7 @@
   </nav>
 
   <main class="wrap main-content">
-    <section id="page-match" class="page active">
+    <section id="page-match" class="page">
       <section class="match-picker card">
         <div class="team-picker home-picker">
           <span class="side-label">CASA</span>
@@ -68,18 +66,17 @@
       <section id="matchIdeas" class="idea-host"></section>
     </section>
 
-    <section id="page-calendar" class="page">
-      <section class="page-head">
+    <section id="page-calendar" class="page active">
+      <section class="page-head calendar-page-head">
         <div>
           <div class="kicker">STAGIONE</div>
-          <h2>Calendario</h2>
-          <p>Partite della giornata, accesso rapido all’analisi e alle possibili puntate annotate.</p>
+          <h2>Serie A 2026-2027</h2>
         </div>
         <label class="round-filter">Giornata
           <select id="calendarRound"></select>
         </label>
       </section>
-      <section id="calendarSummary" class="calendar-summary card"></section>
+      <section id="calendarSummary" class="calendar-summary card" hidden></section>
       <div id="calendarGrid" class="calendar-grid"></div>
     </section>
 
@@ -215,9 +212,6 @@
       </section>
     </section>
 
-    <footer>
-      <p>Dati elaborati esclusivamente dallo snapshot Excel del progetto. Nessun dato esterno.</p>
-    </footer>
   </main>
 
   <script src="data.js"></script>

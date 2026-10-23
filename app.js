@@ -73,14 +73,19 @@
   $('#snapshot').textContent=`Snapshot Excel • dati fino alla giornata ${D.lastRound}`;
 
   function metaLine(team){ const m=D.meta[team]; return `<strong>${m.position}°</strong> • ${m.points} pt • ${m.played} giocate • livello ${m.level}`; }
-  function nextFixture(team){
-    const cal=(D.calendar||[]).filter(x=>+x.round>(+D.lastRound||0) && (x.home===team || x.away===team)).sort((a,b)=>+a.round-+b.round || String(a.date||'').localeCompare(String(b.date||'')));
+  function selectedMatchRound(home,away){
+    const fixture=(D.calendar||[]).find(x=>x.home===home && x.away===away && +x.round>(+D.lastRound||0));
+    return fixture ? +fixture.round : (+D.lastRound||0);
+  }
+  function nextFixture(team,afterRound){
+    const cal=(D.calendar||[]).filter(x=>+x.round>afterRound && (x.home===team || x.away===team)).sort((a,b)=>+a.round-+b.round || String(a.date||'').localeCompare(String(b.date||'')));
     const f=cal[0]; if(!f) return null;
     return {round:+f.round,date:f.date||'',opponent:f.home===team?f.away:f.home,venue:f.home===team?'Casa':'Trasferta'};
   }
   function renderNextFixtures(home,away){
     const host=$('#nextFixtures'); if(!host) return;
-    const H=nextFixture(home), A=nextFixture(away);
+    const afterRound=selectedMatchRound(home,away);
+    const H=nextFixture(home,afterRound), A=nextFixture(away,afterRound);
     const round=H?.round || A?.round || null;
     const card=(team,f)=>f?`<div class="next-team"><span>${esc(team)}</span><strong>${f.venue==='Casa'?'vs':'@'} ${esc(f.opponent)}</strong><small>${f.venue}${f.date?` • ${new Date(f.date+'T12:00:00').toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})}`:''}</small></div>`:`<div class="next-team"><span>${esc(team)}</span><strong>—</strong><small>Calendario non disponibile</small></div>`;
     host.innerHTML=`<div class="next-fixtures-head"><div><div class="kicker">PROSSIMA GIORNATA</div><h3>${round?`Giornata ${round}`:'Prossimo turno'}</h3></div></div><div class="next-fixtures-grid">${card(home,H)}${card(away,A)}</div>`;

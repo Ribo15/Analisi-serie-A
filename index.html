@@ -24,6 +24,7 @@
       <button class="nav-btn" data-page="calendar">Calendario</button>
       <button class="nav-btn active" data-page="match">Dati Match</button>
       <button class="nav-btn" data-page="predictions">Pronostici</button>
+      <button class="nav-btn" data-page="ideas">Puntate</button>
       <button class="nav-btn" data-page="standings">Classifica</button>
       <button class="nav-btn" data-page="wallet">Andamento scommesse</button>
     </div>
@@ -44,6 +45,8 @@
           <div id="awayMeta" class="team-meta"></div>
         </div>
       </section>
+
+      <section id="nextFixtures" class="next-fixtures card"></section>
 
       <nav class="tabs" aria-label="Sezioni confronto">
         <button class="tab active" data-view="general">Dati generali</button>
@@ -104,6 +107,20 @@
 
       <div id="predictionSingle" class="prediction-single"></div>
       <section id="predictionIdeas" class="idea-host"></section>
+    </section>
+
+
+    <section id="page-ideas" class="page">
+      <section class="page-head">
+        <div>
+          <div class="kicker">OPERATIVO</div>
+          <h2>Puntate</h2>
+          <p>Tutte le idee annotate durante l’analisi, con una schedina in preparazione separata dal portafoglio reale.</p>
+        </div>
+      </section>
+
+      <section id="slipOverview"></section>
+      <section id="ideasOverview"></section>
     </section>
 
     <section id="page-standings" class="page">

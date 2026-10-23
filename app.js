@@ -73,10 +73,23 @@
   $('#snapshot').textContent=`Snapshot Excel • dati fino alla giornata ${D.lastRound}`;
 
   function metaLine(team){ const m=D.meta[team]; return `<strong>${m.position}°</strong> • ${m.points} pt • ${m.played} giocate • livello ${m.level}`; }
+  function nextFixture(team){
+    const cal=(D.calendar||[]).filter(x=>+x.round>(+D.lastRound||0) && (x.home===team || x.away===team)).sort((a,b)=>+a.round-+b.round || String(a.date||'').localeCompare(String(b.date||'')));
+    const f=cal[0]; if(!f) return null;
+    return {round:+f.round,date:f.date||'',opponent:f.home===team?f.away:f.home,venue:f.home===team?'Casa':'Trasferta'};
+  }
+  function renderNextFixtures(home,away){
+    const host=$('#nextFixtures'); if(!host) return;
+    const H=nextFixture(home), A=nextFixture(away);
+    const round=H?.round || A?.round || null;
+    const card=(team,f)=>f?`<div class="next-team"><span>${esc(team)}</span><strong>${f.venue==='Casa'?'vs':'@'} ${esc(f.opponent)}</strong><small>${f.venue}${f.date?` • ${new Date(f.date+'T12:00:00').toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})}`:''}</small></div>`:`<div class="next-team"><span>${esc(team)}</span><strong>—</strong><small>Calendario non disponibile</small></div>`;
+    host.innerHTML=`<div class="next-fixtures-head"><div><div class="kicker">PROSSIMA GIORNATA</div><h3>${round?`Giornata ${round}`:'Prossimo turno'}</h3></div></div><div class="next-fixtures-grid">${card(home,H)}${card(away,A)}</div>`;
+  }
   function renderMatch(){
     let home=homeSel.value, away=awaySel.value;
     if(home===away){ away=teams.find(t=>t!==home); awaySel.value=away; }
     $('#homeMeta').innerHTML=metaLine(home); $('#awayMeta').innerHTML=metaLine(away);
+    renderNextFixtures(home,away);
     const H=getData(home,away,true), A=getData(away,home,false);
     const labels={
       general:['Dati generali','Tutte le partite giocate nello snapshot.'],
@@ -98,6 +111,14 @@
   }
 
   const IDEAS_KEY='serieADataLab.ideas.v1';
+  const SLIP_KEY='serieADataLab.slip.v1';
+  function loadSlip(){ try { return JSON.parse(localStorage.getItem(SLIP_KEY)||'[]').map(String); } catch(e){ return []; } }
+  function saveSlip(ids){ localStorage.setItem(SLIP_KEY,JSON.stringify([...new Set(ids.map(String))])); }
+  function removeIdeaEverywhere(id){
+    const sid=String(id);
+    saveIdeas(loadIdeas().filter(x=>String(x.id)!==sid));
+    saveSlip(loadSlip().filter(x=>x!==sid));
+  }
   function loadIdeas(){
     try { return JSON.parse(localStorage.getItem(IDEAS_KEY)||'[]'); } catch(e){ return []; }
   }
@@ -109,6 +130,7 @@
     if(homeSel?.value && awaySel?.value) renderIdeaBox('matchIdeas',homeSel.value,awaySel.value);
     if(predHomeSel?.value && predAwaySel?.value) renderIdeaBox('predictionIdeas',predHomeSel.value,predAwaySel.value);
     renderCalendar();
+    renderIdeasPage();
   }
   function renderIdeaBox(hostId,home,away){
     const host=$(`#${hostId}`); if(!host || !home || !away) return;
@@ -140,7 +162,31 @@
       const all=loadIdeas(); all.push({id:String(Date.now())+Math.random().toString(16).slice(2),home,away,market,odds:Number(fd.get('odds')||0)||null,confidence:String(fd.get('confidence')||'medium'),status:String(fd.get('status')||'evaluate'),note:String(fd.get('note')||'').trim(),createdAt:Date.now()});
       saveIdeas(all); refreshIdeaViews();
     });
-    host.querySelectorAll('.idea-delete').forEach(b=>b.addEventListener('click',()=>{ saveIdeas(loadIdeas().filter(x=>String(x.id)!==String(b.dataset.id))); refreshIdeaViews(); }));
+    host.querySelectorAll('.idea-delete').forEach(b=>b.addEventListener('click',()=>{ removeIdeaEverywhere(b.dataset.id); refreshIdeaViews(); }));
+  }
+
+  function ideaRound(x){
+    const m=(D.calendar||[]).find(g=>g.home===x.home && g.away===x.away);
+    return m?.round || null;
+  }
+  function renderIdeasPage(){
+    const allHost=$('#ideasOverview'), slipHost=$('#slipOverview'); if(!allHost || !slipHost) return;
+    const all=loadIdeas().slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    const validIds=new Set(all.map(x=>String(x.id)));
+    let slipIds=loadSlip().filter(id=>validIds.has(String(id)));
+    saveSlip(slipIds);
+    const slipSet=new Set(slipIds);
+    const slip=slipIds.map(id=>all.find(x=>String(x.id)===String(id))).filter(Boolean);
+    const odds=slip.map(x=>+x.odds||0);
+    const combined=slip.length && odds.every(v=>v>=1) ? odds.reduce((a,b)=>a*b,1) : null;
+    slipHost.innerHTML=`<section class="slip-card card"><div class="ideas-page-head"><div><div class="kicker">SCHEDINA IN PREPARAZIONE</div><h3>${slip.length?`${slip.length} ${slip.length===1?'selezione':'selezioni'}`:'Vuota'}</h3><p>Qui raccogli le idee che vuoi valutare insieme. Non modifica ancora il portafoglio.</p></div>${combined?`<div class="slip-odds"><span>Quota combinata</span><strong>${combined.toFixed(2).replace('.',',')}</strong></div>`:''}</div><div class="slip-list">${slip.length?slip.map(x=>`<article class="slip-row"><div><strong>${esc(x.home)} – ${esc(x.away)}</strong><span>${esc(x.market)}${x.odds?` @ ${Number(x.odds).toFixed(2).replace('.',',')}`:''}</span></div><button class="slip-remove" data-id="${esc(x.id)}" type="button">Rimuovi</button></article>`).join(''):'<div class="idea-empty">Nessuna puntata inserita nella schedina.</div>'}</div></section>`;
+    allHost.innerHTML=`<section class="all-ideas-card card"><div class="ideas-page-head"><div><div class="kicker">TUTTE LE IDEE</div><h3>Puntate pensate</h3><p>${all.length} ${all.length===1?'annotazione':'annotazioni'} salvate da Dati Match e Pronostici.</p></div><button id="clearAllIdeas" class="ghost-danger" type="button" ${all.length?'':'disabled'}>Cancella tutto</button></div><div class="all-ideas-list">${all.length?all.map(x=>{const r=ideaRound(x);return `<article class="all-idea-row ${esc(x.status)}"><div class="all-idea-top"><div><span class="idea-match">${r?`G${r} • `:''}${esc(x.home)} – ${esc(x.away)}</span><div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span><span class="idea-status ${esc(x.status)}">${ideaStatusLabel(x.status)}</span></div>${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}</div></div><div class="idea-page-actions"><button data-idea-action="slip" data-id="${esc(x.id)}" ${slipSet.has(String(x.id))?'disabled':''}>${slipSet.has(String(x.id))?'In schedina':'Porta in schedina'}</button><button data-idea-action="match" data-home="${esc(x.home)}" data-away="${esc(x.away)}">Dati Match</button><button data-idea-action="pred" data-home="${esc(x.home)}" data-away="${esc(x.away)}">Pronostici</button><button class="idea-page-delete" data-idea-action="delete" data-id="${esc(x.id)}">Elimina</button></div></article>`}).join(''):'<div class="idea-empty">Non hai ancora annotato possibili puntate.</div>'}</div><div class="idea-local-note">Per ora puntate e schedina restano salvate sul browser del dispositivo.</div></section>`;
+    slipHost.querySelectorAll('.slip-remove').forEach(b=>b.addEventListener('click',()=>{saveSlip(loadSlip().filter(id=>id!==String(b.dataset.id)));renderIdeasPage();}));
+    allHost.querySelector('#clearAllIdeas')?.addEventListener('click',()=>{if(confirm('Vuoi cancellare tutte le puntate pensate?')){saveIdeas([]);saveSlip([]);refreshIdeaViews();}});
+    allHost.querySelectorAll('[data-idea-action="slip"]').forEach(b=>b.addEventListener('click',()=>{const ids=loadSlip();if(!ids.includes(String(b.dataset.id)))ids.push(String(b.dataset.id));saveSlip(ids);renderIdeasPage();renderCalendar();}));
+    allHost.querySelectorAll('[data-idea-action="delete"]').forEach(b=>b.addEventListener('click',()=>{removeIdeaEverywhere(b.dataset.id);refreshIdeaViews();}));
+    allHost.querySelectorAll('[data-idea-action="match"]').forEach(b=>b.addEventListener('click',()=>{homeSel.value=b.dataset.home;awaySel.value=b.dataset.away;renderMatch();showPage('match');window.scrollTo({top:0,behavior:'smooth'});}));
+    allHost.querySelectorAll('[data-idea-action="pred"]').forEach(b=>b.addEventListener('click',()=>{predHomeSel.value=b.dataset.home;predAwaySel.value=b.dataset.away;renderPredictions();showPage('predictions');window.scrollTo({top:0,behavior:'smooth'});}));
   }
 
   function formatCalendarDate(v){
@@ -337,6 +383,7 @@
     $$('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
     if(page==='calendar') renderCalendar();
     if(page==='predictions') renderPredictions();
+    if(page==='ideas') renderIdeasPage();
     if(page==='standings') renderStandings();
     if(page==='wallet') renderWallet();
   }
@@ -372,6 +419,7 @@
   renderMatch();
   renderPredictions();
   renderCalendar();
+  renderIdeasPage();
   renderStandings();
   renderWallet();
 })();

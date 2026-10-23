@@ -72,14 +72,13 @@
   function pointsAtPosition(pos){ const row=Object.values(D.meta||{}).find(x=>+x.position===+pos); return row?+row.points||0:0; }
   function targetLine(team){
     const m=D.meta[team], pos=+m.position, pts=+m.points||0;
-    let label=''; let diff=0;
-    if(pos===1){ label='1° posto'; diff=0; }
-    else if(pos<=4){ label='1° posto'; diff=Math.max(0,pointsAtPosition(1)-pts); }
-    else if(pos===5){ label='Champions League'; diff=Math.max(0,pointsAtPosition(4)-pts); }
-    else if(pos===6){ label='Europa League'; diff=Math.max(0,pointsAtPosition(5)-pts); }
-    else if(pos>=18){ label='zona salvezza'; diff=Math.max(0,pointsAtPosition(17)-pts); }
-    else { label='Conference League'; diff=Math.max(0,pointsAtPosition(6)-pts); }
-    return diff===0 ? `<strong>${pos}°</strong> • ${label}` : `<strong>${pos}°</strong> • -${diff} pt da ${label}`;
+    if(pos===1) return `<strong>${pos}°</strong> • In vetta`;
+    if(pos>=2 && pos<=4) return `<strong>${pos}°</strong> • Zona Champions`;
+    if(pos===5) return `<strong>${pos}°</strong> • Zona Europa League`;
+    if(pos===6) return `<strong>${pos}°</strong> • Zona Conference`;
+    if(pos>=18) return `<strong>${pos}°</strong> • Zona retrocessione`;
+    const diff=Math.max(0,pointsAtPosition(6)-pts);
+    return diff===0 ? `<strong>${pos}°</strong> • Zona Conference` : `<strong>${pos}°</strong> • -${diff} pt dalla Conference`;
   }
   function metaLine(team){ return targetLine(team); }
   function selectedMatchRound(home,away){
@@ -109,14 +108,22 @@
     setLogo('#homeLogo',hLogo); setLogo('#awayLogo',aLogo); setLogo('#contextHomeLogo',hLogo); setLogo('#contextAwayLogo',aLogo);
     const H=getData(home,away,true), A=getData(away,home,false);
     const labels={
-      general:['Dati generali','Tutte le partite giocate nello snapshot.'],
-      last5:[H.games===A.games?`Dati ultime ${H.games} gare`:'Dati ultime gare disponibili',`${home}: ultime ${H.games} gare • ${away}: ultime ${A.games} gare`],
-      venue5:['Casa / Fuori',`${home}: ultime ${H.games} in casa • ${away}: ultime ${A.games} in trasferta`],
-      level:['Livello avversario',`${home} vs squadre simili a ${away} • ${away} vs squadre simili a ${home}`]
+      general:['Dati generali','Tutte le partite giocate nella stagione in corso.'],
+      last5:['Dati ultime partite','Confronto sulle ultime partite disponibili per ciascuna squadra.'],
+      venue5:['Casa / Fuori',`${home}: partite recenti giocate in casa • ${away}: partite recenti giocate in trasferta`],
+      level:['Livello avversario',`${home} contro squadre con livello di forza simile a ${away} • ${away} contro squadre con livello di forza simile a ${home}`]
+    };
+    const sampleLabel=(which,n)=>{
+      if(view==='general') return `${n} ${n===1?'partita':'partite'}`;
+      if(view==='last5') return `Ultime ${n} ${n===1?'partita':'partite'}`;
+      if(view==='venue5') return `Ultime ${n} ${n===1?'partita':'partite'} ${which==='home'?'in casa':'in trasferta'}`;
+      return `${n} ${n===1?'partita':'partite'} nel campione`;
     };
     $('#contextTitle').textContent=labels[view][0]; $('#contextNote').textContent=labels[view][1];
     $('#contextHomeName').textContent=home; $('#contextAwayName').textContent=away;
-    $('#contextHomeGames').textContent=`${H.games} ${H.games===1?'gara':'gare'}`; $('#contextAwayGames').textContent=`${A.games} ${A.games===1?'gara':'gare'}`;
+    $('#contextHomeGames').textContent=sampleLabel('home',H.games); $('#contextAwayGames').textContent=sampleLabel('away',A.games);
+    if($('#stickyHomeName')) $('#stickyHomeName').textContent=home;
+    if($('#stickyAwayName')) $('#stickyAwayName').textContent=away;
     if(!H.games && !A.games){ $('#comparison').innerHTML='<div class="empty">Nessun dato disponibile per questo confronto.</div>'; renderNextFixtures(home,away); renderIdeaBox('matchIdeas',home,away); return; }
     $('#comparison').innerHTML=groups.map(g=>{
       const rows=g.metrics.map(([key,label,kind,dir])=>{
@@ -155,7 +162,7 @@
     const host=$(`#${hostId}`); if(!host || !home || !away) return;
     const rows=matchIdeas(home,away).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     host.innerHTML=`<section class="ideas-card card">
-      <div class="ideas-head compact"><div><div class="kicker">PRONOSTICO</div><h3>Possibile puntata</h3></div><span class="idea-count">${rows.length} ${rows.length===1?'idea':'idee'}</span></div>
+      <div class="ideas-head compact"><div><div class="kicker">PRONOSTICO</div><h3>Possibile puntata</h3></div></div>
       <form class="idea-form idea-form-v9">
         <label>Pronostico<input name="market" required placeholder="Es. Gol, 1X, Over 2,5"></label>
         <label>Quota<input name="odds" type="number" min="1" step="0.01" inputmode="decimal" placeholder="1,75"></label>
@@ -164,7 +171,7 @@
         <button class="primary-action idea-save" type="submit">Salva idea</button>
         <button class="ghost-danger idea-clear" type="button">Elimina tutto</button>
       </form>
-      <div class="idea-list">${rows.length?rows.map(x=>`<article class="idea-row"><div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span></div>${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}<button class="idea-delete" data-id="${esc(x.id)}" type="button" aria-label="Elimina idea">×</button></article>`).join(''):'<div class="idea-empty">Nessuna possibile puntata annotata per questo match.</div>'}</div>
+      ${rows.length?`<div class="idea-list">${rows.map(x=>`<article class="idea-row"><div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span></div>${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}<button class="idea-delete" data-id="${esc(x.id)}" type="button" aria-label="Elimina puntata">×</button></article>`).join('')}</div>`:''}
     </section>`;
     const form=host.querySelector('.idea-form');
     form.addEventListener('submit',e=>{
@@ -175,7 +182,7 @@
     });
     host.querySelector('.idea-clear')?.addEventListener('click',()=>{
       const ids=new Set(matchIdeas(home,away).map(x=>String(x.id))); if(!ids.size) return;
-      if(confirm(`Eliminare tutte le idee salvate per ${home} – ${away}?`)){
+      if(confirm(`Eliminare tutte le puntate salvate per ${home} – ${away}?`)){
         saveIdeas(loadIdeas().filter(x=>!ids.has(String(x.id)))); saveSlip(loadSlip().filter(id=>!ids.has(String(id)))); refreshIdeaViews();
       }
     });

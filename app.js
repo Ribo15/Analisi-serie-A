@@ -19,21 +19,18 @@
   const clean = s => (s || '').replace(/SegnaCasa\s*/i,'').replace(/SegnaTrasferta\s*/i,'').replace(/Multigoal\s*/i,'').replace(/totale\s*/i,'').replace(/Casa\s*/i,'').replace(/Trasferta\s*/i,'').trim();
   const groups = [
     {title:'Risultati', metrics:[
-      ['winPct','Vittorie','pct','high'],['drawPct','Pareggi','pct','neutral'],['lossPct','Sconfitte','pct','low'],['possession','Possesso medio','pct','neutral']
+      ['winPct','% Vittorie','pct','high'],['drawPct','% Pareggi','pct','neutral'],['lossPct','% Sconfitte','pct','low'],['possession','Possesso medio','pct','neutral']
     ]},
     {title:'Gol', metrics:[
-      ['gf','Gol fatti / partita','n2','high'],['ga','Gol subiti / partita','n2','low'],['cleanSheet','Clean sheet','pct','high'],['scored1','Segna almeno 1 gol','pct','high'],['scored2','Segna almeno 2 gol','pct','high']
+      ['gf','Gol fatti per partita','n2','high'],['ga','Gol subiti per partita','n2','low'],['cleanSheet','% Clean sheet','pct','high']
     ]},
     {title:'Tiri', metrics:[
-      ['shots','Tiri / partita','n1','neutral'],['shotsAgainst','Tiri subiti / partita','n1','low'],
-      ['sot','Tiri in porta / partita','n1','high'],['sotAgainst','Tiri in porta subiti','n1','low'],
-      ['conversion','Conversione tiri → gol','pct','high'],['sotShare','Quota tiri in porta','pct','high']
+      ['shots','Tiri per partita','n1','high'],['shotsAgainst','Tiri subiti per partita','n1','low'],
+      ['sot','Tiri in porta per partita','n1','high'],['sotAgainst','Tiri in porta subiti per partita','n1','low'],
+      ['conversion','Conversione tiri → gol','pct','high']
     ]},
     {title:'Angoli', metrics:[
-      ['corners','Angoli / partita','n1','neutral'],['cornersAgainst','Angoli concessi','n1','low']
-    ]},
-    {title:'Disciplina', metrics:[
-      ['yellow','Gialli / partita','n2','neutral'],['oppYellow','Gialli avversari','n2','neutral'],['red','Rossi / partita','n2','neutral'],['oppRed','Rossi avversari','n2','neutral']
+      ['corners','Angoli per partita','n1','high'],['cornersAgainst','Angoli concessi per partita','n1','low']
     ]}
   ];
 
@@ -72,7 +69,19 @@
   }
   if($('#snapshot')) $('#snapshot').textContent=`Snapshot Excel • dati fino alla giornata ${D.lastRound}`;
 
-  function metaLine(team){ const m=D.meta[team]; return `<strong>${m.position}°</strong> • ${m.points} pt • ${m.played} giocate • livello ${m.level}`; }
+  function pointsAtPosition(pos){ const row=Object.values(D.meta||{}).find(x=>+x.position===+pos); return row?+row.points||0:0; }
+  function targetLine(team){
+    const m=D.meta[team], pos=+m.position, pts=+m.points||0;
+    let label=''; let diff=0;
+    if(pos===1){ label='1° posto'; diff=0; }
+    else if(pos<=4){ label='1° posto'; diff=Math.max(0,pointsAtPosition(1)-pts); }
+    else if(pos===5){ label='Champions League'; diff=Math.max(0,pointsAtPosition(4)-pts); }
+    else if(pos===6){ label='Europa League'; diff=Math.max(0,pointsAtPosition(5)-pts); }
+    else if(pos>=18){ label='zona salvezza'; diff=Math.max(0,pointsAtPosition(17)-pts); }
+    else { label='Conference League'; diff=Math.max(0,pointsAtPosition(6)-pts); }
+    return diff===0 ? `<strong>${pos}°</strong> • ${label}` : `<strong>${pos}°</strong> • -${diff} pt da ${label}`;
+  }
+  function metaLine(team){ return targetLine(team); }
   function selectedMatchRound(home,away){
     const fixture=(D.calendar||[]).find(x=>x.home===home && x.away===away && +x.round>(+D.lastRound||0));
     return fixture ? +fixture.round : (+D.lastRound||0);
@@ -80,34 +89,35 @@
   function nextFixture(team,afterRound){
     const cal=(D.calendar||[]).filter(x=>+x.round>afterRound && (x.home===team || x.away===team)).sort((a,b)=>+a.round-+b.round || String(a.date||'').localeCompare(String(b.date||'')));
     const f=cal[0]; if(!f) return null;
-    return {round:+f.round,date:f.date||'',opponent:f.home===team?f.away:f.home,venue:f.home===team?'Casa':'Trasferta'};
+    return {round:+f.round,date:f.date||'',home:f.home,away:f.away};
   }
+  function shortDate(v){ return v?new Date(v+'T12:00:00').toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'}):'—'; }
   function renderNextFixtures(home,away){
     const host=$('#nextFixtures'); if(!host) return;
     const afterRound=selectedMatchRound(home,away);
-    const H=nextFixture(home,afterRound), A=nextFixture(away,afterRound);
-    const round=H?.round || A?.round || null;
-    const card=(team,f)=>f?`<div class="next-team"><span>${esc(team)}</span><strong>${f.venue==='Casa'?'vs':'@'} ${esc(f.opponent)}</strong><small>${f.venue}${f.date?` • ${new Date(f.date+'T12:00:00').toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})}`:''}</small></div>`:`<div class="next-team"><span>${esc(team)}</span><strong>—</strong><small>Calendario non disponibile</small></div>`;
-    host.innerHTML=`<div class="next-fixtures-head"><div><div class="kicker">PROSSIMA GIORNATA</div><h3>${round?`Giornata ${round}`:'Prossimo turno'}</h3></div></div><div class="next-fixtures-grid">${card(home,H)}${card(away,A)}</div>`;
+    const fixtures=[nextFixture(home,afterRound),nextFixture(away,afterRound)].filter(Boolean);
+    const round=fixtures[0]?.round || null;
+    const row=f=>`<div class="next-fixture-row"><div class="next-fixture-team home">${logoImg(f.home)}<strong>${esc(f.home)}</strong></div><div class="next-fixture-date">${shortDate(f.date)}</div><div class="next-fixture-team away"><strong>${esc(f.away)}</strong>${logoImg(f.away)}</div></div>`;
+    host.innerHTML=`<div class="next-fixtures-title"><strong>Prossima giornata</strong>${round?`<span>Giornata ${round}</span>`:''}</div><div class="next-fixture-lines">${fixtures.map(row).join('')||'<div class="idea-empty">Calendario non disponibile.</div>'}</div>`;
   }
   function renderMatch(){
     let home=homeSel.value, away=awaySel.value;
     if(home===away){ away=teams.find(t=>t!==home); awaySel.value=away; }
     $('#homeMeta').innerHTML=metaLine(home); $('#awayMeta').innerHTML=metaLine(away);
-    if($('#stickyHomeName')) $('#stickyHomeName').textContent=home;
-    if($('#stickyAwayName')) $('#stickyAwayName').textContent=away;
-    renderNextFixtures(home,away);
+    const hLogo=teamLogo(home), aLogo=teamLogo(away);
+    const setLogo=(id,src)=>{ const el=$(id); if(!el) return; el.src=src||''; el.style.display=src?'block':'none'; };
+    setLogo('#homeLogo',hLogo); setLogo('#awayLogo',aLogo); setLogo('#contextHomeLogo',hLogo); setLogo('#contextAwayLogo',aLogo);
     const H=getData(home,away,true), A=getData(away,home,false);
     const labels={
       general:['Dati generali','Tutte le partite giocate nello snapshot.'],
       last5:[H.games===A.games?`Dati ultime ${H.games} gare`:'Dati ultime gare disponibili',`${home}: ultime ${H.games} gare • ${away}: ultime ${A.games} gare`],
-      venue5:['Casa / Fuori',`<span class="context-line"><strong>${home}</strong> – Dati ultime ${H.games} gare giocate in casa</span><span class="context-line"><strong>${away}</strong> – Dati ultime ${A.games} gare giocate in trasferta</span>`],
-      level:['Livello avversario',`<span class="context-line">Dati <strong>${home}</strong> contro squadre con livello di forza simile a <strong>${away}</strong></span><span class="context-line">Dati <strong>${away}</strong> contro squadre con livello di forza simile a <strong>${home}</strong></span>`]
+      venue5:['Casa / Fuori',`${home}: ultime ${H.games} in casa • ${away}: ultime ${A.games} in trasferta`],
+      level:['Livello avversario',`${home} vs squadre simili a ${away} • ${away} vs squadre simili a ${home}`]
     };
-    $('#contextTitle').textContent=labels[view][0]; $('#contextNote').innerHTML=labels[view][1];
-    $('#sampleInfo').textContent=`${home} ${H.games} • ${away} ${A.games}`;
-    renderIdeaBox('matchIdeas',home,away);
-    if(!H.games && !A.games){ $('#comparison').innerHTML='<div class="empty">Nessun dato disponibile per questo confronto.</div>'; return; }
+    $('#contextTitle').textContent=labels[view][0]; $('#contextNote').textContent=labels[view][1];
+    $('#contextHomeName').textContent=home; $('#contextAwayName').textContent=away;
+    $('#contextHomeGames').textContent=`${H.games} ${H.games===1?'gara':'gare'}`; $('#contextAwayGames').textContent=`${A.games} ${A.games===1?'gara':'gare'}`;
+    if(!H.games && !A.games){ $('#comparison').innerHTML='<div class="empty">Nessun dato disponibile per questo confronto.</div>'; renderNextFixtures(home,away); renderIdeaBox('matchIdeas',home,away); return; }
     $('#comparison').innerHTML=groups.map(g=>{
       const rows=g.metrics.map(([key,label,kind,dir])=>{
         const hv=H.games?H[key]:null, av=A.games?A[key]:null, [hb,ab]=isBetter(hv,av,dir);
@@ -115,6 +125,8 @@
       }).join('');
       return `<div class="metric-group"><div class="group-title">${g.title}</div><div class="metric-list">${rows}</div></div>`;
     }).join('');
+    renderNextFixtures(home,away);
+    renderIdeaBox('matchIdeas',home,away);
   }
 
   const IDEAS_KEY='serieADataLab.ideas.v1';
@@ -143,31 +155,29 @@
     const host=$(`#${hostId}`); if(!host || !home || !away) return;
     const rows=matchIdeas(home,away).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     host.innerHTML=`<section class="ideas-card card">
-      <div class="ideas-head">
-        <div><div class="kicker">APPUNTI OPERATIVI</div><h3>Possibili puntate</h3><p>${esc(home)} vs ${esc(away)} · le annotazioni sono condivise tra Dati Match e Pronostici.</p></div>
-        <span class="idea-count">${rows.length} ${rows.length===1?'idea':'idee'}</span>
-      </div>
-      <form class="idea-form">
-        <label>Pronostico / mercato<input name="market" required placeholder="Es. Gol, 1X, Over 2,5"></label>
+      <div class="ideas-head compact"><div><div class="kicker">PRONOSTICO</div><h3>Possibile puntata</h3></div><span class="idea-count">${rows.length} ${rows.length===1?'idea':'idee'}</span></div>
+      <form class="idea-form idea-form-v9">
+        <label>Pronostico<input name="market" required placeholder="Es. Gol, 1X, Over 2,5"></label>
         <label>Quota<input name="odds" type="number" min="1" step="0.01" inputmode="decimal" placeholder="1,75"></label>
         <label>Fiducia<select name="confidence"><option value="high">Alta</option><option value="medium" selected>Media</option><option value="low">Bassa</option></select></label>
-        <label>Stato<select name="status"><option value="evaluate">Da valutare</option><option value="interesting">Interessante</option><option value="discarded">Scartata</option></select></label>
-        <label class="idea-note">Nota<input name="note" placeholder="Perché potrebbe essere interessante"></label>
+        <label class="idea-note">Nota<input name="note" placeholder="Aggiungi una nota"></label>
         <button class="primary-action idea-save" type="submit">Salva idea</button>
+        <button class="ghost-danger idea-clear" type="button">Elimina tutto</button>
       </form>
-      <div class="idea-list">${rows.length?rows.map(x=>`<article class="idea-row ${esc(x.status)}">
-        <div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span><span class="idea-status ${esc(x.status)}">${ideaStatusLabel(x.status)}</span></div>
-        ${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}
-        <button class="idea-delete" data-id="${esc(x.id)}" type="button" aria-label="Elimina idea">×</button>
-      </article>`).join(''):'<div class="idea-empty">Nessuna possibile puntata annotata per questo match.</div>'}</div>
-      <div class="idea-local-note">Per ora queste annotazioni restano salvate sul browser. Più avanti verranno sincronizzate nel database.</div>
+      <div class="idea-list">${rows.length?rows.map(x=>`<article class="idea-row"><div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span></div>${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}<button class="idea-delete" data-id="${esc(x.id)}" type="button" aria-label="Elimina idea">×</button></article>`).join(''):'<div class="idea-empty">Nessuna possibile puntata annotata per questo match.</div>'}</div>
     </section>`;
     const form=host.querySelector('.idea-form');
     form.addEventListener('submit',e=>{
       e.preventDefault();
       const fd=new FormData(form), market=String(fd.get('market')||'').trim(); if(!market) return;
-      const all=loadIdeas(); all.push({id:String(Date.now())+Math.random().toString(16).slice(2),home,away,market,odds:Number(fd.get('odds')||0)||null,confidence:String(fd.get('confidence')||'medium'),status:String(fd.get('status')||'evaluate'),note:String(fd.get('note')||'').trim(),createdAt:Date.now()});
+      const all=loadIdeas(); all.push({id:String(Date.now())+Math.random().toString(16).slice(2),home,away,market,odds:Number(fd.get('odds')||0)||null,confidence:String(fd.get('confidence')||'medium'),status:'evaluate',note:String(fd.get('note')||'').trim(),createdAt:Date.now()});
       saveIdeas(all); refreshIdeaViews();
+    });
+    host.querySelector('.idea-clear')?.addEventListener('click',()=>{
+      const ids=new Set(matchIdeas(home,away).map(x=>String(x.id))); if(!ids.size) return;
+      if(confirm(`Eliminare tutte le idee salvate per ${home} – ${away}?`)){
+        saveIdeas(loadIdeas().filter(x=>!ids.has(String(x.id)))); saveSlip(loadSlip().filter(id=>!ids.has(String(id)))); refreshIdeaViews();
+      }
     });
     host.querySelectorAll('.idea-delete').forEach(b=>b.addEventListener('click',()=>{ removeIdeaEverywhere(b.dataset.id); refreshIdeaViews(); }));
   }

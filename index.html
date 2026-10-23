@@ -25,44 +25,37 @@
 
   <main class="wrap main-content">
     <section id="page-match" class="page">
-      <section class="match-picker card">
+      <section class="match-picker match-picker-v9 card">
         <div class="team-picker home-picker">
           <span class="side-label">CASA</span>
-          <select id="homeTeam" aria-label="Squadra casa"></select>
+          <div class="team-select-line"><img id="homeLogo" class="picker-logo" alt=""><select id="homeTeam" aria-label="Squadra casa"></select></div>
           <div id="homeMeta" class="team-meta"></div>
         </div>
-        <div class="vs">VS</div>
         <div class="team-picker away-picker">
           <span class="side-label">TRASFERTA</span>
-          <select id="awayTeam" aria-label="Squadra trasferta"></select>
+          <div class="team-select-line"><img id="awayLogo" class="picker-logo" alt=""><select id="awayTeam" aria-label="Squadra trasferta"></select></div>
           <div id="awayMeta" class="team-meta"></div>
         </div>
       </section>
 
-      <section id="matchSticky" class="match-sticky" aria-label="Riepilogo match selezionato">
-        <div class="sticky-side sticky-home"><span>CASA</span><strong id="stickyHomeName"></strong></div>
-        <div class="sticky-vs">VS</div>
-        <div class="sticky-side sticky-away"><span>TRASFERTA</span><strong id="stickyAwayName"></strong></div>
-      </section>
-
-      <section id="nextFixtures" class="next-fixtures card"></section>
-
-      <nav class="tabs" aria-label="Sezioni confronto">
+      <nav class="tabs match-tabs" aria-label="Sezioni confronto">
         <button class="tab active" data-view="general">Dati generali</button>
         <button class="tab" data-view="last5">Dati ultime gare</button>
         <button class="tab" data-view="venue5">Casa / Fuori</button>
         <button class="tab" data-view="level">Livello avversario</button>
       </nav>
 
-      <section class="context card">
-        <div>
-          <div class="context-title" id="contextTitle"></div>
-          <div class="context-note" id="contextNote"></div>
+      <details class="filter-details card" id="filterDetails">
+        <summary>Dettagli filtro</summary>
+        <div class="filter-detail-grid">
+          <div class="filter-team filter-home"><img id="contextHomeLogo" class="filter-logo" alt=""><div><strong id="contextHomeName"></strong><span id="contextHomeGames"></span></div></div>
+          <div class="filter-center"><strong id="contextTitle"></strong><span id="contextNote"></span></div>
+          <div class="filter-team filter-away"><img id="contextAwayLogo" class="filter-logo" alt=""><div><strong id="contextAwayName"></strong><span id="contextAwayGames"></span></div></div>
         </div>
-        <div class="sample"><span>Campione</span><strong id="sampleInfo"></strong></div>
-      </section>
+      </details>
 
       <section id="comparison"></section>
+      <section id="nextFixtures" class="next-fixtures card"></section>
       <section id="matchIdeas" class="idea-host"></section>
     </section>
 

@@ -4,18 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#08111f">
-  <title>Serie A DataLab</title>
+  <title>L'Analista</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="site-header">
-    <div class="wrap header-inner">
-      <div>
-        <div class="eyebrow">SERIE A • DATA LAB</div>
-        <h1>Serie A DataLab</h1>
-        <p>Analisi match, pronostici, calendario, possibili puntate e andamento scommesse.</p>
-      </div>
-      <div id="snapshot" class="snapshot"></div>
+    <div class="wrap header-inner simple-brand">
+      <h1>L'Analista</h1>
     </div>
   </header>
 
@@ -44,6 +39,12 @@
           <select id="awayTeam" aria-label="Squadra trasferta"></select>
           <div id="awayMeta" class="team-meta"></div>
         </div>
+      </section>
+
+      <section id="matchSticky" class="match-sticky" aria-label="Riepilogo match selezionato">
+        <div class="sticky-side sticky-home"><span>CASA</span><strong id="stickyHomeName"></strong></div>
+        <div class="sticky-vs">VS</div>
+        <div class="sticky-side sticky-away"><span>TRASFERTA</span><strong id="stickyAwayName"></strong></div>
       </section>
 
       <section id="nextFixtures" class="next-fixtures card"></section>
@@ -120,6 +121,7 @@
       </section>
 
       <section id="slipOverview"></section>
+      <section id="playedSlipsOverview"></section>
       <section id="ideasOverview"></section>
     </section>
 
@@ -179,7 +181,7 @@
         <article class="wallet-data-card card"><span>Totale giocato</span><strong id="walletStaked">€ 0,00</strong></article>
         <article class="wallet-data-card card"><span>Totale vinto</span><strong id="walletWon">€ 0,00</strong></article>
         <article class="wallet-data-card card"><span>Totale perso</span><strong id="walletLost">€ 0,00</strong></article>
-        <article class="wallet-data-card wallet-credit card"><span>Credito da giocare</span><strong id="walletBalance">€ 0,00</strong></article>
+        <article class="wallet-data-card wallet-credit card"><span>Saldo SNAI</span><strong id="walletBalance">€ 0,00</strong></article>
         <article class="wallet-data-card card"><span>Totale ritirato</span><strong id="walletWithdrawn">€ 0,00</strong></article>
       </section>
 

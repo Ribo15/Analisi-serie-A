@@ -70,7 +70,7 @@
     const fp=(D.predictions||[])[0];
     predHomeSel.value=fp?.home || homeSel.value; predAwaySel.value=fp?.away || awaySel.value;
   }
-  $('#snapshot').textContent=`Snapshot Excel • dati fino alla giornata ${D.lastRound}`;
+  if($('#snapshot')) $('#snapshot').textContent=`Snapshot Excel • dati fino alla giornata ${D.lastRound}`;
 
   function metaLine(team){ const m=D.meta[team]; return `<strong>${m.position}°</strong> • ${m.points} pt • ${m.played} giocate • livello ${m.level}`; }
   function selectedMatchRound(home,away){
@@ -94,6 +94,8 @@
     let home=homeSel.value, away=awaySel.value;
     if(home===away){ away=teams.find(t=>t!==home); awaySel.value=away; }
     $('#homeMeta').innerHTML=metaLine(home); $('#awayMeta').innerHTML=metaLine(away);
+    if($('#stickyHomeName')) $('#stickyHomeName').textContent=home;
+    if($('#stickyAwayName')) $('#stickyAwayName').textContent=away;
     renderNextFixtures(home,away);
     const H=getData(home,away,true), A=getData(away,home,false);
     const labels={
@@ -170,6 +172,72 @@
     host.querySelectorAll('.idea-delete').forEach(b=>b.addEventListener('click',()=>{ removeIdeaEverywhere(b.dataset.id); refreshIdeaViews(); }));
   }
 
+  function predictionFor(home,away){ return (D.predictions||[]).find(p=>p.home===home && p.away===away) || null; }
+  function normalizeMarket(v){ return String(v||'').trim().toUpperCase().replace(/\s+/g,' '); }
+  function ideaBand(x){
+    const p=predictionFor(x.home,x.away); if(!p) return null;
+    const m=normalizeMarket(x.market);
+    if(m.includes('POISSON')) return p.poissonBand ? {label:p.poissonBand,type:'poisson'} : null;
+    const outcome=normalizeMarket(p.oneXtwo);
+    if(m===outcome || m==='1X2 '+outcome || m==='1X2' || ['1','X','2'].includes(m)) return p.band ? {label:p.band,type:'model'} : null;
+    return null;
+  }
+  function bandClass(v){ return `band-${String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'')}`; }
+  function bandBadge(v,prefix='Fascia'){
+    if(!v) return '';
+    return `<span class="band-badge ${bandClass(v)}">${prefix} ${esc(v)}</span>`;
+  }
+  function csvCell(v){ const t=String(v??''); return `"${t.replace(/"/g,'""')}"`; }
+  function downloadCsv(filename,rows){
+    const csv='\ufeff'+rows.map(r=>r.map(csvCell).join(';')).join('\n');
+    const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob);
+    const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }
+  function downloadIdeas(){
+    const all=loadIdeas().slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    const rows=[['Giornata','Match','Pronostico','Quota','Fiducia','Stato','Fascia 1X2']];
+    all.forEach(x=>{const b=ideaBand(x);rows.push([ideaRound(x)||'',`${x.home} - ${x.away}`,x.market,x.odds||'',ideaConfidenceLabel(x.confidence),ideaStatusLabel(x.status),b?.label||'']);});
+    downloadCsv('puntate-pensate.csv',rows);
+  }
+  function downloadSlip(){
+    const all=loadIdeas(), ids=loadSlip(), slip=ids.map(id=>all.find(x=>String(x.id)===String(id))).filter(Boolean);
+    const rows=[['Giornata','Match','Pronostico','Quota','Fascia 1X2']];
+    slip.forEach(x=>{const b=ideaBand(x);rows.push([ideaRound(x)||'',`${x.home} - ${x.away}`,x.market,x.odds||'',b?.label||'']);});
+    downloadCsv('schedina-in-preparazione.csv',rows);
+  }
+  function slipRound(slip){ const rs=[...new Set(slip.map(ideaRound).filter(Boolean))]; return rs.length===1?rs[0]:null; }
+  function playedSlipRows(){ return loadWallet().filter(x=>x.type==='bet' && x.source==='slip').slice().sort((a,b)=>(b.date||'').localeCompare(a.date||'') || (+b.id||0)-(+a.id||0)); }
+  function renderPlayedSlips(){
+    const host=$('#playedSlipsOverview'); if(!host) return;
+    const rows=playedSlipRows();
+    host.innerHTML=`<section class="played-slips-card card"><div class="ideas-page-head"><div><div class="kicker">SCHEDINE GIOCATE</div><h3>${rows.length?`${rows.length} registrate`:'Nessuna'}</h3></div></div><div class="played-slip-list">${rows.length?rows.slice(0,8).map(x=>`<article class="played-slip-row"><div><strong>${x.round?`G${x.round} • `:''}${esc(x.description||'Schedina')}</strong><span>${x.selections?.length||0} selezioni${x.combinedOdds?` • quota ${Number(x.combinedOdds).toFixed(2).replace('.',',')}`:''}${x.potentialPayout?` • potenziale ${euro(x.potentialPayout)}`:''}</span></div><div class="played-slip-status"><strong>${euro(x.amount)}</strong><span class="bet-status ${esc(x.status||'open')}">${walletStatusLabel(x.status||'open')}</span>${x.status==='open'?`<div class="played-slip-actions"><button data-slip-result="won" data-id="${x.id}">Vinta</button><button data-slip-result="lost" data-id="${x.id}">Persa</button></div>`:''}</div></article>`).join(''):'<div class="idea-empty">Le schedine registrate con “Gioca schedina” compariranno qui.</div>'}</div></section>`;
+    host.querySelectorAll('[data-slip-result]').forEach(b=>b.addEventListener('click',()=>{
+      const id=Number(b.dataset.id), result=b.dataset.slipResult, wallet=loadWallet(), row=wallet.find(x=>+x.id===id); if(!row) return;
+      if(result==='lost'){
+        if(!confirm('Segnare questa schedina come persa?')) return;
+        row.status='lost'; row.payout=0;
+      } else {
+        const suggested=Number(row.potentialPayout||0); const raw=prompt('Totale accreditato dalla schedina vinta?',suggested?suggested.toFixed(2):''); if(raw===null) return;
+        const payout=Number(String(raw).replace(',','.')); if(!(payout>=0)) return alert('Importo non valido.');
+        row.status='won'; row.payout=payout;
+      }
+      saveWallet(wallet); renderWallet(); renderIdeasPage();
+    }));
+  }
+
+  function playCurrentSlip(){
+    const all=loadIdeas(), ids=loadSlip(), slip=ids.map(id=>all.find(x=>String(x.id)===String(id))).filter(Boolean);
+    if(!slip.length) return alert('La schedina è vuota.');
+    const stake=Number($('#slipStake')?.value||0); if(!(stake>0)) return alert('Inserisci l’importo da giocare.');
+    const rows=loadWallet(), stats=walletStats(rows); if(stake>stats.balance+1e-9) return alert(`Saldo SNAI insufficiente: ${euro(stats.balance)}.`);
+    const odds=slip.map(x=>+x.odds||0), combined=odds.length&&odds.every(v=>v>=1)?odds.reduce((a,b)=>a*b,1):null;
+    const potential=combined?stake*combined:null; const round=slipRound(slip);
+    const msg=`Registrare questa schedina come giocata per ${euro(stake)}${combined?` a quota ${combined.toFixed(2).replace('.',',')}`:''}?`;
+    if(!confirm(msg)) return;
+    rows.push({id:Date.now(),round,date:new Date().toISOString().slice(0,10),type:'bet',description:`Schedina ${slip.length} selezioni`,amount:stake,status:'open',payout:0,source:'slip',combinedOdds:combined,potentialPayout:potential,selections:slip.map(x=>({id:x.id,home:x.home,away:x.away,market:x.market,odds:x.odds||null,band:ideaBand(x)?.label||null}))});
+    saveWallet(rows); saveSlip([]); renderIdeasPage(); renderWallet(); alert('Schedina registrata. Il saldo SNAI è stato aggiornato.');
+  }
+
   function ideaRound(x){
     const m=(D.calendar||[]).find(g=>g.home===x.home && g.away===x.away);
     return m?.round || null;
@@ -178,20 +246,23 @@
     const allHost=$('#ideasOverview'), slipHost=$('#slipOverview'); if(!allHost || !slipHost) return;
     const all=loadIdeas().slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     const validIds=new Set(all.map(x=>String(x.id)));
-    let slipIds=loadSlip().filter(id=>validIds.has(String(id)));
-    saveSlip(slipIds);
-    const slipSet=new Set(slipIds);
-    const slip=slipIds.map(id=>all.find(x=>String(x.id)===String(id))).filter(Boolean);
-    const odds=slip.map(x=>+x.odds||0);
-    const combined=slip.length && odds.every(v=>v>=1) ? odds.reduce((a,b)=>a*b,1) : null;
-    slipHost.innerHTML=`<section class="slip-card card"><div class="ideas-page-head"><div><div class="kicker">SCHEDINA IN PREPARAZIONE</div><h3>${slip.length?`${slip.length} ${slip.length===1?'selezione':'selezioni'}`:'Vuota'}</h3><p>Qui raccogli le idee che vuoi valutare insieme. Non modifica ancora il portafoglio.</p></div>${combined?`<div class="slip-odds"><span>Quota combinata</span><strong>${combined.toFixed(2).replace('.',',')}</strong></div>`:''}</div><div class="slip-list">${slip.length?slip.map(x=>`<article class="slip-row"><div><strong>${esc(x.home)} – ${esc(x.away)}</strong><span>${esc(x.market)}${x.odds?` @ ${Number(x.odds).toFixed(2).replace('.',',')}`:''}</span></div><button class="slip-remove" data-id="${esc(x.id)}" type="button">Rimuovi</button></article>`).join(''):'<div class="idea-empty">Nessuna puntata inserita nella schedina.</div>'}</div></section>`;
-    allHost.innerHTML=`<section class="all-ideas-card card"><div class="ideas-page-head"><div><div class="kicker">TUTTE LE IDEE</div><h3>Puntate pensate</h3><p>${all.length} ${all.length===1?'annotazione':'annotazioni'} salvate da Dati Match e Pronostici.</p></div><button id="clearAllIdeas" class="ghost-danger" type="button" ${all.length?'':'disabled'}>Cancella tutto</button></div><div class="all-ideas-list">${all.length?all.map(x=>{const r=ideaRound(x);return `<article class="all-idea-row ${esc(x.status)}"><div class="all-idea-top"><div><span class="idea-match">${r?`G${r} • `:''}${esc(x.home)} – ${esc(x.away)}</span><div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span><span class="idea-status ${esc(x.status)}">${ideaStatusLabel(x.status)}</span></div>${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}</div></div><div class="idea-page-actions"><button data-idea-action="slip" data-id="${esc(x.id)}" ${slipSet.has(String(x.id))?'disabled':''}>${slipSet.has(String(x.id))?'In schedina':'Porta in schedina'}</button><button data-idea-action="match" data-home="${esc(x.home)}" data-away="${esc(x.away)}">Dati Match</button><button data-idea-action="pred" data-home="${esc(x.home)}" data-away="${esc(x.away)}">Pronostici</button><button class="idea-page-delete" data-idea-action="delete" data-id="${esc(x.id)}">Elimina</button></div></article>`}).join(''):'<div class="idea-empty">Non hai ancora annotato possibili puntate.</div>'}</div><div class="idea-local-note">Per ora puntate e schedina restano salvate sul browser del dispositivo.</div></section>`;
+    let slipIds=loadSlip().filter(id=>validIds.has(String(id))); saveSlip(slipIds);
+    const slipSet=new Set(slipIds), slip=slipIds.map(id=>all.find(x=>String(x.id)===String(id))).filter(Boolean);
+    const odds=slip.map(x=>+x.odds||0), combined=slip.length&&odds.every(v=>v>=1)?odds.reduce((a,b)=>a*b,1):null;
+    const balance=walletStats(loadWallet()).balance;
+    slipHost.innerHTML=`<section class="slip-card card"><div class="ideas-page-head"><div><div class="kicker">SCHEDINA IN PREPARAZIONE</div><h3>${slip.length?`${slip.length} ${slip.length===1?'selezione':'selezioni'}`:'Vuota'}</h3></div><div class="slip-top-actions"><button id="downloadSlip" class="secondary-action" type="button" ${slip.length?'':'disabled'}>Scarica schedina</button>${combined?`<div class="slip-odds"><span>Quota combinata</span><strong>${combined.toFixed(2).replace('.',',')}</strong></div>`:''}</div></div><div class="slip-list">${slip.length?slip.map(x=>{const b=ideaBand(x);return `<article class="slip-row"><div><strong>${esc(x.home)} – ${esc(x.away)}</strong><span>${esc(x.market)}${x.odds?` @ ${Number(x.odds).toFixed(2).replace('.',',')}`:''}${b?` ${bandBadge(b.label)}`:''}</span></div><button class="slip-remove" data-id="${esc(x.id)}" type="button">Rimuovi</button></article>`}).join(''):'<div class="idea-empty">Nessuna puntata inserita nella schedina.</div>'}</div>${slip.length?`<div class="slip-play-box"><div class="slip-balance"><span>Saldo SNAI</span><strong>${euro(balance)}</strong></div><label>Puntata €<input id="slipStake" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="10,00"></label><div class="slip-potential"><span>Vincita potenziale</span><strong id="slipPotential">${combined?'€ 0,00':'—'}</strong></div><button id="playSlip" class="primary-action" type="button">Gioca schedina</button></div>`:''}</section>`;
+    allHost.innerHTML=`<section class="all-ideas-card card"><div class="ideas-page-head"><div><div class="kicker">TUTTE LE IDEE</div><h3>Puntate pensate</h3><p>${all.length} ${all.length===1?'annotazione':'annotazioni'} salvate.</p></div><div class="ideas-head-actions"><button id="downloadIdeas" class="secondary-action" type="button" ${all.length?'':'disabled'}>Scarica lista</button><button id="clearAllIdeas" class="ghost-danger" type="button" ${all.length?'':'disabled'}>Cancella tutto</button></div></div><div class="all-ideas-list">${all.length?all.map(x=>{const r=ideaRound(x),b=ideaBand(x);return `<article class="all-idea-row ${esc(x.status)}"><div class="all-idea-top"><div><span class="idea-match">${r?`G${r} • `:''}${esc(x.home)} – ${esc(x.away)}</span><div class="idea-main"><strong>${esc(x.market)}</strong>${x.odds?`<span class="idea-odds">@ ${Number(x.odds).toFixed(2).replace('.',',')}</span>`:''}${b?bandBadge(b.label):''}<span class="idea-trust ${esc(x.confidence)}">Fiducia ${ideaConfidenceLabel(x.confidence)}</span><span class="idea-status ${esc(x.status)}">${ideaStatusLabel(x.status)}</span></div>${x.note?`<div class="idea-text">${esc(x.note)}</div>`:''}</div></div><div class="idea-page-actions"><button data-idea-action="slip" data-id="${esc(x.id)}" ${slipSet.has(String(x.id))?'disabled':''}>${slipSet.has(String(x.id))?'In schedina':'Porta in schedina'}</button><button data-idea-action="match" data-home="${esc(x.home)}" data-away="${esc(x.away)}">Dati Match</button><button data-idea-action="pred" data-home="${esc(x.home)}" data-away="${esc(x.away)}">Pronostici</button><button class="idea-page-delete" data-idea-action="delete" data-id="${esc(x.id)}">Elimina</button></div></article>`}).join(''):'<div class="idea-empty">Non hai ancora annotato possibili puntate.</div>'}</div></section>`;
     slipHost.querySelectorAll('.slip-remove').forEach(b=>b.addEventListener('click',()=>{saveSlip(loadSlip().filter(id=>id!==String(b.dataset.id)));renderIdeasPage();}));
+    slipHost.querySelector('#downloadSlip')?.addEventListener('click',downloadSlip);
+    slipHost.querySelector('#playSlip')?.addEventListener('click',playCurrentSlip);
+    const stakeInput=slipHost.querySelector('#slipStake'); if(stakeInput && combined){ stakeInput.addEventListener('input',()=>{const v=Number(stakeInput.value||0); const out=slipHost.querySelector('#slipPotential'); if(out) out.textContent=v>0?euro(v*combined):euro(0);}); }
+    allHost.querySelector('#downloadIdeas')?.addEventListener('click',downloadIdeas);
     allHost.querySelector('#clearAllIdeas')?.addEventListener('click',()=>{if(confirm('Vuoi cancellare tutte le puntate pensate?')){saveIdeas([]);saveSlip([]);refreshIdeaViews();}});
     allHost.querySelectorAll('[data-idea-action="slip"]').forEach(b=>b.addEventListener('click',()=>{const ids=loadSlip();if(!ids.includes(String(b.dataset.id)))ids.push(String(b.dataset.id));saveSlip(ids);renderIdeasPage();renderCalendar();}));
     allHost.querySelectorAll('[data-idea-action="delete"]').forEach(b=>b.addEventListener('click',()=>{removeIdeaEverywhere(b.dataset.id);refreshIdeaViews();}));
     allHost.querySelectorAll('[data-idea-action="match"]').forEach(b=>b.addEventListener('click',()=>{homeSel.value=b.dataset.home;awaySel.value=b.dataset.away;renderMatch();showPage('match');window.scrollTo({top:0,behavior:'smooth'});}));
     allHost.querySelectorAll('[data-idea-action="pred"]').forEach(b=>b.addEventListener('click',()=>{predHomeSel.value=b.dataset.home;predAwaySel.value=b.dataset.away;renderPredictions();showPage('predictions');window.scrollTo({top:0,behavior:'smooth'});}));
+    renderPlayedSlips();
   }
 
   function formatCalendarDate(v){
@@ -217,15 +288,15 @@
     const dates=[...new Set(list.map(x=>x.date||''))];
     grid.innerHTML=dates.map(date=>`<section class="calendar-day"><div class="calendar-day-title">${formatCalendarDate(date)}</div><div class="calendar-match-list">${list.filter(x=>(x.date||'')===date).map(m=>{
       const n=matchIdeas(m.home,m.away).length, hasPred=(D.predictions||[]).some(p=>p.home===m.home&&p.away===m.away);
-      return `<article class="calendar-match card"><div class="calendar-teams"><strong>${esc(m.home)}</strong><span>vs</span><strong>${esc(m.away)}</strong></div><div class="calendar-badges">${hasPred?'<span class="calendar-badge pred">Pronostico disponibile</span>':''}${n?`<span class="calendar-badge idea">${n} ${n===1?'idea':'idee'}</span>`:''}</div><div class="calendar-actions"><button data-cal-action="match" data-home="${esc(m.home)}" data-away="${esc(m.away)}">Dati Match</button><button data-cal-action="pred" data-home="${esc(m.home)}" data-away="${esc(m.away)}" ${hasPred?'':'disabled'}>Pronostici</button></div></article>`;
+      return `<article class="calendar-match card"><div class="calendar-teams"><strong>${esc(m.home)}</strong><span>vs</span><strong>${esc(m.away)}</strong></div><div class="calendar-badges">${hasPred?'<span class="calendar-badge pred">Pronostico disponibile</span>':''}${n?`<span class="calendar-badge idea">${n} ${n===1?'idea':'idee'}</span>`:''}</div><div class="calendar-actions"><button data-cal-action="match" data-home="${esc(m.home)}" data-away="${esc(m.away)}">Dati Match</button><button data-cal-action="pred" data-home="${esc(m.home)}" data-away="${esc(m.away)}">Pronostici</button></div></article>`;
     }).join('')}</div></section>`).join('') || '<div class="empty">Nessuna partita disponibile.</div>';
     grid.querySelectorAll('[data-cal-action="match"]').forEach(b=>b.addEventListener('click',()=>{homeSel.value=b.dataset.home;awaySel.value=b.dataset.away;renderMatch();showPage('match');window.scrollTo({top:0,behavior:'smooth'});}));
-    grid.querySelectorAll('[data-cal-action="pred"]').forEach(b=>b.addEventListener('click',()=>{if(b.disabled)return;predHomeSel.value=b.dataset.home;predAwaySel.value=b.dataset.away;renderPredictions();showPage('predictions');window.scrollTo({top:0,behavior:'smooth'});}));
+    grid.querySelectorAll('[data-cal-action="pred"]').forEach(b=>b.addEventListener('click',()=>{predHomeSel.value=b.dataset.home;predAwaySel.value=b.dataset.away;renderPredictions();showPage('predictions');window.scrollTo({top:0,behavior:'smooth'});}));
   }
 
   function confClass(v){ return v>=.70?'conf-high':v>=.58?'conf-mid':'conf-low'; }
-  function market(label,value,conf,emph=false){
-    return `<div class="market ${emph?'market-emph':''}"><span class="market-label">${label}</span><strong>${value||'—'}</strong>${conf!=null?`<span class="confidence ${confClass(conf)}">${fmt.pct(conf)}</span>`:''}</div>`;
+  function market(label,value,conf,emph=false,band=null){
+    return `<div class="market ${emph?'market-emph':''}"><span class="market-label">${label}</span><strong>${value||'—'}</strong><div class="market-meta">${conf!=null?`<span class="confidence ${confClass(conf)}">${fmt.pct(conf)}</span>`:''}${band?bandBadge(band):''}</div></div>`;
   }
   function renderPredictions(){
     if(!predHomeSel || !predAwaySel) return;
@@ -243,7 +314,7 @@
     target.innerHTML=`<article class="prediction-card prediction-card-single card">
       <div class="prediction-head"><div><span class="round-tag">GIORNATA ${p.round}</span><h3>${esc(p.home)} <span>vs</span> ${esc(p.away)}</h3></div><button class="compare-btn" id="singleCompare">Confronta dati</button></div>
       <div class="primary-markets">
-        ${market('1X2 modello',p.oneXtwo,p.oneXtwoConf,true)}${market('1X2 Poisson',p.poisson,p.poissonConf,true)}${market('Doppia chance',p.doubleChance,p.doubleChanceConf)}${market('Gol / No Gol',p.btts,p.bttsConf)}${market('U/O 2,5',p.uo25,p.uo25Conf)}${market('Score',score,p.scoreConf)}
+        ${market('1X2 modello',p.oneXtwo,p.oneXtwoConf,true,p.band)}${market('1X2 Poisson',p.poisson,p.poissonConf,true,p.poissonBand)}${market('Doppia chance',p.doubleChance,p.doubleChanceConf)}${market('Gol / No Gol',p.btts,p.bttsConf)}${market('U/O 2,5',p.uo25,p.uo25Conf)}${market('Score',score,p.scoreConf)}
       </div>
       <details><summary>Altri mercati e dati attesi</summary><div class="details-grid">
         ${market('Doppia chance Poisson',p.doubleChancePoisson,p.doubleChancePoissonConf)}${market('U/O 1,5',p.uo15,p.uo15Conf)}${market('U/O 3,5',p.uo35,p.uo35Conf)}${market(`${p.home} segna`,clean(p.scoreHomeYN),p.scoreHomeYNConf)}${market(`${p.away} segna`,clean(p.scoreAwayYN),p.scoreAwayYNConf)}${market('Multigol totale',clean(p.multiTotal),p.multiTotalConf)}${market(`Multigol ${p.home}`,clean(p.multiHome),p.multiHomeConf)}${market(`Multigol ${p.away}`,clean(p.multiAway),p.multiAwayConf)}
@@ -373,8 +444,9 @@
       <td><button class="delete-move" data-id="${x.id}" aria-label="Elimina movimento">×</button></td>
     </tr>`).join('');
     $$('.delete-move').forEach(b=>b.addEventListener('click',()=>{
-      const id=Number(b.dataset.id); saveWallet(loadWallet().filter(x=>+x.id!==id)); renderWallet();
+      const id=Number(b.dataset.id); saveWallet(loadWallet().filter(x=>+x.id!==id)); renderWallet(); renderPlayedSlips();
     }));
+    renderPlayedSlips();
   }
   function syncWalletFields(){
     const isBet=$('#walletType').value==='bet';

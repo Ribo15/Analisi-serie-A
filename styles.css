@@ -310,3 +310,71 @@ body.match-sticky-active #page-match{padding-top:50px;}
   .match-sticky.is-fixed{top:58px!important;width:calc(100vw - 20px)!important;}
   .sticky-logo{width:16px;height:16px;flex-basis:16px;}
 }
+
+
+/* V10.3 — allineamenti finali + sticky iPhone */
+/* Calendario: Giornata sulla stessa verticale della colonna azioni */
+#page-calendar .calendar-page-head{
+  grid-template-columns:minmax(0,1fr) 116px!important;
+  gap:10px!important;
+}
+#page-calendar .round-filter{
+  width:116px!important;
+  justify-self:end!important;
+  margin-right:20px!important;
+  text-align:left!important;
+}
+#page-calendar .round-filter select{
+  width:116px!important;
+  min-width:116px!important;
+}
+
+/* Dati Match: blocco trasferta realmente allineato a destra */
+.match-picker-v9 .away-picker{
+  text-align:right!important;
+}
+.match-picker-v9 .away-picker .side-label{
+  text-align:right!important;
+  padding-right:1px!important;
+}
+.match-picker-v9 .away-picker .team-select-line{
+  grid-template-columns:minmax(0,1fr) 21px!important;
+}
+.match-picker-v9 .away-picker .team-select-line select{
+  order:1!important;
+  text-align:right!important;
+  text-align-last:right!important;
+  padding-left:34px!important;
+  padding-right:14px!important;
+}
+.match-picker-v9 .away-picker .team-select-line .picker-logo{
+  order:2!important;
+  justify-self:end!important;
+}
+.match-picker-v9 .away-picker .team-meta{
+  text-align:right!important;
+}
+
+/* Barra di riferimento: visibile e leggibile durante lo scroll */
+.match-sticky{
+  transition:opacity .14s ease,transform .14s ease!important;
+}
+.match-sticky.is-fixed{
+  position:fixed!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  width:min(1120px,calc(100vw - 20px))!important;
+  margin:0!important;
+  z-index:50!important;
+  background:rgba(247,250,254,.985)!important;
+  box-shadow:0 10px 28px rgba(6,28,58,.18)!important;
+}
+body.match-sticky-active #page-match{
+  padding-top:52px!important;
+}
+
+@media (max-width:760px){
+  #page-calendar .round-filter{margin-right:20px!important;}
+  .match-picker-v9 .away-picker .team-select-line select{padding-left:28px!important;}
+  .match-sticky.is-fixed{width:calc(100vw - 20px)!important;}
+}

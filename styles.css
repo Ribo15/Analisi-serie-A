@@ -247,3 +247,257 @@ footer{display:none!important}
   .calendar-team{gap:5px!important;}
   .calendar-vs{min-width:16px!important;margin:0!important;}
 }
+
+/* =========================================================
+   DATI MATCH — layout approvato (test GitHub)
+   Solo stile: non modifica dati, localStorage o formule JS.
+   ========================================================= */
+
+/* Ordine operativo della pagina: prossima giornata va in fondo, prima degli appunti/pronostico */
+#page-match.active{
+  display:flex;
+  flex-direction:column;
+}
+#page-match .match-picker{order:1}
+#page-match .match-sticky{order:2}
+#page-match .tabs{order:3}
+#page-match .context{order:4}
+#page-match #comparison{order:5}
+#page-match #nextFixtures{order:6}
+#page-match #matchIdeas{order:7}
+
+/* Intestazione Casa / Trasferta: più pulita e coerente con Calendario */
+#page-match .match-picker{
+  gap:14px;
+  padding:16px;
+  background:#fff;
+}
+#page-match .match-picker>.vs{display:none!important}
+#page-match .team-picker select{
+  min-height:58px;
+  border:1px solid #d7e3ef;
+  border-radius:15px;
+  font-size:20px;
+  font-weight:900;
+  color:#071831;
+  background:#fff;
+  box-shadow:0 5px 14px rgba(21,51,91,.035);
+}
+#page-match .side-label{
+  color:#657791;
+  font-size:11px;
+  letter-spacing:.13em;
+  margin-bottom:8px;
+}
+/* Per ora lascia visibile solo la posizione: punti/giocate/livello verranno sostituiti dal target via JS */
+#page-match .team-meta{
+  margin-top:8px;
+  font-size:0;
+  min-height:18px;
+  color:#071831;
+}
+#page-match .team-meta strong{
+  font-size:15px;
+  font-weight:950;
+  color:#071831;
+}
+
+/* Barra sticky sempre leggibile durante lo scroll */
+#page-match .match-sticky{
+  background:rgba(255,255,255,.96);
+  border-color:#d8e4f0;
+  box-shadow:0 8px 22px rgba(21,51,91,.07);
+}
+#page-match .sticky-vs{color:#93a3b7}
+#page-match .sticky-home strong,#page-match .sticky-away strong{color:#0b5eae}
+
+/* Filtri 2 sopra + 2 sotto */
+#page-match .tabs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+  overflow:visible;
+  padding:14px 0 11px;
+  margin:0;
+}
+#page-match .tab{
+  width:100%;
+  min-height:48px;
+  border-radius:16px;
+  padding:11px 12px;
+  font-size:14px;
+  text-align:center;
+  border-color:#d7e3ef;
+  color:#34445c;
+  background:#fff;
+  box-shadow:0 5px 14px rgba(21,51,91,.035);
+}
+#page-match .tab.active{
+  color:#fff;
+  border-color:#061b38;
+  background:linear-gradient(135deg,#020b18 0%,#061b38 48%,#0b3f82 100%);
+  box-shadow:0 7px 18px rgba(4,28,61,.15);
+}
+
+/* Legenda filtro: compatta. Il comportamento a tendina richiederà il toggle JS. */
+#page-match .context{
+  margin:4px 0 14px;
+  padding:14px 16px;
+  border-radius:17px;
+  background:#fff;
+  border-color:#dce6f1;
+  box-shadow:0 7px 20px rgba(21,51,91,.045);
+}
+#page-match .context-title{
+  color:#071831;
+  font-size:15px;
+  font-weight:900;
+}
+#page-match .context-note{
+  color:#65758c;
+  font-size:11px;
+  line-height:1.4;
+}
+#page-match .sample span{color:#708098}
+#page-match .sample strong{color:#071831;font-weight:900}
+
+/* Tabelle: conserva il font GitHub attuale, migliora solo evidenziazione */
+#page-match .group-title{
+  margin:18px 4px 7px;
+  color:#566b87;
+  font-size:11px;
+  letter-spacing:.12em;
+}
+#page-match .metric-list{
+  border-color:#dce6f1;
+  border-radius:15px;
+  box-shadow:0 5px 16px rgba(21,51,91,.025);
+}
+#page-match .metric-row{border-color:#e2e9f1}
+#page-match .metric-label{color:#52647c;font-weight:750}
+#page-match .metric-value{color:#071831;font-weight:900}
+#page-match .metric-value.home,#page-match .metric-value.away{color:#071831}
+/* dato “vincente”: niente verde, richiamo azzurro/neroazzurro */
+#page-match .metric-value.better span{
+  display:inline-block;
+  min-width:62px;
+  text-align:center;
+  padding:5px 9px;
+  border-radius:9px;
+  color:#0b58a8;
+  background:linear-gradient(90deg,#e5f1ff 0%,#d5e8ff 100%);
+  box-shadow:inset 0 0 0 1px rgba(18,120,246,.06);
+}
+
+/* Elimina metriche richieste */
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(4),
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(5),
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(6),
+#page-match .metric-group:nth-child(5){display:none!important}
+
+/* Etichette richieste: PER al posto di slash, percentuale nei risultati */
+#page-match .metric-group:nth-child(1) .metric-row:nth-child(1) .metric-label,
+#page-match .metric-group:nth-child(1) .metric-row:nth-child(2) .metric-label,
+#page-match .metric-group:nth-child(1) .metric-row:nth-child(3) .metric-label,
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(1) .metric-label,
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(2) .metric-label,
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(3) .metric-label,
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(1) .metric-label,
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(2) .metric-label,
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(3) .metric-label,
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(4) .metric-label,
+#page-match .metric-group:nth-child(4) .metric-row:nth-child(1) .metric-label,
+#page-match .metric-group:nth-child(4) .metric-row:nth-child(2) .metric-label{
+  font-size:0;
+}
+#page-match .metric-group:nth-child(1) .metric-row:nth-child(1) .metric-label::after{content:"% Vittorie"}
+#page-match .metric-group:nth-child(1) .metric-row:nth-child(2) .metric-label::after{content:"% Pareggi"}
+#page-match .metric-group:nth-child(1) .metric-row:nth-child(3) .metric-label::after{content:"% Sconfitte"}
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(1) .metric-label::after{content:"Gol fatti per partita"}
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(2) .metric-label::after{content:"Gol subiti per partita"}
+#page-match .metric-group:nth-child(2) .metric-row:nth-child(3) .metric-label::after{content:"% Clean sheet"}
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(1) .metric-label::after{content:"Tiri per partita"}
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(2) .metric-label::after{content:"Tiri subiti per partita"}
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(3) .metric-label::after{content:"Tiri in porta per partita"}
+#page-match .metric-group:nth-child(3) .metric-row:nth-child(4) .metric-label::after{content:"Tiri in porta subiti per partita"}
+#page-match .metric-group:nth-child(4) .metric-row:nth-child(1) .metric-label::after{content:"Angoli a favore per partita"}
+#page-match .metric-group:nth-child(4) .metric-row:nth-child(2) .metric-label::after{content:"Angoli concessi per partita"}
+#page-match .metric-label::after{font-size:11px;color:#52647c;font-weight:750}
+
+/* Prossima giornata: più compatta e vicina al pronostico */
+#page-match .next-fixtures{
+  margin:16px 0 12px;
+  padding:14px 16px;
+  border-radius:18px;
+  background:#fff;
+  border-color:#dce6f1;
+}
+#page-match .next-fixtures-head h3{color:#071831;font-weight:900}
+#page-match .next-team strong{color:#071831}
+#page-match .next-team small{color:#708098}
+
+/* Pronostico / possibili puntate: mantieni lo standard attuale, togli Stato e “mercato” */
+#page-match .ideas-card{
+  margin-top:0;
+  border-radius:18px;
+  border-color:#dce6f1;
+}
+#page-match .ideas-head .kicker{display:none}
+#page-match .ideas-head h3::before{content:"Pronostico";font-size:19px;font-weight:900;color:#071831}
+#page-match .ideas-head h3{font-size:0;margin:0}
+#page-match .ideas-head p{display:none}
+#page-match .idea-count{display:none}
+#page-match .idea-local-note{display:none}
+#page-match .idea-form label:first-child{font-size:0}
+#page-match .idea-form label:first-child::before{
+  content:"Pronostico";
+  display:block;
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--muted);
+}
+#page-match .idea-form label:has(select[name="status"]){display:none!important}
+#page-match .idea-status{display:none!important}
+#page-match .idea-form{
+  grid-template-columns:minmax(170px,1.2fr) 90px 110px minmax(180px,1.4fr) auto;
+}
+#page-match .idea-form input,#page-match .idea-form select{border-color:#d7e3ef}
+#page-match .idea-save{
+  background:linear-gradient(135deg,#1278f6,#0d63d7)!important;
+  border-color:#0d63d7!important;
+}
+
+@media (max-width:760px){
+  #page-match .match-picker{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px;
+    padding:14px;
+  }
+  #page-match .team-picker select{
+    min-height:54px;
+    font-size:18px;
+    padding:12px 13px;
+  }
+  #page-match .tabs{grid-template-columns:1fr 1fr;gap:8px;padding:12px 0 10px}
+  #page-match .tab{font-size:13px;min-height:45px;padding:10px 8px}
+  #page-match .context{align-items:flex-start;gap:10px}
+  #page-match .metric-row{grid-template-columns:82px minmax(0,1fr) 82px}
+  #page-match .metric-value{font-size:14px;padding:9px 7px}
+  #page-match .metric-label{font-size:10.5px;padding:7px 5px}
+  #page-match .metric-label::after{font-size:10.5px}
+  #page-match .metric-value.better span{min-width:54px;padding:4px 7px}
+  #page-match .next-fixtures{grid-template-columns:1fr;gap:8px}
+  #page-match .next-fixtures-grid{grid-template-columns:1fr 1fr}
+  #page-match .idea-form{grid-template-columns:1fr 1fr}
+  #page-match .idea-form label:first-child,#page-match .idea-note,#page-match .idea-save{grid-column:1/-1}
+}
+
+@media (max-width:420px){
+  #page-match .match-picker{gap:8px;padding:12px}
+  #page-match .team-picker select{font-size:17px;padding:11px 10px}
+  #page-match .metric-row{grid-template-columns:76px minmax(0,1fr) 76px}
+  #page-match .metric-value{font-size:13.5px}
+  #page-match .metric-label::after{font-size:10px}
+}

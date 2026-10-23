@@ -164,3 +164,24 @@ footer{display:none!important}
   .calendar-actions button{font-size:8.5px}
   #page-calendar .calendar-page-head h2{font-size:27px}
 }
+
+
+/* V8.1 — test layout richiesto */
+.calendar-teams{grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr);gap:0}
+.calendar-team.home{justify-content:flex-end;text-align:right}
+.calendar-team.away{justify-content:flex-start;text-align:left}
+.calendar-team.home strong{order:1}
+.calendar-team.home .calendar-logo{order:2}
+.calendar-team.away .calendar-logo{order:1}
+.calendar-team.away strong{order:2}
+.calendar-vs{width:30px;text-align:center;justify-self:center}
+.calendar-logo{width:18px;height:18px;object-fit:contain;flex:0 0 18px}
+.calendar-actions button{gap:0}
+.calendar-actions button.calendar-primary{background:#1f64aa;color:#fff;border-color:#1f64aa}
+.calendar-actions button.calendar-primary:hover{background:#18548f;border-color:#18548f}
+.calendar-action-icon{display:none!important}
+@media (max-width:600px){
+  .calendar-teams{grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr);gap:0}
+  .calendar-vs{width:26px}
+  .calendar-logo{width:16px;height:16px;flex-basis:16px}
+}

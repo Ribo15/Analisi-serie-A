@@ -185,3 +185,12 @@ footer{display:none!important}
   .calendar-vs{width:26px}
   .calendar-logo{width:16px;height:16px;flex-basis:16px}
 }
+
+
+/* V8.2 — correzioni calendario richieste */
+.calendar-match{grid-template-columns:minmax(0,1fr) 122px;}
+.calendar-teams{justify-self:start; width:100%; max-width:320px; padding-left:10px;}
+.calendar-team strong{font-weight:900;}
+.calendar-actions button.calendar-primary{background:linear-gradient(135deg,#020b18 0%,#061b38 48%,#0b3f82 100%);color:#fff;border-color:#061b38;}
+.calendar-actions button.calendar-primary:hover{background:linear-gradient(135deg,#020b18 0%,#082247 48%,#1250a3 100%);border-color:#082247;}
+@media (max-width:600px){.calendar-match{grid-template-columns:minmax(0,1fr) 116px;}.calendar-teams{max-width:290px;padding-left:4px;}}

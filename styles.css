@@ -450,35 +450,37 @@ body.match-sticky-active #page-match{
 .principal-source.is-empty{visibility:hidden}
 .principal-prob{align-self:end;margin-top:8px}
 
-.pred-1x2-list{display:block}
-.pred-1x2-line{
+.pred-1x2-list{display:grid;grid-template-columns:1fr;gap:0}
+.pred-1x2-pair{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #e5ecf4}
+.pred-1x2-pair:first-child{border-top:0}
+.pred-1x2-cell{
   width:100%;
   display:grid;
-  grid-template-columns:52px minmax(92px,1fr) 88px;
+  grid-template-columns:34px minmax(70px,1fr) 72px;
   align-items:center;
-  min-height:45px;
+  min-height:48px;
   border:0;
-  border-top:1px solid #e5ecf4;
-  padding:0;
   background:#fff;
   color:#0a1d38;
   text-align:left;
   cursor:pointer;
+  padding:0;
 }
-.pred-1x2-line:first-child{border-top:0}
-.pred-1x2-line.poisson-pick{background:#f7faff}
-.pred-1x2-line:active{background:#edf6ff}
-.pred-1x2-sign{height:100%;display:flex;align-items:center;padding:0 14px;font-size:12px;font-weight:950;color:#53647c;border-right:1px solid #e5ecf4}
-.pred-1x2-model{padding:0 14px;font-size:10px;font-weight:900;color:#172b47}
-.pred-1x2-prob{padding:0 14px;text-align:right;font-size:16px;font-weight:950;color:#0b69ca}
+.pred-1x2-cell+ .pred-1x2-cell{border-left:1px solid #e5ecf4}
+.pred-1x2-cell.poisson-pick{background:#f7faff}
+.pred-1x2-cell:active{background:#edf6ff}
+.pred-1x2-sign{display:flex;align-items:center;justify-content:center;height:100%;font-size:12px;font-weight:950;color:#53647c;border-right:1px solid #e5ecf4}
+.pred-1x2-model{padding:0 10px;font-size:10px;font-weight:900;color:#172b47}
+.pred-1x2-prob{padding:0 10px;text-align:right;font-size:16px;font-weight:950;color:#0b69ca;white-space:nowrap}
 .pred-1x2-prob.muted{color:#9aa6b5}
 
 @media (max-width:600px){
   .principal-pred-card{min-height:132px;grid-template-rows:auto minmax(32px,auto) 13px auto}
   .principal-pred-card>strong{min-height:32px}
   .principal-source{min-height:13px;line-height:13px}
-  .pred-1x2-line{grid-template-columns:44px minmax(88px,1fr) 82px;min-height:43px}
-  .pred-1x2-sign{padding:0 10px;font-size:11px}
-  .pred-1x2-model{padding:0 10px;font-size:9px}
-  .pred-1x2-prob{padding:0 10px;font-size:15px}
+  .pred-1x2-cell{grid-template-columns:30px minmax(58px,1fr) 64px;min-height:46px}
+  .pred-1x2-sign{font-size:11px}
+  .pred-1x2-model{padding:0 7px;font-size:8.5px}
+  .pred-1x2-prob{padding:0 7px;font-size:14px}
 }
+

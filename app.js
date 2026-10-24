@@ -394,10 +394,10 @@
   }
   function sectionOneXtwoCombined(std,poi,open=true){
     const outcomes=[['1','p1'],['X','px'],['2','p2'],['1X','p1x'],['X2','px2']];
-    const line=(label,model,prob,market,klass)=>prob==null
-      ? `<div class="pred-1x2-line ${klass}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><span class="pred-1x2-prob muted">—</span></div>`
-      : `<button type="button" class="pred-1x2-line ${klass}" data-market="${esc(market)}" data-conf="${Number(prob)}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><strong class="pred-1x2-prob">${fmt.pct(prob)}</strong></button>`;
-    const body=outcomes.map(([label,key])=>`${line(label,'Standard',std[key],label,'standard-pick')}${line(label,'Poisson',poi[key],`${label} Poisson`,'poisson-pick')}`).join('');
+    const cell=(label,model,prob,market,klass)=>prob==null
+      ? `<div class="pred-1x2-cell ${klass}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><span class="pred-1x2-prob muted">—</span></div>`
+      : `<button type="button" class="pred-1x2-cell ${klass}" data-market="${esc(market)}" data-conf="${Number(prob)}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><strong class="pred-1x2-prob">${fmt.pct(prob)}</strong></button>`;
+    const body=outcomes.map(([label,key])=>`<div class="pred-1x2-pair">${cell(label,'Standard',std[key],label,'standard-pick')}${cell(label,'Poisson',poi[key],`${label} Poisson`,'poisson-pick')}</div>`).join('');
     return `<details class="pred-section card pred-1x2-combined" ${open?'open':''}><summary>1X2 · Standard + Poisson</summary><div class="pred-section-body pred-1x2-list">${body}</div></details>`;
   }
   function poissonRange(lambda,min,max){

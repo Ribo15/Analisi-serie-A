@@ -203,7 +203,7 @@
   function bandClass(v){ return `band-${String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'')}`; }
   function bandBadge(v,prefix='Fascia'){
     if(!v) return '';
-    return `<span class="band-badge ${bandClass(v)}">${prefix} ${esc(v)}</span>`;
+    return `<span class="band-badge ${bandClass(v)}">${prefix?`${esc(prefix)} `:''}${esc(v)}</span>`;
   }
   function csvCell(v){ const t=String(v??''); return `"${t.replace(/"/g,'""')}"`; }
   function downloadCsv(filename,rows){
@@ -385,19 +385,26 @@
     if(prob==null) return `<span class="pred-prob muted">—</span>`;
     return `<button type="button" class="pred-pick ${extra}" data-market="${esc(label)}" data-conf="${Number(prob)}"><span>${esc(label)}</span><strong>${fmt.pct(prob)}</strong></button>`;
   }
-  function principalCard(title,value,prob,source=''){
+  function principalCard(title,value,prob,source='',band=''){
     const savedMarket=(source==='Poisson' && (title==='1X2'||title==='Doppia chance'))?`${value} Poisson`:value;
-    return `<article class="principal-pred-card" role="button" tabindex="0" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong><small class="principal-source ${source?'':'is-empty'}">${source?esc(source):'&nbsp;'}</small><div class="principal-prob"><span>Probabilità</span><b>${fmt.pct(prob)}</b></div></article>`;
+    const sourceHtml=source?`<span>${esc(source)}</span>${band?bandBadge(band,''):''}`:'&nbsp;';
+    return `<article class="principal-pred-card" role="button" tabindex="0" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong><small class="principal-source ${source?'':'is-empty'}">${sourceHtml}</small><div class="principal-prob"><span>Probabilità</span><b>${fmt.pct(prob)}</b></div></article>`;
   }
   function sectionTable(title,rows,open=false){
     return `<details class="pred-section card" ${open?'open':''}><summary>${esc(title)}</summary><div class="pred-section-body">${rows.map(r=>`<div class="pred-table-row"><span class="pred-row-label">${esc(r.label)}</span>${pickButton(r.market||r.label,r.prob)}</div>`).join('')}</div></details>`;
   }
-  function sectionOneXtwoCombined(std,poi,open=true){
+  function sectionOneXtwoCombined(std,poi,p,open=true){
     const outcomes=[['1','p1'],['X','px'],['2','p2'],['1X','p1x'],['X2','px2']];
-    const cell=(label,model,prob,market,klass)=>prob==null
+    const selectedStd=String(p?.oneXtwo??'');
+    const selectedPoi=String(p?.poisson??'');
+    const cell=(label,model,prob,market,klass,band='')=>prob==null
       ? `<div class="pred-1x2-cell ${klass}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><span class="pred-1x2-prob muted">—</span></div>`
-      : `<button type="button" class="pred-1x2-cell ${klass}" data-market="${esc(market)}" data-conf="${Number(prob)}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><strong class="pred-1x2-prob">${fmt.pct(prob)}</strong></button>`;
-    const body=outcomes.map(([label,key])=>`<div class="pred-1x2-pair">${cell(label,'Standard',std[key],label,'standard-pick')}${cell(label,'Poisson',poi[key],`${label} Poisson`,'poisson-pick')}</div>`).join('');
+      : `<button type="button" class="pred-1x2-cell ${klass}" data-market="${esc(market)}" data-conf="${Number(prob)}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}${band?bandBadge(band,''):''}</span><strong class="pred-1x2-prob">${fmt.pct(prob)}</strong></button>`;
+    const body=outcomes.map(([label,key])=>{
+      const stdBand=label===selectedStd?p?.band:'';
+      const poiBand=label===selectedPoi?p?.poissonBand:'';
+      return `<div class="pred-1x2-pair">${cell(label,'Standard',std[key],label,'standard-pick',stdBand)}${cell(label,'Poisson',poi[key],`${label} Poisson`,'poisson-pick',poiBand)}</div>`;
+    }).join('');
     return `<details class="pred-section card pred-1x2-combined" ${open?'open':''}><summary>1X2 · Standard + Poisson</summary><div class="pred-section-body pred-1x2-list">${body}</div></details>`;
   }
   function poissonRange(lambda,min,max){
@@ -466,7 +473,7 @@
     const multiCandidates=multiRowsAll.filter(x=>x.prob!=null).sort((a,b)=>b.prob-a.prob);
     const scoreTeamCandidates=[[`${home} segna ${ynLabel(p.scoreHomeYN)}`,p.scoreHomeYNConf],[`${away} segna ${ynLabel(p.scoreAwayYN)}`,p.scoreAwayYNConf]].sort((a,b)=>b[1]-a[1]);
     const principal=[
-      ['1X2',oneXtwoBest.value,oneXtwoBest.prob,oneXtwoBest.source],
+      ['1X2',oneXtwoBest.value,oneXtwoBest.prob,oneXtwoBest.source,oneXtwoBest.source==='Poisson'?p.poissonBand:p.band],
       ['Doppia chance',dcBest.value,dcBest.prob,dcBest.source],
       ['Gol / NoGol',p.btts,p.bttsConf,''],
       ['Over / Under',ouCandidates[0][0],ouCandidates[0][1],''],
@@ -483,7 +490,7 @@
     target.innerHTML=`
       <section class="principal-preds card"><div class="pred-block-title">Principali pronostici</div><div class="principal-grid">${principal.map(x=>principalCard(...x)).join('')}</div></section>
       <section class="all-preds"><div class="pred-block-title">Tutti i pronostici</div>
-        ${sectionOneXtwoCombined(std,poi,true)}
+        ${sectionOneXtwoCombined(std,poi,p,true)}
         ${sectionTable('Gol / NoGol',bttsRows,false)}
         ${sectionTable('Over / Under',overUnderRows,false)}
         ${sectionTable('Segna squadra',scoreTeamRows,false)}

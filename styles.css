@@ -378,3 +378,61 @@ body.match-sticky-active #page-match{
   .match-picker-v9 .away-picker .team-select-line select{padding-left:28px!important;}
   .match-sticky.is-fixed{width:calc(100vw - 20px)!important;}
 }
+
+/* V11 — pagina Pronostici coerente con Dati Match */
+.prediction-page-head{margin:0 0 12px}.prediction-page-head h2{margin:0;font-size:30px}
+.prediction-picker{margin-bottom:14px}
+.prediction-picker .away-picker{text-align:right}
+.prediction-picker .away-picker .side-label{text-align:right}
+.prediction-picker .away-picker .team-meta{text-align:right}
+.prediction-picker .away-picker .team-select-line{grid-template-columns:minmax(0,1fr) 21px!important}
+.prediction-picker .away-picker .team-select-line select{order:1;text-align:right;padding-right:34px!important}
+.prediction-picker .away-picker .team-select-line .picker-logo{order:2;justify-self:end}
+.prediction-picker .home-picker .team-select-line{grid-template-columns:21px minmax(0,1fr)!important}
+.prediction-picker .home-picker .team-select-line .picker-logo{justify-self:start}
+
+.prediction-help{margin:0 0 14px;padding:0;overflow:hidden}
+.prediction-help summary{list-style:none;padding:14px 16px;font-size:13px;font-weight:900;color:#12355f;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.prediction-help summary::-webkit-details-marker{display:none}
+.prediction-help summary::after{content:'⌄';font-size:16px;color:#53749c;transition:.2s transform}
+.prediction-help[open] summary::after{transform:rotate(180deg)}
+.prediction-help-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:#dce8f5;border-top:1px solid #dce8f5}
+.prediction-help-grid>div{background:#f8fbff;padding:12px;display:grid;grid-template-columns:24px 1fr;gap:8px;align-items:start}
+.prediction-help-grid strong{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#0d6fe8;color:#fff;font-size:11px}
+.prediction-help-grid span{font-size:10px;line-height:1.35;color:#53647c}
+
+.prediction-single{margin-top:0}.principal-preds{padding:14px;margin-bottom:14px}.pred-block-title{font-size:15px;text-transform:uppercase;letter-spacing:.075em;font-weight:950;color:#31547e;margin-bottom:11px}
+.principal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.principal-pred-card{border:1px solid #dce6f1;background:#fff;border-radius:15px;padding:13px;min-width:0;box-shadow:0 6px 18px rgba(15,54,101,.035)}
+.principal-family{display:block;font-size:9px;font-weight:900;color:#5f6f85;margin-bottom:6px}.principal-pred-card>strong{display:block;font-size:21px;line-height:1.05;color:#071831;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.principal-pred-card>small{display:block;min-height:14px;margin-top:4px;color:#718099;font-size:8px;font-weight:800}
+.principal-prob{margin-top:10px;display:flex;align-items:end;justify-content:space-between;gap:7px}.principal-prob span{font-size:9px;color:#6a7890}.principal-prob b{font-size:19px;color:#0b73df}
+.principal-select{width:100%;margin-top:10px;border:1px solid #9fc7f4;background:#f5faff;color:#0a5eb5;border-radius:9px;padding:7px 9px;font-size:9px;font-weight:900;cursor:pointer}
+.principal-select:active{background:#e7f2ff}
+
+.all-preds{margin-bottom:16px}.all-preds>.pred-block-title{padding:0 4px}.pred-section{margin:8px 0!important;padding:0!important;overflow:hidden;border-radius:15px!important}
+.pred-section summary{list-style:none;padding:12px 14px;font-size:12px;font-weight:900;color:#102c50;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:#fff}
+.pred-section summary::-webkit-details-marker{display:none}.pred-section summary::after{content:'⌄';font-size:15px;color:#6a7c94}.pred-section[open] summary::after{transform:rotate(180deg)}
+.pred-section-body{border-top:1px solid #e0e8f2}.pred-table-row{display:grid;grid-template-columns:minmax(120px,1.2fr) minmax(120px,1fr);align-items:stretch;min-height:46px;border-top:1px solid #e5ecf4}.pred-table-row:first-child{border-top:0}
+.pred-row-label{display:flex;align-items:center;padding:9px 12px;color:#586a82;font-size:10px;font-weight:800;background:#fbfcfe}
+.pred-pick{border:0;border-left:1px solid #e5ecf4;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;color:#0a1d38;cursor:pointer;text-align:left}
+.pred-pick span{font-size:10px;font-weight:850}.pred-pick strong{font-size:15px;color:#0b69ca}.pred-pick:active{background:#edf6ff}.pred-prob.muted{color:#9aa6b5;padding:12px}
+.prediction-idea-highlight .ideas-card{box-shadow:0 0 0 3px rgba(18,120,246,.18),0 10px 30px rgba(21,51,91,.08)}
+
+/* Puntate: selezione multipla prima della schedina */
+.idea-select-wrap{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font-size:9px;font-weight:900;color:#4b607c;cursor:pointer}.idea-select-wrap input{accent-color:#0d6fe8}.idea-select-wrap input:disabled+span{color:#0b73df}
+.all-idea-row{padding-top:12px}.ideas-page-head .primary-action{height:auto;padding:9px 12px;border-radius:9px;font-size:9px}
+
+@media (max-width:760px){
+  .prediction-page-head h2{font-size:28px}
+  .prediction-help-grid{grid-template-columns:1fr 1fr}
+  .principal-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .principal-pred-card{padding:11px}.principal-pred-card>strong{font-size:18px}.principal-prob b{font-size:17px}
+  .pred-table-row{grid-template-columns:minmax(118px,1.15fr) minmax(112px,1fr)}
+}
+@media (max-width:430px){
+  .prediction-picker .away-picker .team-select-line select{padding-right:28px!important}
+  .prediction-help summary{padding:12px 13px}.prediction-help-grid>div{padding:10px}
+  .principal-pred-card>strong{font-size:17px}.principal-family{font-size:8px}.principal-prob span{font-size:8px}.principal-select{font-size:8.5px}
+  .pred-section summary{font-size:11px}.pred-row-label,.pred-pick span{font-size:9px}.pred-pick strong{font-size:14px}
+}
+.view-slip{margin-top:7px;border:1px solid #cdd9e7;background:#fff;color:#345979;border-radius:8px;padding:6px 8px;font-size:8px;font-weight:900;cursor:pointer}.played-slip-detail{margin-top:8px;border-top:1px solid #e3e9f1;padding-top:7px;display:grid;gap:5px}.played-slip-detail[hidden]{display:none}.played-slip-detail>div{display:flex;justify-content:space-between;gap:10px}.played-slip-detail>div strong,.played-slip-detail>div span{font-size:8px!important;margin:0!important}.played-slip-main{min-width:0}

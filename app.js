@@ -387,15 +387,18 @@
   }
   function principalCard(title,value,prob,source=''){
     const savedMarket=(source==='Poisson' && (title==='1X2'||title==='Doppia chance'))?`${value} Poisson`:value;
-    return `<article class="principal-pred-card" role="button" tabindex="0" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong>${source?`<small>${esc(source)}</small>`:''}<div class="principal-prob"><span>Probabilità</span><b>${fmt.pct(prob)}</b></div></article>`;
+    return `<article class="principal-pred-card" role="button" tabindex="0" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong><small class="principal-source ${source?'':'is-empty'}">${source?esc(source):'&nbsp;'}</small><div class="principal-prob"><span>Probabilità</span><b>${fmt.pct(prob)}</b></div></article>`;
   }
   function sectionTable(title,rows,open=false){
     return `<details class="pred-section card" ${open?'open':''}><summary>${esc(title)}</summary><div class="pred-section-body">${rows.map(r=>`<div class="pred-table-row"><span class="pred-row-label">${esc(r.label)}</span>${pickButton(r.market||r.label,r.prob)}</div>`).join('')}</div></details>`;
   }
   function sectionOneXtwoCombined(std,poi,open=true){
     const outcomes=[['1','p1'],['X','px'],['2','p2'],['1X','p1x'],['X2','px2']];
-    const body=outcomes.map(([label,key])=>`<div class="pred-compare-row"><span class="pred-row-label">${label}</span><div class="pred-compare-picks">${pickButton(label,std[key],'standard-pick').replace(`<span>${label}</span>`,`<span>Standard</span>`)}${pickButton(`${label} Poisson`,poi[key],'poisson-pick').replace(`<span>${label} Poisson</span>`,`<span>Poisson</span>`)}</div></div>`).join('');
-    return `<details class="pred-section card pred-1x2-combined" ${open?'open':''}><summary>1X2 · Standard + Poisson</summary><div class="pred-section-body">${body}</div></details>`;
+    const line=(label,model,prob,market,klass)=>prob==null
+      ? `<div class="pred-1x2-line ${klass}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><span class="pred-1x2-prob muted">—</span></div>`
+      : `<button type="button" class="pred-1x2-line ${klass}" data-market="${esc(market)}" data-conf="${Number(prob)}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><strong class="pred-1x2-prob">${fmt.pct(prob)}</strong></button>`;
+    const body=outcomes.map(([label,key])=>`${line(label,'Standard',std[key],label,'standard-pick')}${line(label,'Poisson',poi[key],`${label} Poisson`,'poisson-pick')}`).join('');
+    return `<details class="pred-section card pred-1x2-combined" ${open?'open':''}><summary>1X2 · Standard + Poisson</summary><div class="pred-section-body pred-1x2-list">${body}</div></details>`;
   }
   function poissonRange(lambda,min,max){
     const l=Number(lambda); if(!Number.isFinite(l)||l<0) return null;

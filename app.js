@@ -387,10 +387,33 @@
   }
   function principalCard(title,value,prob,source=''){
     const savedMarket=(source==='Poisson' && (title==='1X2'||title==='Doppia chance'))?`${value} Poisson`:value;
-    return `<article class="principal-pred-card"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong>${source?`<small>${esc(source)}</small>`:''}<div class="principal-prob"><span>Probabilità</span><b>${fmt.pct(prob)}</b></div><button type="button" class="principal-select" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}">Seleziona</button></article>`;
+    return `<article class="principal-pred-card" role="button" tabindex="0" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong>${source?`<small>${esc(source)}</small>`:''}<div class="principal-prob"><span>Probabilità</span><b>${fmt.pct(prob)}</b></div></article>`;
   }
   function sectionTable(title,rows,open=false){
     return `<details class="pred-section card" ${open?'open':''}><summary>${esc(title)}</summary><div class="pred-section-body">${rows.map(r=>`<div class="pred-table-row"><span class="pred-row-label">${esc(r.label)}</span>${pickButton(r.market||r.label,r.prob)}</div>`).join('')}</div></details>`;
+  }
+  function sectionOneXtwoCombined(std,poi,open=true){
+    const outcomes=[['1','p1'],['X','px'],['2','p2'],['1X','p1x'],['X2','px2']];
+    const body=outcomes.map(([label,key])=>`<div class="pred-compare-row"><span class="pred-row-label">${label}</span><div class="pred-compare-picks">${pickButton(label,std[key],'standard-pick').replace(`<span>${label}</span>`,`<span>Standard</span>`)}${pickButton(`${label} Poisson`,poi[key],'poisson-pick').replace(`<span>${label} Poisson</span>`,`<span>Poisson</span>`)}</div></div>`).join('');
+    return `<details class="pred-section card pred-1x2-combined" ${open?'open':''}><summary>1X2 · Standard + Poisson</summary><div class="pred-section-body">${body}</div></details>`;
+  }
+  function poissonRange(lambda,min,max){
+    const l=Number(lambda); if(!Number.isFinite(l)||l<0) return null;
+    let sum=0, term=Math.exp(-l);
+    for(let k=0;k<=max;k++){
+      if(k>=min) sum+=term;
+      term=term*l/(k+1);
+    }
+    return clamp01(sum);
+  }
+  function multigoalAllRows(p,home,away){
+    const ranges=[[1,2],[1,3],[1,4],[2,3],[2,4]];
+    const groups=[
+      ['Totale',Number(p.xgHome)+Number(p.xgAway),'Multigoal totale'],
+      [home,Number(p.xgHome),`Multigoal ${home}`],
+      [away,Number(p.xgAway),`Multigoal ${away}`]
+    ];
+    return groups.flatMap(([group,lambda,prefix])=>ranges.map(([a,b])=>({label:`${group} · ${a}-${b}`,market:`${prefix} ${a}-${b}`,prob:poissonRange(lambda,a,b)})));
   }
   function primePredictionIdea(home,away,market,conf){
     const host=$('#predictionIdeas'), form=host?.querySelector('.idea-form'); if(!form) return;
@@ -401,7 +424,11 @@
     host.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>odds?.focus(),450);
   }
   function attachPredictionPickHandlers(root,home,away){
-    root.querySelectorAll('[data-market][data-conf]').forEach(b=>b.addEventListener('click',()=>primePredictionIdea(home,away,b.dataset.market,Number(b.dataset.conf))));
+    root.querySelectorAll('[data-market][data-conf]').forEach(b=>{
+      const activate=()=>primePredictionIdea(home,away,b.dataset.market,Number(b.dataset.conf));
+      b.addEventListener('click',activate);
+      if(b.classList.contains('principal-pred-card')) b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();activate();}});
+    });
   }
   function renderPredictions(){
     if(!predHomeSel || !predAwaySel) return;
@@ -432,34 +459,28 @@
     const oneXtwoBest=p.oneXtwoConf>=p.poissonConf?{value:String(p.oneXtwo),prob:p.oneXtwoConf,source:'Standard'}:{value:String(p.poisson),prob:p.poissonConf,source:'Poisson'};
     const dcBest=p.doubleChanceConf>=p.doubleChancePoissonConf?{value:p.doubleChance,prob:p.doubleChanceConf,source:'Standard'}:{value:p.doubleChancePoisson,prob:p.doubleChancePoissonConf,source:'Poisson'};
     const ouCandidates=[[p.uo15,p.uo15Conf],[p.uo25,p.uo25Conf],[p.uo35,p.uo35Conf]].sort((a,b)=>b[1]-a[1]);
-    const multiCandidates=[[clean(p.multiTotal),p.multiTotalConf,'Totale'],[clean(p.multiHome),p.multiHomeConf,home],[clean(p.multiAway),p.multiAwayConf,away]].sort((a,b)=>b[1]-a[1]);
+    const multiRowsAll=multigoalAllRows(p,home,away);
+    const multiCandidates=multiRowsAll.filter(x=>x.prob!=null).sort((a,b)=>b.prob-a.prob);
     const scoreTeamCandidates=[[`${home} segna ${ynLabel(p.scoreHomeYN)}`,p.scoreHomeYNConf],[`${away} segna ${ynLabel(p.scoreAwayYN)}`,p.scoreAwayYNConf]].sort((a,b)=>b[1]-a[1]);
     const principal=[
       ['1X2',oneXtwoBest.value,oneXtwoBest.prob,oneXtwoBest.source],
       ['Doppia chance',dcBest.value,dcBest.prob,dcBest.source],
       ['Gol / NoGol',p.btts,p.bttsConf,''],
       ['Over / Under',ouCandidates[0][0],ouCandidates[0][1],''],
-      ['Multigol',multiCandidates[0][0],multiCandidates[0][1],multiCandidates[0][2]],
+      ['Multigol',multiCandidates[0]?.market?.replace(/^Multigoal (totale|[^ ]+) /i,'')||clean(p.multiTotal),multiCandidates[0]?.prob??p.multiTotalConf,multiCandidates[0]?.label?.split(' · ')[0]||''],
       ['Segna squadra',scoreTeamCandidates[0][0],scoreTeamCandidates[0][1],'']
     ];
-    const oneRowsStd=[['1',std.p1],['X',std.px],['2',std.p2],['1X',std.p1x],['X2',std.px2]].map(([label,prob])=>({label:`${label} · Standard`,market:label,prob}));
-    const oneRowsPoi=[['1',poi.p1],['X',poi.px],['2',poi.p2],['1X',poi.p1x],['X2',poi.px2]].map(([label,prob])=>({label:`${label} · Poisson`,market:`${label} Poisson`,prob}));
     const bttsRows=[{label:'Gol',market:'Gol',prob:golProb},{label:'NoGol',market:'NoGol',prob:noGolProb}];
     const scoreRows=[{label:`Risultato esatto ${score}`,market:`Risultato esatto ${score}`,prob:p.scoreConf}];
     const scoreTeamRows=[
       {label:`${home} segna Sì`,market:`${home} segna Sì`,prob:homeYes},{label:`${home} segna No`,market:`${home} segna No`,prob:1-homeYes},
       {label:`${away} segna Sì`,market:`${away} segna Sì`,prob:awayYes},{label:`${away} segna No`,market:`${away} segna No`,prob:1-awayYes}
     ];
-    const multiRows=[
-      {label:`Totale · ${clean(p.multiTotal)}`,market:clean(p.multiTotal),prob:p.multiTotalConf},
-      {label:`${home} · ${clean(p.multiHome)}`,market:`${home} ${clean(p.multiHome)}`,prob:p.multiHomeConf},
-      {label:`${away} · ${clean(p.multiAway)}`,market:`${away} ${clean(p.multiAway)}`,prob:p.multiAwayConf}
-    ];
+    const multiRows=multiRowsAll;
     target.innerHTML=`
       <section class="principal-preds card"><div class="pred-block-title">Principali pronostici</div><div class="principal-grid">${principal.map(x=>principalCard(...x)).join('')}</div></section>
       <section class="all-preds"><div class="pred-block-title">Tutti i pronostici</div>
-        ${sectionTable('1X2 · Standard',oneRowsStd,true)}
-        ${sectionTable('1X2 · Poisson',oneRowsPoi,false)}
+        ${sectionOneXtwoCombined(std,poi,true)}
         ${sectionTable('Gol / NoGol',bttsRows,false)}
         ${sectionTable('Over / Under',overUnderRows,false)}
         ${sectionTable('Segna squadra',scoreTeamRows,false)}

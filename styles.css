@@ -484,7 +484,7 @@ body.match-sticky-active #page-match{
   .pred-1x2-prob{padding:0 7px;font-size:14px}
 }
 
-\n\n/* V11.4 — fasce 1X2 + principali più compatti */
+/* V11.4 — fasce 1X2 + principali più compatti */
 .principal-preds{padding:12px 13px;margin-bottom:13px}
 .principal-preds .pred-block-title{margin-bottom:8px;font-size:14px}
 .principal-grid{gap:7px}
@@ -504,4 +504,66 @@ body.match-sticky-active #page-match{
   .principal-family{font-size:7px}.principal-source{font-size:7px;min-height:14px;line-height:14px;gap:3px}
   .principal-source .band-badge{font-size:6.5px;padding:2px 4px}
   .principal-prob{margin-top:4px}.principal-prob span{font-size:7px}.principal-prob b{font-size:14px}
+}
+
+/* V11.5 — pronostici compatti + storico fasce + cartellini */
+.band-meta{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  flex-wrap:wrap;
+  min-width:0;
+  color:#718099;
+  font-size:7px;
+  font-weight:850;
+  line-height:1.15;
+}
+.band-meta>span:not(.band-badge){white-space:nowrap}
+.principal-pred-card{
+  min-height:116px;
+  grid-template-rows:auto minmax(27px,auto) auto auto;
+}
+.principal-source{
+  min-height:24px;
+  height:auto;
+  line-height:1.15;
+  overflow:visible;
+  flex-wrap:wrap;
+  align-content:flex-start;
+}
+.principal-source .band-meta{gap:4px}
+.principal-source .band-meta>span:not(.band-badge){font-size:6.8px}
+.pred-row-info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:4px;
+  padding:9px 12px;
+  background:#fbfcfe;
+  min-width:0;
+}
+.pred-row-info .pred-row-label{
+  display:block;
+  padding:0;
+  background:transparent;
+}
+.pred-row-info .band-meta{font-size:7.5px}
+.pred-1x2-model{
+  flex-wrap:wrap;
+  row-gap:2px;
+}
+.pred-1x2-model .band-meta{
+  gap:4px;
+  font-size:6.8px;
+}
+.pred-1x2-model .band-meta>span:not(.band-badge){
+  font-size:6.8px;
+}
+@media (max-width:760px){
+  .principal-pred-card{min-height:108px;grid-template-rows:auto minmax(25px,auto) auto auto}
+  .principal-source{min-height:22px}
+  .principal-source .band-meta>span:not(.band-badge){font-size:6.2px}
+  .pred-row-info{padding:8px 9px}
+  .pred-row-info .band-meta{font-size:6.8px;gap:4px}
+  .pred-1x2-model .band-meta>span:not(.band-badge){font-size:6px}
 }

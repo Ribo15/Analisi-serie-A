@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#08111f">
   <title>Analisi Serie A</title>
-  <link rel="stylesheet" href="styles.css?v=11.0">
+  <link rel="stylesheet" href="styles.css?v=11.5">
 </head>
 <body>
   <header class="site-header" aria-hidden="true">
@@ -46,7 +46,7 @@
 
       <nav class="tabs match-tabs" aria-label="Sezioni confronto">
         <button class="tab active" data-view="general">Dati generali</button>
-        <button class="tab" data-view="last5">Dati ultime partite</button>
+        <button class="tab" data-view="last5">Dati ultime gare</button>
         <button class="tab" data-view="venue5">Casa / Fuori</button>
         <button class="tab" data-view="level">Livello avversario</button>
       </nav>
@@ -80,36 +80,32 @@
     </section>
 
     <section id="page-predictions" class="page">
-      <section class="page-head prediction-page-head">
-        <div><h2>Pronostici</h2></div>
+      <section class="page-head">
+        <div>
+          <div class="kicker">MODELLO</div>
+          <h2>Pronostici Match</h2>
+          <p>Seleziona le due squadre e visualizza soltanto i pronostici salvati per quel match.</p>
+        </div>
       </section>
 
-      <section class="match-picker match-picker-v9 prediction-picker card">
+      <section class="match-picker card prediction-picker">
         <div class="team-picker home-picker">
           <span class="side-label">CASA</span>
-          <div class="team-select-line"><img id="predictionHomeLogo" class="picker-logo" alt=""><select id="predictionHomeTeam" aria-label="Squadra casa pronostici"></select></div>
+          <select id="predictionHomeTeam" aria-label="Squadra casa pronostici"></select>
           <div id="predictionHomeMeta" class="team-meta"></div>
         </div>
+        <div class="vs">VS</div>
         <div class="team-picker away-picker">
           <span class="side-label">TRASFERTA</span>
-          <div class="team-select-line"><select id="predictionAwayTeam" aria-label="Squadra trasferta pronostici"></select><img id="predictionAwayLogo" class="picker-logo" alt=""></div>
+          <select id="predictionAwayTeam" aria-label="Squadra trasferta pronostici"></select>
           <div id="predictionAwayMeta" class="team-meta"></div>
         </div>
       </section>
 
-      <details class="prediction-help card">
-        <summary>Come usare i pronostici</summary>
-        <div class="prediction-help-grid">
-          <div><strong>1</strong><span>Tocca un pronostico per selezionarlo.</span></div>
-          <div><strong>2</strong><span>In fondo puoi aggiungere quota, fiducia e nota.</span></div>
-          <div><strong>3</strong><span>Salvalo: finirà sempre nella pagina Puntate.</span></div>
-          <div><strong>4</strong><span>Dalla pagina Puntate scegli poi cosa portare in schedina.</span></div>
-        </div>
-      </details>
-
       <div id="predictionSingle" class="prediction-single"></div>
       <section id="predictionIdeas" class="idea-host"></section>
     </section>
+
 
     <section id="page-ideas" class="page">
       <section class="page-head">
@@ -120,9 +116,9 @@
         </div>
       </section>
 
-      <section id="ideasOverview"></section>
       <section id="slipOverview"></section>
       <section id="playedSlipsOverview"></section>
+      <section id="ideasOverview"></section>
     </section>
 
     <section id="page-standings" class="page">
@@ -217,7 +213,7 @@
 
   </main>
 
-  <script src="data.js?v=11.0"></script>
-  <script src="app.js?v=11.0"></script>
+  <script src="data.js?v=11.5"></script>
+  <script src="app.js?v=11.5"></script>
 </body>
 </html>

@@ -29,6 +29,9 @@
       ['sot','Tiri in porta per partita','n1','high'],['sotAgainst','Tiri in porta subiti per partita','n1','low'],
       ['conversion','Conversione tiri → gol','pct','high']
     ]},
+    {title:'Cartellini', metrics:[
+      ['yellow','Gialli per partita','n1','low'],['red','Rossi per partita','n2','low']
+    ]},
     {title:'Angoli', metrics:[
       ['corners','Angoli per partita','n1','high'],['cornersAgainst','Angoli concessi per partita','n1','low']
     ]}
@@ -107,11 +110,14 @@
     const setLogo=(id,src)=>{ const el=$(id); if(!el) return; el.src=src||''; el.style.display=src?'block':'none'; };
     setLogo('#homeLogo',hLogo); setLogo('#awayLogo',aLogo); setLogo('#contextHomeLogo',hLogo); setLogo('#contextAwayLogo',aLogo); setLogo('#stickyHomeLogo',hLogo); setLogo('#stickyAwayLogo',aLogo);
     const H=getData(home,away,true), A=getData(away,home,false);
+    const lastTab=document.querySelector('.tab[data-view="last5"]');
+    if(lastTab) lastTab.textContent=H.games===A.games?`Dati ultime ${H.games} gare`:'Dati ultime gare';
+    const recentTitle=H.games===A.games?`Dati ultime ${H.games} ${H.games===1?'gara':'gare'}`:'Dati ultime gare';
     const labels={
       general:['Dati generali','Tutte le partite giocate nella stagione in corso.'],
-      last5:['Dati ultime partite','Confronto sulle ultime partite disponibili per ciascuna squadra.'],
-      venue5:['Casa / Fuori',`${home}: partite recenti giocate in casa • ${away}: partite recenti giocate in trasferta`],
-      level:['Livello avversario',`${home} contro squadre con livello di forza simile a ${away} • ${away} contro squadre con livello di forza simile a ${home}`]
+      last5:[recentTitle,`${home}: ultime ${H.games} ${H.games===1?'gara disponibile':'gare disponibili'} • ${away}: ultime ${A.games} ${A.games===1?'gara disponibile':'gare disponibili'}`],
+      venue5:['Casa / Fuori',`${home} – Dati ultime ${H.games} ${H.games===1?'gara giocata':'gare giocate'} in casa • ${away} – Dati ultime ${A.games} ${A.games===1?'gara giocata':'gare giocate'} in trasferta`],
+      level:['Livello avversario',`${home}: ${H.games} ${H.games===1?'gara':'gare'} contro squadre di forza simile a ${away} • ${away}: ${A.games} ${A.games===1?'gara':'gare'} contro squadre di forza simile a ${home}`]
     };
     const sampleLabel=(which,n)=>{
       if(view==='general') return `${n} ${n===1?'partita':'partite'}`;
@@ -198,12 +204,20 @@
     if(m.includes('POISSON')) return p.poissonBand ? {label:p.poissonBand,type:'poisson'} : null;
     const outcome=normalizeMarket(p.oneXtwo);
     if(m===outcome || m==='1X2 '+outcome || m==='1X2' || ['1','X','2'].includes(m)) return p.band ? {label:p.band,type:'model'} : null;
+    if(m===normalizeMarket(p.btts)) return p.bttsBand ? {label:p.bttsBand,type:'btts'} : null;
+    if(m===normalizeMarket(p.uo25)) return p.uo25Band ? {label:p.uo25Band,type:'uo25'} : null;
     return null;
   }
   function bandClass(v){ return `band-${String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'')}`; }
   function bandBadge(v,prefix='Fascia'){
     if(!v) return '';
     return `<span class="band-badge ${bandClass(v)}">${prefix?`${esc(prefix)} `:''}${esc(v)}</span>`;
+  }
+  function bandMeta(band,rate,sample){
+    if(!band) return '';
+    const hist=rate==null?'—':fmt.pct(rate);
+    const n=Number.isFinite(Number(sample))?Number(sample):0;
+    return `<span class="band-meta">${bandBadge(band)}<span>Storico fascia ${hist}</span><span>N campione ${n}</span></span>`;
   }
   function csvCell(v){ const t=String(v??''); return `"${t.replace(/"/g,'""')}"`; }
   function downloadCsv(filename,rows){
@@ -213,13 +227,13 @@
   }
   function downloadIdeas(){
     const all=loadIdeas().slice().sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-    const rows=[['Giornata','Match','Pronostico','Quota','Fiducia','Fascia 1X2']];
+    const rows=[['Giornata','Match','Pronostico','Quota','Fiducia','Fascia']];
     all.forEach(x=>{const b=ideaBand(x);rows.push([ideaRound(x)||'',`${x.home} - ${x.away}`,x.market,x.odds||'',ideaConfidenceLabel(x.confidence),b?.label||'']);});
     downloadCsv('puntate-pensate.csv',rows);
   }
   function downloadSlip(){
     const all=loadIdeas(), ids=loadSlip(), slip=ids.map(id=>all.find(x=>String(x.id)===String(id))).filter(Boolean);
-    const rows=[['Giornata','Match','Pronostico','Quota','Fascia 1X2']];
+    const rows=[['Giornata','Match','Pronostico','Quota','Fascia']];
     slip.forEach(x=>{const b=ideaBand(x);rows.push([ideaRound(x)||'',`${x.home} - ${x.away}`,x.market,x.odds||'',b?.label||'']);});
     downloadCsv('schedina-in-preparazione.csv',rows);
   }
@@ -385,25 +399,24 @@
     if(prob==null) return `<span class="pred-prob muted">—</span>`;
     return `<button type="button" class="pred-pick ${extra}" data-market="${esc(label)}" data-conf="${Number(prob)}"><span>${esc(label)}</span><strong>${fmt.pct(prob)}</strong></button>`;
   }
-  function principalCard(title,value,prob,source='',band=''){
+  function principalCard(title,value,prob,source='',band='',bandRate=null,bandSample=null){
     const savedMarket=(source==='Poisson' && (title==='1X2'||title==='Doppia chance'))?`${value} Poisson`:value;
-    const sourceHtml=source?`<span>${esc(source)}</span>${band?bandBadge(band,''):''}`:'&nbsp;';
-    return `<article class="principal-pred-card" role="button" tabindex="0" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong><small class="principal-source ${source?'':'is-empty'}">${sourceHtml}</small><div class="principal-prob"><span>Probabilità</span><b>${fmt.pct(prob)}</b></div></article>`;
+    const sourceHtml=(source||band)?`${source?`<span>${esc(source)}</span>`:''}${band?bandMeta(band,bandRate,bandSample):''}`:'&nbsp;';
+    return `<article class="principal-pred-card" role="button" tabindex="0" data-market="${esc(savedMarket)}" data-conf="${Number(prob)}"><span class="principal-family">${esc(title)}</span><strong>${esc(value)}</strong><small class="principal-source ${(source||band)?'':'is-empty'}">${sourceHtml}</small><div class="principal-prob"><span>Probabilità modello</span><b>${fmt.pct(prob)}</b></div></article>`;
   }
   function sectionTable(title,rows,open=false){
-    return `<details class="pred-section card" ${open?'open':''}><summary>${esc(title)}</summary><div class="pred-section-body">${rows.map(r=>`<div class="pred-table-row"><span class="pred-row-label">${esc(r.label)}</span>${pickButton(r.market||r.label,r.prob)}</div>`).join('')}</div></details>`;
+    return `<details class="pred-section card" ${open?'open':''}><summary>${esc(title)}</summary><div class="pred-section-body">${rows.map(r=>`<div class="pred-table-row"><div class="pred-row-info"><span class="pred-row-label">${esc(r.label)}</span>${r.band?bandMeta(r.band,r.bandRate,r.bandSample):''}</div>${pickButton(r.market||r.label,r.prob)}</div>`).join('')}</div></details>`;
   }
   function sectionOneXtwoCombined(std,poi,p,open=true){
     const outcomes=[['1','p1'],['X','px'],['2','p2'],['1X','p1x'],['X2','px2']];
     const selectedStd=String(p?.oneXtwo??'');
     const selectedPoi=String(p?.poisson??'');
-    const cell=(label,model,prob,market,klass,band='')=>prob==null
+    const cell=(label,model,prob,market,klass,band='',rate=null,sample=null)=>prob==null
       ? `<div class="pred-1x2-cell ${klass}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}</span><span class="pred-1x2-prob muted">—</span></div>`
-      : `<button type="button" class="pred-1x2-cell ${klass}" data-market="${esc(market)}" data-conf="${Number(prob)}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}${band?bandBadge(band,''):''}</span><strong class="pred-1x2-prob">${fmt.pct(prob)}</strong></button>`;
+      : `<button type="button" class="pred-1x2-cell ${klass}" data-market="${esc(market)}" data-conf="${Number(prob)}"><span class="pred-1x2-sign">${label}</span><span class="pred-1x2-model">${model}${band?bandMeta(band,rate,sample):''}</span><strong class="pred-1x2-prob">${fmt.pct(prob)}</strong></button>`;
     const body=outcomes.map(([label,key])=>{
-      const stdBand=label===selectedStd?p?.band:'';
-      const poiBand=label===selectedPoi?p?.poissonBand:'';
-      return `<div class="pred-1x2-pair">${cell(label,'Standard',std[key],label,'standard-pick',stdBand)}${cell(label,'Poisson',poi[key],`${label} Poisson`,'poisson-pick',poiBand)}</div>`;
+      const isStd=label===selectedStd, isPoi=label===selectedPoi;
+      return `<div class="pred-1x2-pair">${cell(label,'Standard',std[key],label,'standard-pick',isStd?p?.band:'',isStd?p?.bandRate:null,isStd?p?.bandSample:null)}${cell(label,'Poisson',poi[key],`${label} Poisson`,'poisson-pick',isPoi?p?.poissonBand:'',isPoi?p?.poissonBandRate:null,isPoi?p?.poissonBandSample:null)}</div>`;
     }).join('');
     return `<details class="pred-section card pred-1x2-combined" ${open?'open':''}><summary>1X2 · Standard + Poisson</summary><div class="pred-section-body pred-1x2-list">${body}</div></details>`;
   }
@@ -458,33 +471,37 @@
     const std=derive1x2(p.oneXtwo,p.oneXtwoConf,p.doubleChance,p.doubleChanceConf);
     const poi=derive1x2(p.poisson,p.poissonConf,p.doubleChancePoisson,p.doubleChancePoissonConf);
     const score=(p.scoreHome==null||p.scoreAway==null)?'—':`${Math.round(p.scoreHome)}-${Math.round(p.scoreAway)}`;
-    const [golProb,noGolProb]=complementPair(p.btts,p.bttsConf,'Gol');
-    const overUnderRows=[];
-    [[p.uo15,p.uo15Conf,'1,5'],[p.uo25,p.uo25Conf,'2,5'],[p.uo35,p.uo35Conf,'3,5']].forEach(([lab,conf,t])=>{
-      const [over,under]=complementPair(lab,conf,'Over');
-      overUnderRows.push({label:`Over ${t}`,market:`Over ${t}`,prob:over},{label:`Under ${t}`,market:`Under ${t}`,prob:under});
-    });
-    const homeYes=String(clean(p.scoreHomeYN)).toLowerCase().includes('no')?1-p.scoreHomeYNConf:p.scoreHomeYNConf;
-    const awayYes=String(clean(p.scoreAwayYN)).toLowerCase().includes('no')?1-p.scoreAwayYNConf:p.scoreAwayYNConf;
-    const oneXtwoBest=p.oneXtwoConf>=p.poissonConf?{value:String(p.oneXtwo),prob:p.oneXtwoConf,source:'Standard'}:{value:String(p.poisson),prob:p.poissonConf,source:'Poisson'};
+    const oneXtwoBest=p.oneXtwoConf>=p.poissonConf
+      ?{value:String(p.oneXtwo),prob:p.oneXtwoConf,source:'Standard',band:p.band,bandRate:p.bandRate,bandSample:p.bandSample}
+      :{value:String(p.poisson),prob:p.poissonConf,source:'Poisson',band:p.poissonBand,bandRate:p.poissonBandRate,bandSample:p.poissonBandSample};
     const dcBest=p.doubleChanceConf>=p.doubleChancePoissonConf?{value:p.doubleChance,prob:p.doubleChanceConf,source:'Standard'}:{value:p.doubleChancePoisson,prob:p.doubleChancePoissonConf,source:'Poisson'};
-    const ouCandidates=[[p.uo15,p.uo15Conf],[p.uo25,p.uo25Conf],[p.uo35,p.uo35Conf]].sort((a,b)=>b[1]-a[1]);
+    const ouCandidates=[
+      {value:p.uo15,prob:p.uo15Conf},
+      {value:p.uo25,prob:p.uo25Conf,band:p.uo25Band,bandRate:p.uo25BandRate,bandSample:p.uo25BandSample},
+      {value:p.uo35,prob:p.uo35Conf}
+    ].sort((a,b)=>b.prob-a.prob);
     const multiRowsAll=multigoalAllRows(p,home,away);
     const multiCandidates=multiRowsAll.filter(x=>x.prob!=null).sort((a,b)=>b.prob-a.prob);
     const scoreTeamCandidates=[[`${home} segna ${ynLabel(p.scoreHomeYN)}`,p.scoreHomeYNConf],[`${away} segna ${ynLabel(p.scoreAwayYN)}`,p.scoreAwayYNConf]].sort((a,b)=>b[1]-a[1]);
     const principal=[
-      ['1X2',oneXtwoBest.value,oneXtwoBest.prob,oneXtwoBest.source,oneXtwoBest.source==='Poisson'?p.poissonBand:p.band],
+      ['1X2',oneXtwoBest.value,oneXtwoBest.prob,oneXtwoBest.source,oneXtwoBest.band,oneXtwoBest.bandRate,oneXtwoBest.bandSample],
       ['Doppia chance',dcBest.value,dcBest.prob,dcBest.source],
-      ['Gol / NoGol',p.btts,p.bttsConf,''],
-      ['Over / Under',ouCandidates[0][0],ouCandidates[0][1],''],
+      ['Gol / NoGol',clean(p.btts),p.bttsConf,'',p.bttsBand,p.bttsBandRate,p.bttsBandSample],
+      ['Over / Under',clean(ouCandidates[0].value),ouCandidates[0].prob,'',ouCandidates[0].band,ouCandidates[0].bandRate,ouCandidates[0].bandSample],
       ['Multigol',multiCandidates[0]?.market?.replace(/^Multigoal (totale|[^ ]+) /i,'')||clean(p.multiTotal),multiCandidates[0]?.prob??p.multiTotalConf,multiCandidates[0]?.label?.split(' · ')[0]||''],
       ['Segna squadra',scoreTeamCandidates[0][0],scoreTeamCandidates[0][1],'']
     ];
-    const bttsRows=[{label:'Gol',market:'Gol',prob:golProb},{label:'NoGol',market:'NoGol',prob:noGolProb}];
+    const bttsRows=[{label:clean(p.btts),market:clean(p.btts),prob:p.bttsConf,band:p.bttsBand,bandRate:p.bttsBandRate,bandSample:p.bttsBandSample}];
+    const overUnderRows=[
+      {label:clean(p.uo15),market:clean(p.uo15),prob:p.uo15Conf},
+      {label:clean(p.uo25),market:clean(p.uo25),prob:p.uo25Conf,band:p.uo25Band,bandRate:p.uo25BandRate,bandSample:p.uo25BandSample},
+      {label:clean(p.uo35),market:clean(p.uo35),prob:p.uo35Conf}
+    ];
     const scoreRows=[{label:`Risultato esatto ${score}`,market:`Risultato esatto ${score}`,prob:p.scoreConf}];
+    const homePick=`${home} segna ${ynLabel(p.scoreHomeYN)}`, awayPick=`${away} segna ${ynLabel(p.scoreAwayYN)}`;
     const scoreTeamRows=[
-      {label:`${home} segna Sì`,market:`${home} segna Sì`,prob:homeYes},{label:`${home} segna No`,market:`${home} segna No`,prob:1-homeYes},
-      {label:`${away} segna Sì`,market:`${away} segna Sì`,prob:awayYes},{label:`${away} segna No`,market:`${away} segna No`,prob:1-awayYes}
+      {label:homePick,market:homePick,prob:p.scoreHomeYNConf},
+      {label:awayPick,market:awayPick,prob:p.scoreAwayYNConf}
     ];
     const multiRows=multiRowsAll;
     target.innerHTML=`

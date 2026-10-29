@@ -1,0 +1,36 @@
+/* V11.8.2 — prossima giornata verticale per squadra */
+.next-v2-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.next-v2-title strong{font-size:12px;font-weight:950;color:#12355f;text-transform:uppercase;letter-spacing:.06em}
+.next-v2-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.next-v2-card{min-width:0;border:1px solid #dde7f1;border-radius:14px;background:#fbfdff;padding:10px}
+.next-v2-owner{display:flex;align-items:center;gap:7px;padding-bottom:7px;margin-bottom:7px;border-bottom:1px solid #e4ebf3}
+.next-v2-owner img,.next-v2-team img{width:19px;height:19px;object-fit:contain;flex:0 0 19px}
+.next-v2-owner strong{font-size:12px;color:#0a1d35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.next-v2-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;color:#718096;font-size:8px;font-weight:850}
+.next-v2-fixture{display:grid;gap:4px}
+.next-v2-team{display:flex;align-items:center;gap:7px;min-width:0;padding:7px 8px;border:1px solid #e4ebf2;border-radius:10px;background:#fff}
+.next-v2-team strong{font-size:11px;color:#18324e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.next-v2-team.is-focus{background:#eef6ff;border-color:#bfd7ee}
+.next-v2-team.is-focus strong{color:#0d5ea8}
+.next-v2-empty{padding:12px 4px;color:#7b8796;font-size:9px;text-align:center}
+
+@media(max-width:760px){
+  .next-v2-grid{gap:7px}
+  .next-v2-card{padding:8px}
+  .next-v2-owner{gap:5px;padding-bottom:6px;margin-bottom:6px}
+  .next-v2-owner img,.next-v2-team img{width:17px;height:17px;flex-basis:17px}
+  .next-v2-owner strong{font-size:10.5px}
+  .next-v2-meta{font-size:7.5px;gap:4px}
+  .next-v2-team{gap:5px;padding:6px}
+  .next-v2-team strong{font-size:10px}
+}
+
+@media(max-width:430px){
+  .next-v2-grid{grid-template-columns:1fr 1fr;gap:6px}
+  .next-v2-card{padding:7px;border-radius:12px}
+  .next-v2-owner img,.next-v2-team img{width:15px;height:15px;flex-basis:15px}
+  .next-v2-owner strong{font-size:9.5px}
+  .next-v2-meta{font-size:6.8px}
+  .next-v2-team{padding:5px 6px;border-radius:8px}
+  .next-v2-team strong{font-size:9px}
+}

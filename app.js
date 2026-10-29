@@ -342,27 +342,84 @@
     const txt=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
     return txt.charAt(0).toUpperCase()+txt.slice(1);
   }
-  function lineupFor(home,away){ return (D.lineups||[]).find(x=>x.home===home&&x.away===away)||null; }
-  function lineupPlayer(v){
-    const prob=Number(v?.prob);
-    return `<li><span>${esc(v?.name||'')}</span>${Number.isFinite(prob)?`<b>${fmt.pct(prob)}</b>`:''}</li>`;
+  function lineupFor(home,away){
+    return (D.lineups||[]).find(x=>x.home===home && x.away===away) || null;
   }
-  function lineupTeam(name,xi,out,side){
-    return `<div class="lineup-team ${side}">
-      <div class="lineup-team-head">${logoImg(name)}<strong>${esc(name)}</strong></div>
-      <div class="lineup-section-title">Probabili titolari</div>
-      <ol class="lineup-xi">${(xi||[]).map(lineupPlayer).join('')}</ol>
-      <div class="lineup-section-title">Indisponibili</div>
-      <div class="lineup-outs">${(out||[]).length?(out||[]).map(x=>`<span>${esc(x)}</span>`).join(''):'<span class="none">Nessuno indicato</span>'}</div>
+
+  function parseModule(module){
+    const rows=String(module||'').split('-').map(Number).filter(Number.isFinite);
+    return rows.length && rows.reduce((a,b)=>a+b,0)===10 ? rows : [4,3,3];
+  }
+
+  function tacticalPlayers(xi,module){
+    const players=(xi||[]).slice(0,11);
+    if(!players.length) return [];
+    const shape=parseModule(module);
+    const out=[{player:players[0],line:'gk',row:0,pos:0,count:1}];
+    let cursor=1;
+    shape.forEach((count,row)=>{
+      players.slice(cursor,cursor+count).forEach((player,pos)=>{
+        out.push({player,line:'field',row,pos,count});
+      });
+      cursor+=count;
+    });
+    return out;
+  }
+
+  function playerCoords(item,totalRows){
+    if(item.line==='gk') return {x:50,y:88};
+    const x=((item.pos+1)/(item.count+1))*100;
+    const bottom=69, top=17;
+    const y=totalRows<=1 ? 42 : bottom-((bottom-top)*item.row/(totalRows-1));
+    return {x,y};
+  }
+
+  function pitchPlayer(item,totalRows){
+    const c=playerCoords(item,totalRows);
+    const p=item.player||{};
+    const prob=Number(p.prob);
+    const probability=Number.isFinite(prob)?`<span class="pitch-prob">${fmt.pct(prob)}</span>`:'';
+    return `<div class="pitch-player" style="left:${c.x}%;top:${c.y}%">
+      <span class="pitch-marker" aria-hidden="true"><span></span></span>
+      <strong>${esc(p.name||'')}</strong>
+      ${probability}
     </div>`;
   }
+
+  function tacticalPitch(name,module,xi,out,side){
+    const shape=parseModule(module);
+    const players=tacticalPlayers(xi,module);
+    return `<section class="tactical-team ${side}">
+      <div class="tactical-team-head">
+        <div class="tactical-team-name">${logoImg(name)}<div><strong>${esc(name)}</strong><span>Modulo ${esc(module||shape.join('-'))}</span></div></div>
+      </div>
+      <div class="football-pitch">
+        <div class="pitch-halfway"></div>
+        <div class="pitch-circle"></div>
+        <div class="pitch-box pitch-box-top"></div>
+        <div class="pitch-box pitch-box-bottom"></div>
+        <div class="pitch-goal pitch-goal-top"></div>
+        <div class="pitch-goal pitch-goal-bottom"></div>
+        ${players.map(x=>pitchPlayer(x,shape.length)).join('')}
+      </div>
+      <div class="tactical-outs">
+        <span class="tactical-outs-title">Indisponibili</span>
+        <div>${(out||[]).length?(out||[]).map(x=>`<span>${esc(x)}</span>`).join(''):'<span class="none">Nessuno indicato</span>'}</div>
+      </div>
+    </section>`;
+  }
+
   function lineupPanel(m){
     const l=lineupFor(m.home,m.away); if(!l) return '';
-    return `<div class="calendar-lineup-panel" hidden>
-      <div class="lineup-grid">${lineupTeam(m.home,l.homeXI,l.homeOut,'home')}${lineupTeam(m.away,l.awayXI,l.awayOut,'away')}</div>
+    return `<div class="calendar-lineup-panel tactical-panel" hidden>
+      <div class="tactical-pitches">
+        ${tacticalPitch(m.home,l.homeModule,l.homeXI,l.homeOut,'home')}
+        ${tacticalPitch(m.away,l.awayModule,l.awayXI,l.awayOut,'away')}
+      </div>
       <div class="lineup-source">${esc(l.source||'Excel')}</div>
     </div>`;
   }
+
   function renderCalendar(){
     const sel=$('#calendarRound'),grid=$('#calendarGrid'),summary=$('#calendarSummary');
     if(!sel||!grid||!summary)return;

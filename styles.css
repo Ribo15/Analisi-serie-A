@@ -594,3 +594,136 @@ body.match-sticky-active #page-match{
 .lineup-source{margin-top:9px;text-align:right;font-size:8px;color:#7a8798}
 @media(max-width:760px){.calendar-match{grid-template-columns:minmax(0,1fr) 112px}.calendar-time{font-size:8px}.lineup-grid{grid-template-columns:1fr}.lineup-team.away .lineup-team-head{justify-content:flex-start;text-align:left}.lineup-xi{grid-template-columns:1fr 1fr}}
 @media(max-width:430px){.calendar-match{grid-template-columns:minmax(0,1fr) 102px}.lineup-xi{grid-template-columns:1fr}}
+
+
+/* V11.7 — Formazioni su campo tattico */
+.tactical-panel{padding:16px 4px 4px!important}
+.tactical-pitches{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tactical-team{min-width:0}
+.tactical-team-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
+.tactical-team-name{display:flex;align-items:center;gap:8px}
+.tactical-team-name .calendar-logo{width:24px!important;height:24px!important;flex-basis:24px!important}
+.tactical-team-name strong{display:block;font-size:14px;color:#071831}
+.tactical-team-name span{display:block;margin-top:2px;font-size:10px;font-weight:850;color:#64778f}
+
+.football-pitch{
+  position:relative;
+  height:430px;
+  overflow:hidden;
+  border-radius:18px;
+  border:3px solid #f7fbf7;
+  background:
+    linear-gradient(rgba(255,255,255,.055),rgba(255,255,255,.055)),
+    repeating-linear-gradient(90deg,#2f914d 0,#2f914d 12.5%,#2b8747 12.5%,#2b8747 25%);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.08),0 8px 22px rgba(21,51,91,.09)
+}
+.football-pitch::before{
+  content:"";
+  position:absolute;inset:14px;
+  border:2px solid rgba(255,255,255,.82);
+  border-radius:3px;
+  pointer-events:none
+}
+.pitch-halfway{
+  position:absolute;left:14px;right:14px;top:50%;
+  border-top:2px solid rgba(255,255,255,.82)
+}
+.pitch-circle{
+  position:absolute;left:50%;top:50%;width:76px;height:76px;
+  border:2px solid rgba(255,255,255,.82);border-radius:50%;
+  transform:translate(-50%,-50%)
+}
+.pitch-circle::after{
+  content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;
+  border-radius:50%;background:rgba(255,255,255,.88);transform:translate(-50%,-50%)
+}
+.pitch-box{
+  position:absolute;left:50%;width:48%;height:16%;
+  border:2px solid rgba(255,255,255,.82);transform:translateX(-50%)
+}
+.pitch-box-top{top:14px;border-top:0}
+.pitch-box-bottom{bottom:14px;border-bottom:0}
+.pitch-goal{
+  position:absolute;left:50%;width:22%;height:4%;
+  border:2px solid rgba(255,255,255,.82);transform:translateX(-50%)
+}
+.pitch-goal-top{top:14px;border-top:0}
+.pitch-goal-bottom{bottom:14px;border-bottom:0}
+
+.pitch-player{
+  position:absolute;transform:translate(-50%,-50%);
+  width:88px;text-align:center;z-index:3
+}
+.pitch-marker{
+  position:relative;
+  display:grid;place-items:center;
+  width:30px;height:30px;margin:0 auto 3px;
+  border-radius:50%;
+  background:#fff;
+  border:2px solid #dbe5f0;
+  box-shadow:0 3px 8px rgba(3,19,38,.22)
+}
+.pitch-marker::before,
+.pitch-marker::after{
+  content:"";position:absolute;top:8px;width:9px;height:12px;
+  background:#fff;border:2px solid #dbe5f0
+}
+.pitch-marker::before{left:-6px;transform:rotate(28deg);border-right:0;border-radius:5px 0 0 5px}
+.pitch-marker::after{right:-6px;transform:rotate(-28deg);border-left:0;border-radius:0 5px 5px 0}
+.pitch-marker span{
+  width:8px;height:8px;border-radius:50%;background:#0d5ea8;
+  position:relative;z-index:2
+}
+.pitch-player strong{
+  display:block;
+  padding:2px 4px;
+  border-radius:6px;
+  background:rgba(4,27,24,.82);
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  line-height:1.15;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-shadow:0 1px 1px rgba(0,0,0,.25)
+}
+.pitch-prob{
+  display:inline-block;
+  margin-top:2px;
+  padding:2px 5px;
+  border-radius:999px;
+  background:#fff;
+  color:#0d5ea8;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+  font-size:8px;
+  font-weight:950
+}
+
+.tactical-outs{
+  margin-top:9px;padding:9px 10px;
+  border:1px solid #e2e9f1;background:#fbfcfe;border-radius:12px
+}
+.tactical-outs-title{
+  display:block;margin-bottom:6px;
+  font-size:8px;font-weight:950;letter-spacing:.08em;
+  text-transform:uppercase;color:#7a8aa0
+}
+.tactical-outs>div{display:flex;flex-wrap:wrap;gap:5px}
+.tactical-outs>div span{
+  font-size:8px;font-weight:850;background:#fff0f0;color:#9d4242;
+  border-radius:999px;padding:4px 6px
+}
+.tactical-outs>div span.none{background:#edf2f7;color:#718096}
+
+@media(max-width:900px){
+  .tactical-pitches{grid-template-columns:1fr}
+  .football-pitch{height:460px}
+}
+@media(max-width:520px){
+  .tactical-panel{padding:12px 0 2px!important}
+  .football-pitch{height:410px;border-radius:15px}
+  .pitch-player{width:72px}
+  .pitch-player strong{font-size:8px}
+  .pitch-marker{width:26px;height:26px}
+}

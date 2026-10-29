@@ -342,35 +342,62 @@
     const txt=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
     return txt.charAt(0).toUpperCase()+txt.slice(1);
   }
+  function lineupFor(home,away){ return (D.lineups||[]).find(x=>x.home===home&&x.away===away)||null; }
+  function lineupPlayer(v){
+    const prob=Number(v?.prob);
+    return `<li><span>${esc(v?.name||'')}</span>${Number.isFinite(prob)?`<b>${fmt.pct(prob)}</b>`:''}</li>`;
+  }
+  function lineupTeam(name,xi,out,side){
+    return `<div class="lineup-team ${side}">
+      <div class="lineup-team-head">${logoImg(name)}<strong>${esc(name)}</strong></div>
+      <div class="lineup-section-title">Probabili titolari</div>
+      <ol class="lineup-xi">${(xi||[]).map(lineupPlayer).join('')}</ol>
+      <div class="lineup-section-title">Indisponibili</div>
+      <div class="lineup-outs">${(out||[]).length?(out||[]).map(x=>`<span>${esc(x)}</span>`).join(''):'<span class="none">Nessuno indicato</span>'}</div>
+    </div>`;
+  }
+  function lineupPanel(m){
+    const l=lineupFor(m.home,m.away); if(!l) return '';
+    return `<div class="calendar-lineup-panel" hidden>
+      <div class="lineup-grid">${lineupTeam(m.home,l.homeXI,l.homeOut,'home')}${lineupTeam(m.away,l.awayXI,l.awayOut,'away')}</div>
+      <div class="lineup-source">${esc(l.source||'Excel')}</div>
+    </div>`;
+  }
   function renderCalendar(){
-    const sel=$('#calendarRound'), grid=$('#calendarGrid'), summary=$('#calendarSummary');
-    if(!sel || !grid || !summary) return;
+    const sel=$('#calendarRound'),grid=$('#calendarGrid'),summary=$('#calendarSummary');
+    if(!sel||!grid||!summary)return;
     const rounds=(D.calendarRounds||[...new Set((D.calendar||[]).map(x=>x.round))]).slice().sort((a,b)=>a-b);
     if(!sel.options.length){
       sel.innerHTML=rounds.map(r=>`<option value="${r}">Giornata ${r}</option>`).join('');
-      const preferred=(D.predictionRounds||[]).slice().sort((a,b)=>b-a)[0] || Math.min(38,(D.lastRound||0)+1) || rounds[0];
-      if(rounds.includes(preferred)) sel.value=String(preferred);
+      const preferred=(D.predictionRounds||[]).slice().sort((a,b)=>b-a)[0]||Math.min(38,(D.lastRound||0)+1)||rounds[0];
+      if(rounds.includes(preferred))sel.value=String(preferred);
     }
-    const round=Number(sel.value||rounds[0]);
-    const list=(D.calendar||[]).filter(x=>+x.round===round);
+    const round=Number(sel.value||rounds[0]),list=(D.calendar||[]).filter(x=>+x.round===round);
     const ideaCount=list.reduce((n,m)=>n+matchIdeas(m.home,m.away).length,0);
     const predCount=list.filter(m=>(D.predictions||[]).some(p=>p.home===m.home&&p.away===m.away)).length;
     summary.innerHTML=`<div><span>GIORNATA ${round}</span><strong>${list.length} partite</strong></div><div><span>PRONOSTICI SALVATI</span><strong>${predCount}</strong></div><div><span>POSSIBILI PUNTATE</span><strong>${ideaCount}</strong></div>`;
     const dates=[...new Set(list.map(x=>x.date||''))];
-    grid.innerHTML=dates.map(date=>`<section class="calendar-day"><div class="calendar-day-title">${formatCalendarDate(date)}</div><div class="calendar-match-list">${list.filter(x=>(x.date||'')===date).map(m=>`
-      <article class="calendar-match card">
+    grid.innerHTML=dates.map(date=>`<section class="calendar-day"><div class="calendar-day-title">${formatCalendarDate(date)}</div><div class="calendar-match-list">${list.filter(x=>(x.date||'')===date).map(m=>{
+      const hasLineup=!!lineupFor(m.home,m.away);
+      return `<article class="calendar-match card">
         <div class="calendar-teams">
           <div class="calendar-team home">${logoImg(m.home)}<strong>${esc(m.home)}</strong></div>
-          <span class="calendar-vs">vs</span>
+          <div class="calendar-center"><span class="calendar-vs">vs</span>${m.time?`<span class="calendar-time">${esc(m.time)}</span>`:''}</div>
           <div class="calendar-team away">${logoImg(m.away)}<strong>${esc(m.away)}</strong></div>
         </div>
         <div class="calendar-actions">
           <button data-cal-action="match" data-home="${esc(m.home)}" data-away="${esc(m.away)}"><span>Dati Match</span></button>
           <button class="calendar-primary" data-cal-action="pred" data-home="${esc(m.home)}" data-away="${esc(m.away)}"><span>Pronostici</span></button>
-        </div>
-      </article>`).join('')}</div></section>`).join('') || '<div class="empty">Nessuna partita disponibile.</div>';
+          ${hasLineup?`<button class="calendar-lineup-toggle" data-cal-action="lineup" type="button"><span>Formazioni</span></button>`:''}
+        </div>${lineupPanel(m)}</article>`;
+    }).join('')}</div></section>`).join('')||'<div class="empty">Nessuna partita disponibile.</div>';
     grid.querySelectorAll('[data-cal-action="match"]').forEach(b=>b.addEventListener('click',()=>{homeSel.value=b.dataset.home;awaySel.value=b.dataset.away;renderMatch();showPage('match');window.scrollTo({top:0,behavior:'smooth'});}));
     grid.querySelectorAll('[data-cal-action="pred"]').forEach(b=>b.addEventListener('click',()=>{predHomeSel.value=b.dataset.home;predAwaySel.value=b.dataset.away;renderPredictions();showPage('predictions');window.scrollTo({top:0,behavior:'smooth'});}));
+    grid.querySelectorAll('[data-cal-action="lineup"]').forEach(b=>b.addEventListener('click',()=>{
+      const panel=b.closest('.calendar-match')?.querySelector('.calendar-lineup-panel');if(!panel)return;
+      panel.hidden=!panel.hidden;b.classList.toggle('is-open',!panel.hidden);
+      b.querySelector('span').textContent=panel.hidden?'Formazioni':'Nascondi';
+    }));
   }
 
   function confClass(v){ return v>=.70?'conf-high':v>=.58?'conf-mid':'conf-low'; }

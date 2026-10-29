@@ -567,3 +567,30 @@ body.match-sticky-active #page-match{
   .pred-row-info .band-meta{font-size:6.8px;gap:4px}
   .pred-1x2-model .band-meta>span:not(.band-badge){font-size:6px}
 }
+
+
+/* V11.6 — prova reale Excel → GitHub */
+.band-possiblebet{background:#e7f5ff;color:#0d5ea8}
+.calendar-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:34px}
+.calendar-time{font-size:9px;font-weight:950;color:#0d5ea8;line-height:1}
+.calendar-lineup-toggle{background:#f2f7fd!important;color:#164f87!important;border-color:#cbdcec!important}
+.calendar-lineup-toggle.is-open{background:#e3eefb!important;border-color:#a9c6e5!important}
+.calendar-lineup-panel{grid-column:1/-1;border-top:1px solid #e0e8f1;margin-top:2px;padding:13px 4px 2px}
+.calendar-lineup-panel[hidden]{display:none!important}
+.lineup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lineup-team{min-width:0;border:1px solid #e1e9f2;background:#fbfdff;border-radius:14px;padding:11px}
+.lineup-team-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.lineup-team.away .lineup-team-head{justify-content:flex-end;text-align:right}
+.lineup-team-head .calendar-logo{width:20px!important;height:20px!important;flex-basis:20px!important}
+.lineup-team-head strong{font-size:13px;color:#071831}
+.lineup-section-title{font-size:8px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;color:#7a8aa0;margin:8px 0 5px}
+.lineup-xi{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 8px}
+.lineup-xi li{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;font-size:10px;color:#25384f}
+.lineup-xi li span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lineup-xi li b{font-size:8px;color:#0d63d7;background:#eaf3ff;border-radius:999px;padding:2px 5px;flex:0 0 auto}
+.lineup-outs{display:flex;gap:5px;flex-wrap:wrap}
+.lineup-outs span{font-size:8px;font-weight:850;background:#fff0f0;color:#9d4242;border-radius:999px;padding:4px 6px}
+.lineup-outs span.none{background:#edf2f7;color:#718096}
+.lineup-source{margin-top:9px;text-align:right;font-size:8px;color:#7a8798}
+@media(max-width:760px){.calendar-match{grid-template-columns:minmax(0,1fr) 112px}.calendar-time{font-size:8px}.lineup-grid{grid-template-columns:1fr}.lineup-team.away .lineup-team-head{justify-content:flex-start;text-align:left}.lineup-xi{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.calendar-match{grid-template-columns:minmax(0,1fr) 102px}.lineup-xi{grid-template-columns:1fr}}

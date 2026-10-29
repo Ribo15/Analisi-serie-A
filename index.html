@@ -6,23 +6,22 @@
   <meta name="theme-color" content="#08111f">
   <title>Analisi Serie A</title>
   <link rel="stylesheet" href="styles.css?v=11.7">
+  <link rel="stylesheet" href="patch-v11.8.css?v=11.8">
 </head>
 <body>
   <header class="site-header" aria-hidden="true">
     <div class="wrap header-spacer"></div>
   </header>
-
   <nav class="main-nav" aria-label="Navigazione principale">
     <div class="wrap nav-inner">
-      <button class="nav-btn active" data-page="calendar">Calendario</button>
+      <button class="nav-btn active" data-page="wallet">Andamento scommesse</button>
+      <button class="nav-btn" data-page="calendar">Calendario</button>
       <button class="nav-btn" data-page="match">Dati Match</button>
       <button class="nav-btn" data-page="predictions">Pronostici</button>
       <button class="nav-btn" data-page="ideas">Puntate</button>
       <button class="nav-btn" data-page="standings">Classifica</button>
-      <button class="nav-btn" data-page="wallet">Andamento scommesse</button>
     </div>
   </nav>
-
   <main class="wrap main-content">
     <section id="page-match" class="page">
       <section class="match-picker match-picker-v9 card">
@@ -37,20 +36,17 @@
           <div id="awayMeta" class="team-meta"></div>
         </div>
       </section>
-
       <section id="matchSticky" class="match-sticky" aria-label="Squadre del match">
         <div class="sticky-side sticky-home"><img id="stickyHomeLogo" class="sticky-logo" alt=""><div><span>CASA</span><strong id="stickyHomeName"></strong></div></div>
         <div class="sticky-divider"></div>
         <div class="sticky-side sticky-away"><div><span>TRASFERTA</span><strong id="stickyAwayName"></strong></div><img id="stickyAwayLogo" class="sticky-logo" alt=""></div>
       </section>
-
       <nav class="tabs match-tabs" aria-label="Sezioni confronto">
         <button class="tab active" data-view="general">Dati generali</button>
         <button class="tab" data-view="last5">Dati ultime gare</button>
         <button class="tab" data-view="venue5">Casa / Fuori</button>
         <button class="tab" data-view="level">Livello avversario</button>
       </nav>
-
       <details class="filter-details card" id="filterDetails">
         <summary>Dettagli filtro</summary>
         <div class="filter-detail-grid">
@@ -59,13 +55,11 @@
           <div class="filter-team filter-away"><img id="contextAwayLogo" class="filter-logo" alt=""><div><strong id="contextAwayName"></strong><span id="contextAwayGames"></span></div></div>
         </div>
       </details>
-
       <section id="comparison"></section>
       <section id="nextFixtures" class="next-fixtures card"></section>
       <section id="matchIdeas" class="idea-host"></section>
     </section>
-
-    <section id="page-calendar" class="page active">
+    <section id="page-calendar" class="page">
       <section class="page-head calendar-page-head">
         <div>
           <div class="kicker">STAGIONE</div>
@@ -78,16 +72,14 @@
       <section id="calendarSummary" class="calendar-summary card" hidden></section>
       <div id="calendarGrid" class="calendar-grid"></div>
     </section>
-
     <section id="page-predictions" class="page">
       <section class="page-head">
         <div>
           <div class="kicker">MODELLO</div>
           <h2>Pronostici Match</h2>
-          <p>Seleziona le due squadre e visualizza soltanto i pronostici salvati per quel match.</p>
+          <p>Seleziona la giornata e il match da analizzare.</p>
         </div>
       </section>
-
       <section class="match-picker card prediction-picker">
         <div class="team-picker home-picker">
           <span class="side-label">CASA</span>
@@ -101,12 +93,9 @@
           <div id="predictionAwayMeta" class="team-meta"></div>
         </div>
       </section>
-
       <div id="predictionSingle" class="prediction-single"></div>
       <section id="predictionIdeas" class="idea-host"></section>
     </section>
-
-
     <section id="page-ideas" class="page">
       <section class="page-head">
         <div>
@@ -115,12 +104,10 @@
           <p>Tutte le idee annotate durante l’analisi, con una schedina in preparazione separata dal portafoglio reale.</p>
         </div>
       </section>
-
       <section id="slipOverview"></section>
       <section id="playedSlipsOverview"></section>
       <section id="ideasOverview"></section>
     </section>
-
     <section id="page-standings" class="page">
       <section class="page-head">
         <div>
@@ -140,18 +127,15 @@
         </div>
       </section>
     </section>
-
-
-    <section id="page-wallet" class="page">
+    <section id="page-wallet" class="page active">
       <section class="page-head wallet-page-head">
         <div>
-          <div class="kicker">PERSONALE</div>
+          <div class="kicker">Ciao Marco</div>
           <h2>Andamento scommesse</h2>
           <p>Situazione economica delle giocate, giornata dopo giornata.</p>
         </div>
         <div class="wallet-local-pill">Salvataggio locale</div>
       </section>
-
       <section class="wallet-hero-grid">
         <article class="wallet-result-card wallet-active card">
           <span>ATTIVO</span>
@@ -171,7 +155,6 @@
           <div id="walletChart" class="wallet-chart" aria-label="Grafico andamento scommesse"></div>
         </article>
       </section>
-
       <section class="wallet-data-grid">
         <article class="wallet-data-card card"><span>Totale ricariche</span><strong id="walletTopups">€ 0,00</strong></article>
         <article class="wallet-data-card card"><span>Totale giocato</span><strong id="walletStaked">€ 0,00</strong></article>
@@ -180,7 +163,6 @@
         <article class="wallet-data-card wallet-credit card"><span>Saldo SNAI</span><strong id="walletBalance">€ 0,00</strong></article>
         <article class="wallet-data-card card"><span>Totale ritirato</span><strong id="walletWithdrawn">€ 0,00</strong></article>
       </section>
-
       <section class="wallet-entry card compact-entry">
         <div class="wallet-entry-head">
           <div><div class="kicker">AGGIUNGI</div><h3>Registra un movimento</h3></div>
@@ -198,7 +180,6 @@
           <div class="wallet-actions"><button class="primary-action" type="submit">Salva</button><span class="wallet-local-note">I dati restano su questo browser.</span></div>
         </form>
       </section>
-
       <section class="wallet-ledger card compact-ledger">
         <div class="wallet-ledger-head"><div><div class="kicker">ULTIMI MOVIMENTI</div><h3>Storico</h3></div><button id="walletClear" class="ghost-danger" type="button">Azzera</button></div>
         <div id="walletEmpty" class="empty">Nessun movimento inserito.</div>
@@ -210,10 +191,9 @@
         </div>
       </section>
     </section>
-
   </main>
-
   <script src="data.js?v=11.7"></script>
   <script src="app.js?v=11.7"></script>
+  <script src="patch-v11.8.js?v=11.8"></script>
 </body>
 </html>

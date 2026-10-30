@@ -1,0 +1,5 @@
+/* V11.8.6 — ufficiale: vincita potenziale */
+.official-potential-line{display:block;margin-top:5px;color:#49657f;font-size:8px;font-weight:900;line-height:1.2}
+.beta-wallet-grid .beta-open .official-potential-line{color:#174f88}
+.official-next-potential{display:inline-flex;align-items:center;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font-size:11px;font-weight:950;line-height:1}
+@media(max-width:620px){.official-potential-line{font-size:7px}.official-next-potential{font-size:10px;padding:7px 9px}}

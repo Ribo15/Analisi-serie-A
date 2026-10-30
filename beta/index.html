@@ -18,13 +18,13 @@
       let html=await r.text();
       html=html.replace('<head>','<head><base href="../"><meta name="robots" content="noindex,nofollow">');
       html=html.replace('</head>','<link rel="stylesheet" href="beta/patch-v11.8.4.css?v=11.8.4"></head>');
-      html=html.replace('<script src="data.js?v=11.7"></script>',
-        '<script src="data.js?v=11.7"></script>'+ 
-        '<script src="beta/data-meta-g9.js?v=12"></script>'+ 
-        '<script src="beta/data-bands-v12.js?v=12"></script>'+ 
-        '<script src="beta/data-predictions-g10.js?v=12"></script>'+ 
-        '<script src="beta/data-lineups-g10.js?v=12"></script>'+ 
-        '<script src="beta/data-v12.js?v=12"></script>');
+      html=html.replace('<script src="data.js?v=11.7"><\/script>',
+        '<script src="data.js?v=11.7"><\/script>'+ 
+        '<script src="beta/data-meta-g9.js?v=12"><\/script>'+ 
+        '<script src="beta/data-bands-v12.js?v=12"><\/script>'+ 
+        '<script src="beta/data-predictions-g10.js?v=12"><\/script>'+ 
+        '<script src="beta/data-lineups-g10.js?v=12"><\/script>'+ 
+        '<script src="beta/data-v12.js?v=12"><\/script>');
       html=html.replace('</body>','<script src="beta/patch-v11.8.4.js?v=11.8.4"><\/script></body>');
       document.open();document.write(html);document.close();
     }catch(e){

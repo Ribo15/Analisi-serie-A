@@ -5,6 +5,21 @@ const WALLET_KEY='serieADataLab.wallet.v3';
 const euro=v=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(v)||0);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+/* Orari ufficiali 10ª giornata: patch temporanea per la beta. Il prossimo export Excel li sostituirà nei dati. */
+const round10Times={
+  'Bologna|Monza':{time:'15:00',day:'sabato'},
+  'Udinese|Roma':{time:'18:00',day:'sabato'},
+  'Milan|Inter':{time:'20:45',day:'sabato'},
+  'Como|Venezia':{time:'12:30',day:'domenica'},
+  'Frosinone|Torino':{time:'15:00',day:'domenica'},
+  'Lazio|Cagliari':{time:'15:00',day:'domenica'},
+  'Lecce|Genoa':{time:'18:00',day:'domenica'},
+  'Juventus|Napoli':{time:'20:45',day:'domenica'},
+  'Sassuolo|Fiorentina':{time:'18:30',day:'lunedì'},
+  'Atalanta|Parma':{time:'20:45',day:'lunedì'}
+};
+(D.calendar||[]).forEach(f=>{if(+f.round!==10)return;const x=round10Times[`${f.home}|${f.away}`];if(x)Object.assign(f,x,{status:'UPCOMING'})});
+
 function walletRows(){
   try{return JSON.parse(localStorage.getItem(WALLET_KEY)||'[]')}catch(e){return []}
 }

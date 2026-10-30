@@ -4,7 +4,7 @@
 const D=window.SERIE_A_DATA;
 if(!D)return;
 D.lastRound=9;
-D.predictionRounds=[7,8,9,10];
+D.predictionRounds=[10,9,8,7];
 if(window.BETA_V12_META) D.meta=window.BETA_V12_META;
 if(Array.isArray(window.BETA_V12_GAMES9)) D.games=(D.games||[]).filter(g=>+g.round!==9).concat(window.BETA_V12_GAMES9);
 const fixtures10=window.BETA_V12_FIXTURES10||[];
@@ -38,7 +38,7 @@ const existing=(D.predictions||[]).filter(p=>+p.round!==10);
 existing.forEach(p=>Object.keys(rates).forEach(k=>{if(p[k])applyRate(p,k)}));
 const p10=(window.BETA_V12_PREDICTIONS10||[]).map(p=>({...p}));
 p10.forEach(p=>Object.keys(rates).forEach(k=>{if(p[k])applyRate(p,k)}));
-D.predictions=existing.concat(p10);
+D.predictions=p10.concat(existing);
 D.lineups=(D.lineups||[]).filter(x=>+x.round!==10).concat(window.BETA_V12_LINEUPS10||[]);
 D.betaSnapshot={source:'Pronostici v12',generated:'2026-10-30',lastResultsRound:9,predictionRound:10};
 })();

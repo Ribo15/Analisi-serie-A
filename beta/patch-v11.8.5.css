@@ -1,0 +1,35 @@
+/* Beta v11.8.5 — layout verticale prossima partita + ordine andamento */
+
+/* PROSSIMA PARTITA: una squadra/blocco sotto l'altra, non affiancati */
+.next-v2-grid{grid-template-columns:1fr!important}
+
+/* ANDAMENTO SCOMMESSE: ordine richiesto */
+#page-wallet.active{display:flex!important;flex-direction:column}
+#page-wallet .wallet-page-head{order:0}
+#page-wallet .beta-wallet-pulse{order:1;display:flex;flex-direction:column;margin-top:4px}
+#page-wallet .beta-next-card{order:1;margin-top:0;margin-bottom:10px}
+#page-wallet .beta-wallet-grid{order:2;grid-template-columns:repeat(4,minmax(0,1fr))}
+#page-wallet .beta-wallet-grid article:nth-child(n+5){display:none!important}
+#page-wallet .wallet-hero-grid{order:2;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}
+#page-wallet .wallet-result-card{min-height:118px;padding:20px 22px!important}
+#page-wallet .wallet-result-card>strong{font-size:34px!important}
+#page-wallet .wallet-chart-card{grid-column:1/-1!important;min-height:245px}
+#page-wallet .wallet-data-grid{order:3}
+#page-wallet .wallet-entry{order:4}
+#page-wallet .wallet-ledger{order:5}
+
+/* Nel blocco prossima partita delle schedine attive, contenuto più verticale */
+.beta-next-card{padding:16px 18px}
+.beta-next-teams{display:grid;grid-template-columns:1fr;gap:7px;justify-items:stretch}
+.beta-next-teams>div{justify-content:flex-start!important;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.08)}
+.beta-next-teams>div:last-child{justify-content:flex-start!important}
+.beta-next-teams>span{display:none}
+.beta-next-info{justify-content:flex-start;align-items:flex-start;flex-direction:column;gap:6px}
+
+@media(max-width:760px){
+  #page-wallet .beta-wallet-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #page-wallet .wallet-hero-grid{grid-template-columns:1fr!important}
+  #page-wallet .wallet-chart-card{grid-column:auto!important}
+  #page-wallet .wallet-result-card{min-height:100px;padding:16px!important}
+  #page-wallet .wallet-result-card>strong{font-size:28px!important}
+}

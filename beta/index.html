@@ -2,14 +2,28 @@
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#08111f">
   <title>Analisi Serie A — Beta</title>
-  <meta http-equiv="refresh" content="0; url=../?beta=test">
-  <script>window.location.replace('../?beta=test');</script>
+  <style>body{margin:0;background:#08111f;color:#fff;font-family:system-ui,-apple-system,sans-serif}.beta-loading{display:grid;place-items:center;min-height:100px;padding:24px;font-size:14px}</style>
 </head>
 <body>
-  <p>Reindirizzamento alla versione beta…</p>
-  <p><a href="../?beta=test">Apri la beta</a></p>
+  <div class="beta-loading">Apertura versione beta…</div>
+  <script>
+  (async()=>{
+    try{
+      const r=await fetch('../index.html?betaSource='+Date.now(),{cache:'no-store'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      let html=await r.text();
+      html=html.replace('<head>','<head><base href="../">');
+      html=html.replace('</head>','<link rel="stylesheet" href="patch-v11.8.3.css?v=11.8.3"></head>');
+      html=html.replace('</body>','<script src="patch-v11.8.3.js?v=11.8.3"><\/script></body>');
+      document.open();document.write(html);document.close();
+    }catch(e){
+      document.body.innerHTML='<div class="beta-loading">Impossibile caricare la beta. <a style="color:#8fc7ff" href="../?beta=test">Apri la versione principale</a></div>';
+    }
+  })();
+  </script>
 </body>
 </html>

@@ -17,16 +17,7 @@
       if(!r.ok)throw new Error('HTTP '+r.status);
       let html=await r.text();
       html=html.replace('<head>','<head><base href="../"><meta name="robots" content="noindex,nofollow">');
-      html=html.replace('</head>','<link rel="stylesheet" href="beta/patch-v11.8.4.css?v=11.8.4"><link rel="stylesheet" href="beta/patch-v11.8.5.css?v=11.8.5"></head>');
-      html=html.replace('<script src="data.js?v=11.7"><\/script>',
-        '<script src="data.js?v=11.7"><\/script>'+ 
-        '<script src="beta/data-meta-g9.js?v=12"><\/script>'+ 
-        '<script src="beta/data-bands-v12.js?v=12"><\/script>'+ 
-        '<script src="beta/data-predictions-g10.js?v=12"><\/script>'+ 
-        '<script src="beta/data-lineups-g10.js?v=12"><\/script>'+ 
-        '<script src="beta/data-v12.js?v=12"><\/script>'+ 
-        '<script src="beta/beta-storage-v1.js?v=1"><\/script>');
-      html=html.replace('</body>','<script src="beta/patch-v11.8.4.js?v=11.8.4"><\/script><script src="beta/patch-v11.8.5.js?v=11.8.5"><\/script></body>');
+      html=html.replace('<script src="app.js?v=11.7"><\/script>','<script src="beta/beta-storage-v1.js?v=2"><\/script><script src="app.js?v=11.7"><\/script>');
       document.open();document.write(html);document.close();
     }catch(e){
       document.body.innerHTML='<div class="beta-loading">Impossibile caricare la beta. <a style="color:#8fc7ff" href="../">Apri la versione principale</a></div>';

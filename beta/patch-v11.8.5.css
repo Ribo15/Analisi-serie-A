@@ -1,7 +1,16 @@
 /* Beta v11.8.5 — layout verticale prossima partita + ordine andamento */
 
-/* PROSSIMA PARTITA: una squadra/blocco sotto l'altra, non affiancati */
+/* PROSSIMA PARTITA v2: una squadra/blocco sotto l'altra, non affiancati */
 .next-v2-grid{grid-template-columns:1fr!important}
+
+/* Fallback renderer legacy: ogni partita deve essere verticale */
+.next-fixtures .next-fixture-lines{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+.next-fixtures .next-fixture-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:7px!important;padding:10px!important;border:1px solid #e1e9f2!important;border-radius:12px!important;background:#fff!important}
+.next-fixtures .next-fixture-team{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;width:100%!important;min-width:0!important}
+.next-fixtures .next-fixture-team.away{flex-direction:row-reverse!important;justify-content:flex-end!important}
+.next-fixtures .next-fixture-date{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:6px!important;padding-left:27px!important;font-size:9px!important;text-align:left!important}
+.next-fixtures .next-fixture-date small{display:inline!important;margin:0!important}
+.next-fixtures .next-fixture-row+.next-fixture-row{margin-top:0!important}
 
 /* ANDAMENTO SCOMMESSE: ordine richiesto */
 #page-wallet.active{display:flex!important;flex-direction:column}
@@ -32,4 +41,6 @@
   #page-wallet .wallet-chart-card{grid-column:auto!important}
   #page-wallet .wallet-result-card{min-height:100px;padding:16px!important}
   #page-wallet .wallet-result-card>strong{font-size:28px!important}
+  .next-fixtures .next-fixture-row{padding:9px!important;gap:6px!important}
+  .next-fixtures .next-fixture-date{padding-left:25px!important}
 }

@@ -16,7 +16,7 @@ function formDots(team){
  return '<div class="shared-form" aria-label="Ultime '+games.length+' partite di '+esc(team)+'"><span class="shared-form-label">Ultime '+games.length+'</span>'+games.map(g=>{
   const cls=Number(g.gf)>Number(g.ga)?'w':Number(g.gf)===Number(g.ga)?'d':'l';
   const outcome=cls==='w'?'Vittoria':cls==='d'?'Pareggio':'Sconfitta';
-  const desc=outcome+' • G'+(Number(g.round)||'?')+' • '+(g.venue==='Casa'?team+'–'+g.opponent:g.opponent+'–'+team)+' '+g.gf+'-'+g.ga;
+  const score=g.venue==='Casa'?g.gf+'-'+g.ga:g.ga+'-'+g.gf;const desc=outcome+' • G'+(Number(g.round)||'?')+' • '+(g.venue==='Casa'?team+'–'+g.opponent:g.opponent+'–'+team)+' '+score;
   return '<span class="shared-form-dot '+cls+'" title="'+esc(desc)+'" aria-label="'+esc(desc)+'"></span>'
  }).join('')+'</div>';
 }

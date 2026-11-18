@@ -658,7 +658,7 @@ function attachPredictionPickHandlers(root,home,away){
       return seed;
     } catch(e){ return []; }
   }
-  function saveWallet(rows){ localStorage.setItem(WALLET_KEY,JSON.stringify(rows)); }
+  function saveWallet(rows){ localStorage.setItem(WALLET_KEY,JSON.stringify(rows)); window.dispatchEvent(new Event('ribo:wallet-changed')); }
   function walletStatusLabel(v){ return v==='won'?'Vinta':v==='lost'?'Persa':v==='open'?'Aperta':'—'; }
   function walletTypeLabel(v){ return v==='topup'?'Ricarica':v==='withdrawal'?'Ritiro':'Schedina'; }
 

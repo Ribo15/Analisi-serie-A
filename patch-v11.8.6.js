@@ -44,9 +44,10 @@ function nextActive(open){const seen=new Set(),list=[];open.forEach(b=>(b.select
 function countdown(dt){let d=+dt-Date.now();if(d<=0){const m=Math.floor(Math.abs(d)/60000);return m<120?`Iniziata da ${m} min`:'Partita iniziata'}const days=Math.floor(d/86400000);d%=86400000;const h=Math.floor(d/3600000);d%=3600000;const m=Math.floor(d/60000),s=Math.floor((d%60000)/1000);return days?`${days}g ${h}h ${m}m`:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
 function ensureDashboard(){const page=$('#page-wallet'),anchor=$('.wallet-data-grid',page);if(!page||!anchor)return null;let host=$('#officialWalletPulse');if(!host){host=document.createElement('section');host.id='officialWalletPulse';host.className='official-wallet-pulse';anchor.after(host)}return host}
 function ensureReviewHost(){
- const entry=$('#page-wallet .wallet-entry');if(!entry)return null;
+ const page=$('#page-wallet'),anchor=$('.wallet-data-grid',page);if(!page||!anchor)return null;
  let host=$('#walletSlipReview');
- if(!host){host=document.createElement('div');host.id='walletSlipReview';host.className='wallet-slip-review-host';entry.after(host)}
+ if(!host){host=document.createElement('div');host.id='walletSlipReview';host.className='wallet-slip-review-host'}
+ if(host.previousElementSibling!==anchor)anchor.after(host);
  return host;
 }
 
@@ -86,7 +87,8 @@ function verifySelection(sel){
  return good===null?{state:'unknown',label:'Mercato da verificare',score}:{state:good?'correct':'incorrect',label:good?'Pronostico preso':'Pronostico non preso',score};
 }
 function reviewSlips(rows){
- if(!rows.length)return '<section class="card wallet-slip-review"><h3>Le mie schedine</h3><p>Nessuna schedina registrata.</p></section>';
+ const header='<summary class="wallet-slip-review-summary"><strong>Le mie schedine</strong><span class="wallet-slip-review-meta">'+rows.length+' '+(rows.length===1?'schedina':'schedine')+' · Apri elenco</span></summary>';
+ if(!rows.length)return '<details class="card wallet-slip-review">'+header+'<div class="wallet-slip-review-body"><p>Nessuna schedina registrata.</p></div></details>';
  const groups=[['open','Attive'],['lost','Perse'],['won','Vinte']];
  const cards=groups.map(([status,title])=>{
   const subset=rows.filter(x=>x.status===status).slice().sort((a,b)=>Number(b.round||0)-Number(a.round||0)||Number(b.id||0)-Number(a.id||0));
@@ -101,7 +103,7 @@ function reviewSlips(rows){
    return '<details class="wallet-slip-card"><summary><span><strong>G'+esc(b.round||'—')+' • '+esc(b.description||'Schedina')+'</strong><small>'+count+' selezioni note • '+statusLabel+'</small></span><span class="wallet-slip-amount">'+euro(b.amount)+(Number(b.potentialPayout)>0?'<small>Potenziale '+euro(b.potentialPayout)+'</small>':'')+'</span></summary><ul class="wallet-pick-list">'+picks+'</ul></details>';
   }).join('')+'</div>';
  }).join('');
- return '<section class="card wallet-slip-review"><h3>Le mie schedine</h3><p>Apri una schedina per controllare le selezioni. Verde e rosso sono calcolati solo quando il risultato finale è presente nello snapshot Excel; nessun punteggio in diretta.</p>'+cards+'</section>';
+ return '<details class="card wallet-slip-review">'+header+'<div class="wallet-slip-review-body"><p>Apri una schedina per controllare le selezioni. Verde e rosso sono calcolati solo quando il risultato finale è presente nello snapshot Excel; nessun punteggio in diretta.</p>'+cards+'</div></details>';
 }
 
 function renderDashboard(){const host=ensureDashboard();if(!host)return;const rows=walletRows(),bets=rows.filter(x=>x.type==='bet'),won=bets.filter(x=>x.status==='won'),lost=bets.filter(x=>x.status==='lost'),open=bets.filter(x=>x.status==='open'),potential=open.reduce((s,x)=>s+(+x.potentialPayout||0),0),next=nextActive(open);let nextHtml='<div class="official-next-empty">Nessuna partita collegata alle schedine attive.</div>';if(next){const f=next.f,linked=open.filter(b=>(b.selections||[]).some(s=>s.home===f.home&&s.away===f.away)),stake=linked.reduce((s,x)=>s+(+x.amount||0),0),linkedPotential=linked.reduce((s,x)=>s+(+x.potentialPayout||0),0);nextHtml=`<div class="official-next-teams"><div>${img(f.home)}<strong>${esc(f.home)}</strong></div><div>${img(f.away)}<strong>${esc(f.away)}</strong></div></div><div class="official-next-info"><span>${new Date(f.date+'T12:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'2-digit',month:'2-digit'})}${f.time?` • ${esc(f.time)}`:''}</span><b data-official-countdown>${esc(countdown(next.dt))}</b><small>${linked.length} ${linked.length===1?'schedina':'schedine'} • ${euro(stake)} impegnati</small><strong>Vincita potenziale ${euro(linkedPotential)}</strong></div>`}

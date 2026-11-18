@@ -117,3 +117,24 @@
 .quick-idea-toast.visible{opacity:1;transform:translate(-50%,0)}
 #selectAllIdeas{white-space:nowrap}
 @media(max-width:600px){.wallet-history-summary{padding:12px}.wallet-history-hint{font-size:9px}.quick-idea-toast{font-size:11px;bottom:18px;width:max-content;max-width:90vw;text-align:center}}
+
+
+/* Layout sezione Le mie schedine: sotto i totali, prima di Registra un movimento */
+#page-wallet .wallet-slip-review-host{order:4;margin:10px 0 12px;min-width:0}
+#page-wallet .wallet-entry{order:5}
+#page-wallet .wallet-history-collapse{order:6}
+#page-wallet .wallet-slip-review{padding:0;margin:0;overflow:hidden}
+#page-wallet .wallet-slip-review-summary{display:flex;align-items:center;gap:14px;cursor:pointer;list-style:none;padding:15px 18px;color:#172b43}
+#page-wallet .wallet-slip-review-summary::-webkit-details-marker{display:none}
+#page-wallet .wallet-slip-review-summary strong{font-size:15px;font-weight:850}
+#page-wallet .wallet-slip-review-meta{margin-left:auto;color:#6d8298;font-size:11px;font-weight:600}
+#page-wallet .wallet-slip-review-summary::after{content:'▾';font-size:19px;color:#476989}
+#page-wallet .wallet-slip-review[open]>.wallet-slip-review-summary::after{content:'▴'}
+#page-wallet .wallet-slip-review[open]>.wallet-slip-review-summary{border-bottom:1px solid #e8eef5}
+#page-wallet .wallet-slip-review-body{padding:14px 18px 18px}
+#page-wallet .wallet-slip-review-body>p{font-size:11px;color:#718096;margin:3px 0 14px;line-height:1.5}
+@media(max-width:600px){
+ #page-wallet .wallet-slip-review-summary{padding:12px;gap:9px}
+ #page-wallet .wallet-slip-review-meta{font-size:10px}
+ #page-wallet .wallet-slip-review-body{padding:10px 12px 14px}
+}

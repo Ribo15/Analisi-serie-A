@@ -58,3 +58,46 @@
 @media(max-width:760px){#page-wallet .official-wallet-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#page-wallet .wallet-hero-grid{grid-template-columns:1fr!important}#page-wallet .wallet-chart-card{grid-column:auto!important}#page-wallet .wallet-result-card{min-height:100px;padding:16px!important}#page-wallet .wallet-result-card>strong{font-size:28px!important}}
 @media(max-width:620px){.principal-grid{grid-template-columns:1fr 1fr!important;gap:7px!important}.official-principal-card{min-height:132px;padding:11px!important}.official-principal-card .principal-family{font-size:7px}.official-principal-card>strong{font-size:17px!important}.official-band-meta{gap:4px;font-size:7px}.official-band-meta .band-badge{font-size:6.5px;padding:3px 5px}.combined-marker.has-prob{width:22px;height:22px;font-size:6px}.official-wallet-grid article{padding:10px 11px}.official-wallet-grid article>strong{font-size:16px}.next-fixtures .next-fixture-row{padding:9px!important;gap:6px!important}.next-fixtures .next-fixture-date{padding-left:34px!important}}
 @media(max-width:390px){.principal-grid{grid-template-columns:1fr!important}.official-principal-card{min-height:auto}.official-wallet-grid article>span{font-size:6.5px}.official-wallet-grid article>strong{font-size:14px}}
+
+/* Navigazione e andamento G11 18-11 */
+.shared-team-meta .shared-form{display:flex;align-items:center;gap:5px;margin-top:7px;flex-wrap:wrap}
+.shared-team-block.away .shared-form{justify-content:flex-end}
+.shared-form-label{font-size:9px;font-weight:800;color:#7a8797;margin-right:4px}
+.shared-form-dot{width:11px;height:11px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.08);flex:0 0 11px}
+.shared-form-dot.w{background:#24c754}.shared-form-dot.d{background:#f6ad25}.shared-form-dot.l{background:#e44343}
+.shared-form-empty{font-size:10px;color:#8995a2}
+.match-quick-actions .cross-calendar{border:1px solid #dce6f1;border-radius:10px;background:#eef5ff;color:#21598d;font-weight:800;padding:10px 16px;cursor:pointer}
+.match-quick-actions .cross-calendar:hover{background:#dcefff}
+.idea-odds-editor{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:10px;color:#6c7d91}
+.idea-odds-editor input{width:72px;padding:7px 5px;border:1px solid #d4dfeb;border-radius:8px;font-size:12px;font-weight:750;background:#fff}
+.idea-odds-editor input:focus{outline:2px solid #b5cee8}
+.wallet-slip-review{margin-top:14px;padding:17px}
+.wallet-slip-review h3{font-size:17px;margin:0 0 5px}
+.wallet-slip-review>p{font-size:11px;color:#718096;margin:3px 0 14px;line-height:1.5}
+.wallet-slip-group{margin-top:13px}
+.wallet-slip-group>h4{font-size:12px;letter-spacing:.03em;margin:0 0 8px;font-weight:850}
+.wallet-slip-group>h4 span{color:#8393a6;margin-left:5px}
+.wallet-slip-card{border:1px solid #e1e8f1;border-radius:12px;margin:7px 0;background:#fff;overflow:hidden}
+.wallet-slip-card>summary{padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.wallet-slip-card>summary strong{font-size:12px;color:#253348;display:block}
+.wallet-slip-card>summary small{font-size:10px;color:#7a889c;display:block;margin-top:4px}
+.wallet-slip-card>summary .wallet-slip-amount{font-weight:900;white-space:nowrap;text-align:right;font-size:13px}
+.wallet-slip-card>summary .wallet-slip-amount small{font-weight:500}
+.wallet-pick-list{padding:9px 12px 13px;margin:0;list-style:none;border-top:1px solid #eef2f7}
+.wallet-pick-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid #f2f5f8;font-size:11px}
+.wallet-pick-row:last-child{border-bottom:none}
+.wallet-pick-row>span:nth-child(2){flex:1;min-width:0}
+.wallet-pick-row strong{display:block;color:#24364a}
+.wallet-pick-row small{display:block;color:#75869a;margin-top:3px}
+.wallet-pick-state{text-align:right;font-weight:850;font-variant-numeric:tabular-nums}
+.wallet-pick-dot{display:inline-block;width:13px;height:13px;flex:0 0 13px;border-radius:50%;background:#b8c2d0}
+.wallet-pick-dot.correct{background:#20c464}.wallet-pick-dot.incorrect{background:#e14b4b}.wallet-pick-dot.unknown{background:#efae38}
+.wallet-pick-no-detail{font-size:11px;color:#65768c;line-height:1.5}
+#page-wallet .delete-move{font-size:10px;font-weight:800;white-space:nowrap;min-width:58px}
+@media(max-width:600px){
+ .shared-form-label{font-size:8px}
+ .shared-form-dot{width:10px;height:10px;flex-basis:10px}
+ .match-quick-actions .cross-calendar{padding:9px 11px}
+ .wallet-slip-card>summary{padding:10px}
+ .wallet-pick-row{gap:8px}
+}

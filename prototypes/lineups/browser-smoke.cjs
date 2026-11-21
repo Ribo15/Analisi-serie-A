@@ -15,8 +15,8 @@ async function openCalendar(page) {
   assert.equal(await matches.count(), 10, 'Le dieci partite della giornata devono essere visibili');
   const card = matches.first();
   await card.locator('.calendar-lineup-toggle').click();
-  assert.equal(await card.locator('.pitch-player').count(), 22, 'Devono esserci 22 titolari');
-  const names = await card.locator('.pitch-player strong').allTextContents();
+  assert.equal(await card.locator('.combined-player').count(), 22, 'Devono esserci 22 titolari');
+  const names = await card.locator('.combined-player strong').allTextContents();
   assert(names.every(x => x.trim()), 'Nomi dei titolari obbligatori');
   return card;
 }
@@ -37,7 +37,7 @@ async function main() {
     await page.screenshot({path:path.join(SCREENSHOTS,'formazioni-online-iphone.png'), fullPage:false});
     const liveSourceCount = await page.locator('#calendarGrid .lineup-source').count();
     assert.equal(liveSourceCount,10,'Ogni incontro deve avere pannello formazioni');
-    await page.getByRole('button', {name:'Pronostici', exact:true}).first().click();
+    await page.locator('.nav-btn[data-page="predictions"]').click();
     assert((await page.locator('#page-predictions').count())===1,'Pagina Pronostici deve esistere');
     console.log('MOBILE LIVE OK - fonte:', label, '- match:', liveSourceCount);
 

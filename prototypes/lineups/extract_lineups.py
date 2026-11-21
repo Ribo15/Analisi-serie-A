@@ -17,6 +17,7 @@ EXPECTED_MATCHES = 10
 EXPECTED_TEAMS = 20
 PERCENT = re.compile(r"^(\d{1,3})\s*%\s+(.+)$")
 MATCH_DATE = re.compile(r"\b(\d{2})/(\d{2})/(\d{4})\s*-\s*(\d{2}):(\d{2})\b")
+MODULE = re.compile(r"^\d(?:-\d){2,4}$")
 
 def fetch_html() -> str:
     req = Request(SOURCE, headers={
@@ -80,6 +81,13 @@ def extract(html: str) -> list:
         teams = [x.get_text(" ",strip=True) for x in header.find_all("h2")]
         if len(teams) != 2:
             raise ValueError(f"Squadre non riconosciute in intestazione: {teams}")
+        modules = []
+        for heading_team in header.find_all("h2"):
+            next_span = heading_team.find_next_sibling("span")
+            module = next_span.get_text(" ",strip=True) if next_span else ""
+            if not MODULE.fullmatch(module):
+                raise ValueError(f"Modulo non riconosciuto per {heading_team.get_text(strip=True)}: {module}")
+            modules.append(module)
         raw_date = header.get_text(" ",strip=True)
         m = MATCH_DATE.search(raw_date)
         if not m:
@@ -113,6 +121,11 @@ def extract(html: str) -> list:
             "home": teams[0],
             "away": teams[1],
             "kickoff_local": kickoff,
+            "date": f"{y:04}-{mo:02}-{d:02}",
+            "time": f"{hh:02}:{mm:02}",
+            "homeModule": modules[0],
+            "awayModule": modules[1],
+            "source": "SOS Fanta",
             "homeXI": starters[0],
             "awayXI": starters[1],
             "homeOut": injured[0],
@@ -154,6 +167,7 @@ def main() -> int:
         report["matches"] = [{
             "fixture": f'{m["home"]} - {m["away"]}',
             "kickoff": m["kickoff_local"],
+            "modules": [m["homeModule"],m["awayModule"]],
             "home_players": len(m["homeXI"]),
             "away_players": len(m["awayXI"]),
             "home_out": len(m["homeOut"]),

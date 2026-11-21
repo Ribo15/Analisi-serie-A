@@ -23,6 +23,8 @@ jobs:
           python-version: "3.12"
       - name: Controlla accessibilita e struttura della fonte
         run: python prototypes/lineups/probe_source.py
+      - name: Verifica struttura HTML della fonte
+        run: python prototypes/lineups/inspect_source.py
       - name: Salva solo report diagnostico
         if: always()
         uses: actions/upload-artifact@v4

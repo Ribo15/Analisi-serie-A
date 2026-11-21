@@ -1,0 +1,33 @@
+name: Test isolato fonte formazioni
+on:
+  push:
+    branches:
+      - test/aggiornamento-formazioni-isolato
+    paths:
+      - "prototypes/lineups/**"
+      - ".github/workflows/lineups-probe.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verifica-fonte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Leggi codice del ramo sperimentale
+        uses: actions/checkout@v4
+      - name: Configura Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Controlla accessibilita e struttura della fonte
+        run: python prototypes/lineups/probe_source.py
+      - name: Salva solo report diagnostico
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lineups-source-probe
+          path: lineups-probe-report.json
+          if-no-files-found: ignore
+          retention-days: 7

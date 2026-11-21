@@ -355,8 +355,9 @@ allHost.querySelector('#downloadIdeas')?.addEventListener('click',downloadIdeas)
     const txt=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
     return txt.charAt(0).toUpperCase()+txt.slice(1);
   }
-  function lineupFor(home,away){
-    return (D.lineups||[]).find(x=>x.home===home && x.away===away) || null;
+  function lineupFor(home,away,fixture){
+    const excel=(D.lineups||[]).find(x=>x.home===home && x.away===away) || null;
+    return fixture && window.RIBO_LINEUPS ? window.RIBO_LINEUPS.forMatch(fixture,excel) : excel;
   }
 
   function parseModule(module){
@@ -423,7 +424,7 @@ allHost.querySelector('#downloadIdeas')?.addEventListener('click',downloadIdeas)
   }
 
   function lineupPanel(m){
-    const l=lineupFor(m.home,m.away); if(!l) return '';
+    const l=lineupFor(m.home,m.away,m); if(!l) return '';
     return `<div class="calendar-lineup-panel tactical-panel" hidden>
       <div class="tactical-pitches">
         ${tacticalPitch(m.home,l.homeModule,l.homeXI,l.homeOut,'home')}
@@ -448,7 +449,7 @@ allHost.querySelector('#downloadIdeas')?.addEventListener('click',downloadIdeas)
     summary.innerHTML=`<div><span>GIORNATA ${round}</span><strong>${list.length} partite</strong></div><div><span>PRONOSTICI SALVATI</span><strong>${predCount}</strong></div><div><span>POSSIBILI PUNTATE</span><strong>${ideaCount}</strong></div>`;
     const dates=[...new Set(list.map(x=>x.date||''))];
     grid.innerHTML=dates.map(date=>`<section class="calendar-day"><div class="calendar-day-title">${formatCalendarDate(date)}</div><div class="calendar-match-list">${list.filter(x=>(x.date||'')===date).map(m=>{
-      const hasLineup=!!lineupFor(m.home,m.away);
+      const hasLineup=!!lineupFor(m.home,m.away,m);
       return `<article class="calendar-match card">
         <div class="calendar-teams">
           <div class="calendar-team home">${logoImg(m.home)}<strong>${esc(m.home)}</strong></div>
@@ -795,6 +796,7 @@ function attachPredictionPickHandlers(root,home,away){
   });
   syncWalletFields(); $('#walletPayoutWrap').hidden=true;
 
+  window.addEventListener('ribo:lineups-updated',renderCalendar);
   renderMatch();
   renderPredictions();
   renderCalendar();

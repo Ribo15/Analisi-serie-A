@@ -37,9 +37,18 @@ async function main() {
     await page.screenshot({path:path.join(SCREENSHOTS,'formazioni-online-iphone.png'), fullPage:false});
     const liveSourceCount = await page.locator('#calendarGrid .lineup-source').count();
     assert.equal(liveSourceCount,10,'Ogni incontro deve avere pannello formazioni');
+    await page.locator('.nav-btn[data-page="match"]').click();
+    await page.locator('#page-match .shared-round-select').selectOption('12');
+    await page.locator('#matchQuickActions [data-lu="m"]').click();
+    assert.equal(await page.locator('#matchInlineLineup .combined-player').count(),22,'Dati Match: 22 giocatori');
+    assert((await page.locator('#matchInlineLineup .lineup-source').innerText()).includes('SOS Fanta'),'Dati Match: deve usare fonte aggiornata');
+
     await page.locator('.nav-btn[data-page="predictions"]').click();
-    assert((await page.locator('#page-predictions').count())===1,'Pagina Pronostici deve esistere');
-    console.log('MOBILE LIVE OK - fonte:', label, '- match:', liveSourceCount);
+    await page.locator('#page-predictions .shared-round-select').selectOption('12');
+    await page.locator('#predictionQuickActions [data-lu="p"]').click();
+    assert.equal(await page.locator('#predictionInlineLineup .combined-player').count(),22,'Pronostici: 22 giocatori');
+    assert((await page.locator('#predictionInlineLineup .lineup-source').innerText()).includes('SOS Fanta'),'Pronostici: deve usare fonte aggiornata');
+    console.log('MOBILE LIVE OK - fonte:', label, '- match:', liveSourceCount, '- Dati Match e Pronostici: OK');
 
     // Test senza rete JSON: ripristino Excel, senza errori.
     const offline = await browser.newContext({viewport:{width:390,height:844}, deviceScaleFactor:1, isMobile:true, hasTouch:true});

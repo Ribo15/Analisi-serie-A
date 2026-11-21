@@ -15,7 +15,7 @@ permissions:
 jobs:
   verifica-fonte:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
     steps:
       - name: Leggi codice del ramo sperimentale
         uses: actions/checkout@v4
@@ -34,6 +34,21 @@ jobs:
           node --check prototypes/lineups/lineups-client.js
           node --check app.js
           node --test prototypes/lineups/test-client.cjs
+      - name: Installa Playwright per test browser
+        run: npm install --no-fund --no-audit --no-save playwright@1.56.1
+      - name: Verifica rendering su iPhone e desktop
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v google-chrome)"
+          elif command -v chromium >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v chromium)"
+          else
+            npx playwright install chromium
+          fi
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/lineups-site.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          node prototypes/lineups/browser-smoke.cjs
       - name: Pubblica il solo JSON validato sul ramo di prova
         if: success() && github.ref == 'refs/heads/test/aggiornamento-formazioni-isolato'
         run: |
@@ -54,5 +69,6 @@ jobs:
             lineups-probe-report.json
             lineups-validation.json
             lineups-preview.json
+            prototypes/lineups/screenshots/*.png
           if-no-files-found: ignore
           retention-days: 7

@@ -56,8 +56,8 @@ def probe() -> dict:
     parser.feed(body.decode(charset, errors="replace"))
     text = " ".join(parser.parts)
     lower = text.casefold()
-    found_teams = [t for t in TEAMS if re.search(r"\\b" + re.escape(t.casefold()) + r"\\b", lower)]
-    pct_count = len(re.findall(r"(?<!\\d)(?:100|[1-9]\\d?)\\s*%", text))
+    found_teams = [t for t in TEAMS if re.search(r"\b" + re.escape(t.casefold()) + r"\b", lower)]
+    pct_count = len(re.findall(r"(?<!\d)(?:100|[1-9]\d?)\s*%", text))
     signals = {
         "titolo": "probabili formazioni" in lower,
         "titolari": "titolari" in lower,
@@ -90,7 +90,7 @@ def main() -> int:
             "error": f"{type(exc).__name__}: {exc}",
             "note": "Nessun aggiornamento effettuato.",
         }
-    OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\\n", encoding="utf-8")
+    OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2, ensure_ascii=False))
     return 0 if report["safe_for_extraction_test"] else 1
 

@@ -1,5 +1,5 @@
-name: Aggiorna formazioni dal telefono (TEST)
-run-name: Aggiornamento manuale formazioni - solo ramo test
+name: Aggiorna formazioni sito (telefono)
+run-name: Aggiorna formazioni pubblicate - controlli di sicurezza
 
 on:
   workflow_dispatch:
@@ -8,71 +8,92 @@ permissions:
   contents: write
 
 concurrency:
-  group: update-lineups-experimental-only
+  group: aggiornamento-formazioni-sito
   cancel-in-progress: false
 
 jobs:
-  aggiorna-ramo-test:
-    name: Valida e aggiorna SOLO il ramo sperimentale
+  aggiorna-formazioni:
+    name: Verifica formazioni e pubblica solo JSON
     if: github.repository == 'Ribo15/Analisi-serie-A' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
-      - name: Usa il ramo sperimentale, non il sito principale
+      - name: Leggi la versione ufficiale del sito
         uses: actions/checkout@v4
         with:
-          ref: test/aggiornamento-formazioni-isolato
+          ref: main
           persist-credentials: true
 
-      - name: Python
+      - name: Prepara Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Installa parser
+      - name: Installa parser HTML
         run: python -m pip install 'beautifulsoup4>=4.12,<5'
 
-      - name: Verifica disponibilita della fonte
+      - name: Controlla fonte e disponibilita
         run: python prototypes/lineups/probe_source.py
 
-      - name: Estrai e verifica le 10 formazioni
+      - name: Estrai 10 formazioni con 22 giocatori e dati di match
         run: python prototypes/lineups/extract_lineups.py
 
-      - name: Verifica compatibilita Excel e ripristino in caso di errore
+      - name: Verifica compatibilita Excel e protezioni
         run: |
-          node --check prototypes/lineups/lineups-client.js
           node --check app.js
+          node --check patch-v11.8.js
+          node --check prototypes/lineups/lineups-client.js
           node --test prototypes/lineups/test-client.cjs
 
-      - name: Pubblica SOLO il JSON sul ramo sperimentale
+      - name: Carica il nuovo JSON soltanto nella copia temporanea
+        run: cp lineups-preview.json prototypes/lineups/lineups-latest.json
+
+      - name: Installa Playwright per i controlli browser
+        run: npm install --no-fund --no-audit --no-save playwright@1.56.1
+
+      - name: Verifica iPhone, desktop e ripristino Excel
         run: |
-          cp lineups-preview.json prototypes/lineups/lineups-latest.json
+          if command -v google-chrome >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v google-chrome)"
+          elif command -v chromium >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v chromium)"
+          else
+            npx playwright install chromium
+          fi
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/lineups-site.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          node prototypes/lineups/browser-smoke.cjs
+
+      - name: Pubblica ESCLUSIVAMENTE il nuovo JSON
+        if: success()
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- prototypes/lineups/lineups-latest.json
           if ! git diff --cached --quiet; then
-            git commit -m "test: aggiorna formazioni via iPhone [skip ci]"
-            git push origin HEAD:refs/heads/test/aggiornamento-formazioni-isolato
+            git commit -m "data: aggiorna probabili formazioni [skip ci]"
+            git push origin HEAD:main
           fi
-          echo "### Formazioni aggiornate SOLO sul ramo sperimentale" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Sito principale: nessuna modifica" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Excel, pronostici e fasce: nessuna modifica" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Controlli: completati prima della pubblicazione" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Formazioni aggiornate sul sito" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Solo file formazioni, senza modificare pronostici, Excel, fasce e schedine" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Calendario e controlli iPhone/desktop superati" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Conserva esito diagnostico per controllo
+      - name: Salva il rapporto dei controlli
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: esito-aggiornamento-formazioni-test
+          name: esito-aggiornamento-formazioni
           path: |
             lineups-probe-report.json
             lineups-validation.json
             lineups-preview.json
+            prototypes/lineups/screenshots/*.png
           retention-days: 7
           if-no-files-found: ignore
 
-      - name: Comunica errore senza aggiornare i dati
+      - name: Segnala controllo fallito
         if: failure()
         run: |
-          echo "### Aggiornamento non riuscito" >> "$GITHUB_STEP_SUMMARY"
-          echo "Nessun nuovo JSON pubblicato; il sito principale e i dati Excel sono invariati." >> "$GITHUB_STEP_SUMMARY"
+          echo "### Aggiornamento interrotto" >> "$GITHUB_STEP_SUMMARY"
+          echo "La validazione ha bloccato la pubblicazione; nessun file Excel o pronostico modificato." >> "$GITHUB_STEP_SUMMARY"

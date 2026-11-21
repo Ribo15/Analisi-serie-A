@@ -102,7 +102,7 @@ def extract(html: str) -> list:
             raise ValueError(f"Sezione indisponibili non trovata per {teams}")
         injury_uls = direct_uls(next_grid(indis))
         if len(injury_uls) != 2:
-            raise ValueError(f"Colonne indisponibili non riconosciute per {teams}; HTML primo blocco: {str(next_grid(indis))[:2200]}")
+            raise ValueError(f"Colonne indisponibili non riconosciute per {teams}; HTML primo blocco: {str(indis.parent.parent)[:4000]}")
         injured = [parse_out(u) for u in injury_uls]
         matches.append({
             "home": teams[0],

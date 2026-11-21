@@ -1,6 +1,6 @@
 {
   "source": "https://www.sosfanta.com/lista-formazioni/probabili-formazioni-serie-a/",
-  "generated_at_utc": "2026-11-21T13:19:09.686095+00:00",
+  "generated_at_utc": "2026-11-21T16:31:20.445423+00:00",
   "lineups": [
     {
       "home": "Como",
@@ -242,93 +242,93 @@
       "homeXI": [
         {
           "name": "Daffara",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Delprato",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Troilo",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Carboni F.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Britschgi",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Keita M.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Nicolussi Caviglia",
-          "prob": 0.51
+          "name": "Sierro",
+          "prob": 1.0
         },
         {
           "name": "Fabbian",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Valeri",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Lontani",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Tourè E.",
-          "prob": 0.51
+          "prob": 1.0
         }
       ],
       "awayXI": [
         {
           "name": "Svilar",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Mancini",
-          "prob": 0.55
+          "prob": 1.0
         },
         {
-          "name": "Ndicka",
-          "prob": 0.95
+          "name": "Balerdi",
+          "prob": 1.0
         },
         {
           "name": "Hermoso",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Molina N.",
-          "prob": 0.51
+          "name": "Lulli",
+          "prob": 1.0
         },
         {
           "name": "Konè M.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Cristante",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Wesley",
-          "prob": 0.95
+          "name": "Molina N.",
+          "prob": 1.0
         },
         {
           "name": "Dybala",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Mora",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Malen",
-          "prob": 0.95
+          "prob": 1.0
         }
       ],
       "homeOut": [
@@ -820,11 +820,11 @@
           "prob": 0.95
         },
         {
-          "name": "Diawara S.",
-          "prob": 0.6
+          "name": "Pavlovic",
+          "prob": 0.51
         },
         {
-          "name": "Musah",
+          "name": "Bartesaghi",
           "prob": 0.51
         },
         {

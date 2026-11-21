@@ -4,11 +4,13 @@ on:
     branches:
       - test/aggiornamento-formazioni-isolato
     paths:
-      - "prototypes/lineups/**"
+      - "prototypes/lineups/*.py"
+      - "prototypes/lineups/*.js"
+      - "prototypes/lineups/*.cjs"
       - ".github/workflows/lineups-probe.yml"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verifica-fonte:
@@ -27,6 +29,22 @@ jobs:
         run: python -m pip install 'beautifulsoup4>=4.12,<5'
       - name: Estrai e valida JSON temporaneo
         run: python prototypes/lineups/extract_lineups.py
+      - name: Verifica compatibilita con snapshot Excel e fallback
+        run: |
+          node --check prototypes/lineups/lineups-client.js
+          node --check app.js
+          node --test prototypes/lineups/test-client.cjs
+      - name: Pubblica il solo JSON validato sul ramo di prova
+        if: success() && github.ref == 'refs/heads/test/aggiornamento-formazioni-isolato'
+        run: |
+          cp lineups-preview.json prototypes/lineups/lineups-latest.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prototypes/lineups/lineups-latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "test: aggiorna snapshot formazioni verificato [skip ci]"
+            git push origin HEAD:refs/heads/test/aggiornamento-formazioni-isolato
+          fi
       - name: Salva solo report diagnostico
         if: always()
         uses: actions/upload-artifact@v4

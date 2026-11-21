@@ -34,7 +34,12 @@ def fetch_html() -> str:
 
 def next_grid(heading):
     row = heading.parent
-    return row.find_next_sibling("div") if row else None
+    if not row:
+        return None
+    # Titolari: h3 in div-intestazione; indisponibili: h3 direttamente in section.
+    if row.name == "div":
+        return row.find_next_sibling("div")
+    return heading.find_next_sibling("div")
 
 def direct_uls(grid):
     if grid is None:
@@ -102,7 +107,7 @@ def extract(html: str) -> list:
             raise ValueError(f"Sezione indisponibili non trovata per {teams}")
         injury_uls = direct_uls(next_grid(indis))
         if len(injury_uls) != 2:
-            raise ValueError(f"Colonne indisponibili non riconosciute per {teams}; HTML primo blocco: {str(indis.parent.parent)[:4000]}")
+            raise ValueError(f"Colonne indisponibili non riconosciute per {teams}; HTML primo blocco: {str(indis.parent)[:2500]}")
         injured = [parse_out(u) for u in injury_uls]
         matches.append({
             "home": teams[0],

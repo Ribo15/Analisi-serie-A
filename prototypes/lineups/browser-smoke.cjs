@@ -22,7 +22,7 @@ async function openCalendar(page) {
 }
 
 async function main() {
-  const browser = await chromium.launch({headless: true, args: ['--no-sandbox']});
+  const browser = await chromium.launch({headless: true, executablePath: process.env.CHROME_BIN || undefined, args: ['--no-sandbox']});
   const issues = [];
   try {
     // Test reale nel viewport iPhone: dati online.

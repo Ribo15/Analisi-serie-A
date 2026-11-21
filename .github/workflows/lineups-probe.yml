@@ -36,6 +36,8 @@ jobs:
           node --test prototypes/lineups/test-client.cjs
       - name: Installa Playwright per test browser
         run: npm install --no-fund --no-audit --no-save playwright@1.56.1
+      - name: Prepara JSON validato solo nel workspace temporaneo
+        run: cp lineups-preview.json prototypes/lineups/lineups-latest.json
       - name: Verifica rendering su iPhone e desktop
         run: |
           if command -v google-chrome >/dev/null 2>&1; then

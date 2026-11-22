@@ -1,6 +1,6 @@
 {
   "source": "https://www.sosfanta.com/lista-formazioni/probabili-formazioni-serie-a/",
-  "generated_at_utc": "2026-11-21T16:31:20.445423+00:00",
+  "generated_at_utc": "2026-11-22T13:54:34.014119+00:00",
   "lineups": [
     {
       "home": "Como",
@@ -355,93 +355,93 @@
       "homeXI": [
         {
           "name": "Milinkovic-Savic V.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Beukema",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Rrahmani",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Marin R.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Politano",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Zambo Anguissa",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Gilmour",
-          "prob": 0.55
+          "prob": 1.0
         },
         {
           "name": "Mctominay",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Spinazzola",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Hojlund",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Vergara",
-          "prob": 0.51
+          "prob": 1.0
         }
       ],
       "awayXI": [
         {
           "name": "Perri",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Coco",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Ismajli",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Comuzzo",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Belghali",
-          "prob": 0.55
+          "prob": 1.0
         },
         {
-          "name": "Vlasic",
-          "prob": 0.51
+          "name": "Gineitis",
+          "prob": 1.0
         },
         {
           "name": "Mandragora",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Braganca",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Cacciamani",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Adams C.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Simeone",
-          "prob": 0.95
+          "prob": 1.0
         }
       ],
       "homeOut": [
@@ -467,93 +467,93 @@
       "homeXI": [
         {
           "name": "Vicario",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Celik",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Bremer",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Lucumì",
-          "prob": 0.6
+          "name": "Kelly L.",
+          "prob": 1.0
         },
         {
           "name": "Cabal",
-          "prob": 0.55
+          "prob": 1.0
         },
         {
           "name": "Mckennie",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Douglas Luiz",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Koopmeiners",
-          "prob": 0.95
+          "prob": 1.0
+        },
+        {
+          "name": "Zhegrova",
+          "prob": 1.0
         },
         {
           "name": "Kolo Muani",
-          "prob": 0.95
-        },
-        {
-          "name": "Woltemade",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Alajbegovic",
-          "prob": 0.51
+          "prob": 1.0
         }
       ],
       "awayXI": [
         {
           "name": "Stankovic F.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Halhal",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Moreno M.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Juan Jesus",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Hainaut",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Perez K.",
-          "prob": 0.95
-        },
-        {
-          "name": "Basic",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Sohm",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Mazzocchi",
-          "prob": 0.51
+          "name": "Busio",
+          "prob": 1.0
         },
         {
-          "name": "Yeboah J.",
-          "prob": 0.6
+          "name": "Haps",
+          "prob": 1.0
+        },
+        {
+          "name": "Lauberbach",
+          "prob": 1.0
         },
         {
           "name": "Adams A.",
-          "prob": 0.95
+          "prob": 1.0
         }
       ],
       "homeOut": [
@@ -569,7 +569,10 @@
         "Pozzi",
         "Franjic",
         "Sverko",
-        "Adorante"
+        "Adorante",
+        "Basic",
+        "Mazzocchi",
+        "Correia T."
       ]
     },
     {
@@ -578,99 +581,99 @@
       "kickoff_local": "2026-11-22T15:00",
       "date": "2026-11-22",
       "time": "15:00",
-      "homeModule": "4-3-3",
+      "homeModule": "3-4-3",
       "awayModule": "3-4-2-1",
       "source": "SOS Fanta",
       "homeXI": [
         {
-          "name": "Turati",
-          "prob": 0.51
+          "name": "Muric",
+          "prob": 1.0
         },
         {
           "name": "Walukiewicz",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
           "name": "Idzes",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Caleta-Car",
-          "prob": 0.51
+          "name": "Candè",
+          "prob": 1.0
         },
         {
-          "name": "Doig",
-          "prob": 0.95
-        },
-        {
-          "name": "Bakola",
-          "prob": 0.95
-        },
-        {
-          "name": "Matic",
-          "prob": 0.95
+          "name": "Van Der Brempt",
+          "prob": 1.0
         },
         {
           "name": "Thorstvedt",
-          "prob": 0.95
+          "prob": 1.0
+        },
+        {
+          "name": "Matic",
+          "prob": 1.0
+        },
+        {
+          "name": "Obrador",
+          "prob": 1.0
         },
         {
           "name": "Berardi",
-          "prob": 0.55
+          "prob": 1.0
         },
         {
           "name": "Esposito Se.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Laurientè",
-          "prob": 0.95
+          "prob": 1.0
         }
       ],
       "awayXI": [
         {
           "name": "Bijlow",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Marcandalli",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Ostigard",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Vasquez",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Ehizibue",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Traorè Hj.",
-          "prob": 0.51
+          "prob": 1.0
         },
         {
-          "name": "Wiafe",
-          "prob": 0.51
+          "name": "Amorim",
+          "prob": 1.0
         },
         {
           "name": "Ellertsson",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "El Shaarawy",
-          "prob": 0.51
+          "name": "Baldanzi",
+          "prob": 1.0
         },
         {
           "name": "Messias",
-          "prob": 0.55
+          "prob": 1.0
         },
         {
           "name": "Osmajic",
-          "prob": 0.95
+          "prob": 1.0
         }
       ],
       "homeOut": [
@@ -681,7 +684,10 @@
         "Volpato",
         "Adzic"
       ],
-      "awayOut": []
+      "awayOut": [
+        "Havel",
+        "Robinho Junior"
+      ]
     },
     {
       "home": "Bologna",
@@ -695,93 +701,93 @@
       "homeXI": [
         {
           "name": "Skorupski",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Darmian",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Casale",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Theate",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Zortea",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Pobega",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Ferguson",
-          "prob": 0.95
-        },
-        {
-          "name": "Alhassane",
-          "prob": 0.51
-        },
-        {
-          "name": "Orsolini",
-          "prob": 0.95
-        },
-        {
-          "name": "Odgaard",
-          "prob": 0.55
+          "prob": 1.0
         },
         {
           "name": "Bernardeschi",
-          "prob": 0.51
+          "prob": 1.0
+        },
+        {
+          "name": "Orsolini",
+          "prob": 1.0
+        },
+        {
+          "name": "Odgaard",
+          "prob": 1.0
+        },
+        {
+          "name": "Cambiaghi",
+          "prob": 1.0
         }
       ],
       "awayXI": [
         {
           "name": "Okoye",
-          "prob": 0.55
-        },
-        {
-          "name": "Abankwah",
-          "prob": 0.6
+          "prob": 1.0
         },
         {
           "name": "Palma",
-          "prob": 0.95
+          "prob": 1.0
+        },
+        {
+          "name": "Kabasele",
+          "prob": 1.0
         },
         {
           "name": "Solet",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Vojvoda",
-          "prob": 0.95
+          "name": "Abankwah",
+          "prob": 1.0
         },
         {
           "name": "Piotrowski",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Karlstrom",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
           "name": "Kamara H.",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Zaniolo",
-          "prob": 0.95
+          "name": "Lovric",
+          "prob": 1.0
         },
         {
           "name": "Ekkelenkamp",
-          "prob": 0.95
+          "prob": 1.0
         },
         {
-          "name": "Davis K.",
-          "prob": 0.51
+          "name": "Zaniolo",
+          "prob": 1.0
         }
       ],
       "homeOut": [
@@ -793,8 +799,9 @@
       ],
       "awayOut": [
         "Gueye",
-        "Alaba",
-        "Bertola"
+        "Bertola",
+        "Ebosse",
+        "Davis K."
       ]
     },
     {
@@ -803,7 +810,7 @@
       "kickoff_local": "2026-11-22T18:00",
       "date": "2026-11-22",
       "time": "18:00",
-      "homeModule": "4-2-3-1",
+      "homeModule": "4-4-1-1",
       "awayModule": "4-2-3-1",
       "source": "SOS Fanta",
       "homeXI": [
@@ -820,7 +827,7 @@
           "prob": 0.95
         },
         {
-          "name": "Pavlovic",
+          "name": "Diawara S.",
           "prob": 0.51
         },
         {
@@ -828,24 +835,24 @@
           "prob": 0.51
         },
         {
+          "name": "Moreira",
+          "prob": 0.95
+        },
+        {
           "name": "Modric",
           "prob": 0.95
+        },
+        {
+          "name": "Musah",
+          "prob": 0.51
         },
         {
           "name": "Rabiot",
           "prob": 0.95
         },
         {
-          "name": "Moreira",
-          "prob": 0.95
-        },
-        {
           "name": "Pulisic",
           "prob": 0.95
-        },
-        {
-          "name": "Cissè A.",
-          "prob": 0.51
         },
         {
           "name": "Ramos G.",
@@ -976,16 +983,16 @@
           "prob": 0.95
         },
         {
+          "name": "Pavard",
+          "prob": 0.51
+        },
+        {
           "name": "Bisseck",
-          "prob": 0.95
+          "prob": 0.55
         },
         {
           "name": "Bastoni",
           "prob": 0.95
-        },
-        {
-          "name": "Carlos Augusto",
-          "prob": 0.55
         },
         {
           "name": "Spence",
@@ -1018,12 +1025,12 @@
       ],
       "homeOut": [
         "Pompei",
-        "Kristensen T.",
         "Hien",
         "Kossounou"
       ],
       "awayOut": [
-        "Bonny"
+        "Bonny",
+        "Zielinski"
       ]
     },
     {

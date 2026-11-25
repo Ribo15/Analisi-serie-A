@@ -1,0 +1,45 @@
+name: Audit fasce congelate G13 (test)
+on:
+  push:
+    branches:
+      - test/fasce-g13-dropbox-20261125
+    paths:
+      - beta/data-predictions-g13.js
+      - index.html
+      - prototypes/lineups/test-frozen-g13.cjs
+      - prototypes/lineups/test-frozen-g13-browser.cjs
+      - .github/workflows/audit-frozen-g13.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout solo ramo sperimentale
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check sintassi e 5 test dei dati
+        run: |
+          node --check beta/data-predictions-g13.js
+          node --test prototypes/lineups/test-frozen-g13.cjs
+      - name: Installa Playwright
+        run: npm install --no-fund --no-audit --no-save playwright@1.56.1
+      - name: Verifica browser iPhone e desktop
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v google-chrome)"
+          elif command -v chromium >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v chromium)"
+          else
+            npx playwright install chromium
+          fi
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/g13-fasce.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          node prototypes/lineups/test-frozen-g13-browser.cjs

@@ -1,0 +1,31 @@
+name: Audit isolato aggiornamento G13 da Dropbox
+on:
+  push:
+    branches:
+      - test/snapshot-g13-dropbox-20261125
+    paths:
+      - beta/data-v13.js
+      - beta/wallet-excel-g12-g13.js
+      - prototypes/lineups/test-g13-snapshot.cjs
+      - .github/workflows/g13-snapshot-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verifica-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Leggi solo il ramo di prova
+        uses: actions/checkout@v4
+      - name: Configura Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verifica sintassi JavaScript
+        run: |
+          node --check beta/data-v13.js
+          node --check beta/wallet-excel-g12-g13.js
+      - name: Testa risultati, formazioni, pronostici congelati e schedine
+        run: node --test prototypes/lineups/test-g13-snapshot.cjs

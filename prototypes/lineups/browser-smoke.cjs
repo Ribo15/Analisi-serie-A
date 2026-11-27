@@ -10,7 +10,8 @@ const URL = 'http://127.0.0.1:8765/index.html';
 
 async function openCalendar(page) {
   await page.getByRole('button', {name:'Calendario', exact:true}).click();
-  await page.locator('#calendarRound').selectOption('12');
+  const round=await page.evaluate(() => String(window.SERIE_A_DATA.betaSnapshot.predictionRound));
+  await page.locator('#calendarRound').selectOption(round);
   const matches = page.locator('#calendarGrid .calendar-match');
   assert.equal(await matches.count(), 10, 'Le dieci partite della giornata devono essere visibili');
   const card = matches.first();
@@ -38,13 +39,13 @@ async function main() {
     const liveSourceCount = await page.locator('#calendarGrid .lineup-source').count();
     assert.equal(liveSourceCount,10,'Ogni incontro deve avere pannello formazioni');
     await page.locator('.nav-btn[data-page="match"]').click();
-    await page.locator('#page-match .shared-round-select').selectOption('12');
+    await page.locator('#page-match .shared-round-select').selectOption(String(await page.evaluate(() => window.SERIE_A_DATA.betaSnapshot.predictionRound)));
     await page.locator('#matchQuickActions [data-lu="m"]').click();
     assert.equal(await page.locator('#matchInlineLineup .combined-player').count(),22,'Dati Match: 22 giocatori');
     assert((await page.locator('#matchInlineLineup .lineup-source').innerText()).includes('SOS Fanta'),'Dati Match: deve usare fonte aggiornata');
 
     await page.locator('.nav-btn[data-page="predictions"]').click();
-    await page.locator('#page-predictions .shared-round-select').selectOption('12');
+    await page.locator('#page-predictions .shared-round-select').selectOption(String(await page.evaluate(() => window.SERIE_A_DATA.betaSnapshot.predictionRound)));
     await page.locator('#predictionQuickActions [data-lu="p"]').click();
     assert.equal(await page.locator('#predictionInlineLineup .combined-player').count(),22,'Pronostici: 22 giocatori');
     assert((await page.locator('#predictionInlineLineup .lineup-source').innerText()).includes('SOS Fanta'),'Pronostici: deve usare fonte aggiornata');

@@ -1,0 +1,49 @@
+name: Audit mobile formazioni G13 (test)
+on:
+  push:
+    branches:
+      - fix/lineups-mobile-g13-tests-20261127
+    paths:
+      - prototypes/lineups/test-client.cjs
+      - prototypes/lineups/browser-smoke.cjs
+      - .github/workflows/audit-lineups-mobile-g13.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Leggi il ramo di prova
+        uses: actions/checkout@v4
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Parser
+        run: python -m pip install 'beautifulsoup4>=4.12,<5'
+      - name: Estrai e verifica formazione odierna
+        run: python prototypes/lineups/extract_lineups.py
+      - name: Esegui tutti i 9 test di validazione
+        run: |
+          node --check prototypes/lineups/lineups-client.js
+          node --test prototypes/lineups/test-client.cjs
+      - name: Copia JSON solo sul runner per i test
+        run: cp lineups-preview.json prototypes/lineups/lineups-latest.json
+      - name: Installa browser
+        run: npm install --no-fund --no-audit --no-save playwright@1.56.1
+      - name: Browser iPhone desktop fallback senza pubblicazione
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v google-chrome)"
+          elif command -v chromium >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v chromium)"
+          else
+            npx playwright install chromium
+          fi
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/lineups-audit.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          node prototypes/lineups/browser-smoke.cjs

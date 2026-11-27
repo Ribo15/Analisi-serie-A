@@ -1,0 +1,48 @@
+name: Audit correzioni calendario e prossime partite
+on:
+  push:
+    branches:
+      - fix/calendar-nextfixtures-audit-20261127
+    paths:
+      - app.js
+      - patch-v11.8.2.js
+      - index.html
+      - prototypes/audits/test-calendar-next-fixtures.cjs
+      - .github/workflows/audit-calendar-next-fixtures.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout ramo correzioni isolato
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Controlla sintassi e struttura
+        run: |
+          node --check app.js
+          node --check patch-v11.8.2.js
+          node --check patch-v11.8.js
+          node --check patch-v11.8.6.js
+          node --check prototypes/audits/test-calendar-next-fixtures.cjs
+      - name: Installa Playwright
+        run: npm install --no-fund --no-audit --no-save playwright@1.56.1
+      - name: Test iPhone desktop completo e dati protetti
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v google-chrome)"
+          elif command -v chromium >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v chromium)"
+          else
+            npx playwright install chromium
+          fi
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/site-audit-calendar.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          node prototypes/audits/test-calendar-next-fixtures.cjs

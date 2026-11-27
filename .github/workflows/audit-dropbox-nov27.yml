@@ -1,0 +1,47 @@
+name: Audit aggiornamento Dropbox G13 27 novembre
+on:
+  push:
+    branches:
+      - test/dropbox-g13-lineups-wallet-loss-20261127
+    paths:
+      - beta/data-v13.js
+      - beta/wallet-excel-g13-lost.js
+      - index.html
+      - prototypes/lineups/test-dropbox-nov27.cjs
+      - prototypes/lineups/test-dropbox-nov27-browser.cjs
+      - .github/workflows/audit-dropbox-nov27.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout ramo isolato
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Controlla sintassi e dati
+        run: |
+          node --check beta/data-v13.js
+          node --check beta/wallet-excel-g13-lost.js
+          node --test prototypes/lineups/test-dropbox-nov27.cjs
+      - name: Installa Playwright
+        run: npm install --no-fund --no-audit --no-save playwright@1.56.1
+      - name: Prova su iPhone e desktop
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v google-chrome)"
+          elif command -v chromium >/dev/null 2>&1; then
+            export CHROME_BIN="$(command -v chromium)"
+          else
+            npx playwright install chromium
+          fi
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/site-nov27.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          node prototypes/lineups/test-dropbox-nov27-browser.cjs

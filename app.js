@@ -443,7 +443,15 @@ allHost.querySelector('#downloadIdeas')?.addEventListener('click',downloadIdeas)
       const preferred=(D.predictionRounds||[]).slice().sort((a,b)=>b-a)[0]||Math.min(38,(D.lastRound||0)+1)||rounds[0];
       if(rounds.includes(preferred))sel.value=String(preferred);
     }
-    const round=Number(sel.value||rounds[0]),list=(D.calendar||[]).filter(x=>+x.round===round);
+    const round=Number(sel.value||rounds[0]);
+    // Ordina prima per giorno, poi per ora: i calendari Excel possono avere righe non cronologiche.
+    const calendarTime=v=>{const m=String(v||'').match(/^(\\d{1,2}):(\\d{2})/);return m?(Number(m[1])*60+Number(m[2])):9999;};
+    const list=(D.calendar||[]).filter(x=>+x.round===round).slice().sort((a,b)=>
+      String(a.date||'').localeCompare(String(b.date||'')) ||
+      calendarTime(a.time)-calendarTime(b.time) ||
+      String(a.home||'').localeCompare(String(b.home||'')) ||
+      String(a.away||'').localeCompare(String(b.away||''))
+    );
     const ideaCount=list.reduce((n,m)=>n+matchIdeas(m.home,m.away).length,0);
     const predCount=list.filter(m=>(D.predictions||[]).some(p=>p.home===m.home&&p.away===m.away)).length;
     summary.innerHTML=`<div><span>GIORNATA ${round}</span><strong>${list.length} partite</strong></div><div><span>PRONOSTICI SALVATI</span><strong>${predCount}</strong></div><div><span>POSSIBILI PUNTATE</span><strong>${ideaCount}</strong></div>`;

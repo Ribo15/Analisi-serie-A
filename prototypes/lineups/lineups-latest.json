@@ -1,516 +1,17 @@
 {
   "source": "https://www.sosfanta.com/lista-formazioni/probabili-formazioni-serie-a/",
-  "generated_at_utc": "2026-11-22T13:54:34.014119+00:00",
+  "generated_at_utc": "2026-11-27T19:11:38.975612+00:00",
   "lineups": [
     {
-      "home": "Como",
-      "away": "Cagliari",
-      "kickoff_local": "2026-11-21T15:00",
-      "date": "2026-11-21",
-      "time": "15:00",
-      "homeModule": "4-2-3-1",
-      "awayModule": "3-5-2",
-      "source": "SOS Fanta",
-      "homeXI": [
-        {
-          "name": "Butez",
-          "prob": 1.0
-        },
-        {
-          "name": "Couto",
-          "prob": 1.0
-        },
-        {
-          "name": "Kempf",
-          "prob": 1.0
-        },
-        {
-          "name": "Ramon",
-          "prob": 1.0
-        },
-        {
-          "name": "Kaiki",
-          "prob": 1.0
-        },
-        {
-          "name": "Ricci S.",
-          "prob": 1.0
-        },
-        {
-          "name": "Milla",
-          "prob": 1.0
-        },
-        {
-          "name": "Liberali",
-          "prob": 1.0
-        },
-        {
-          "name": "Da Cunha",
-          "prob": 1.0
-        },
-        {
-          "name": "Baturina",
-          "prob": 1.0
-        },
-        {
-          "name": "Douvikas",
-          "prob": 1.0
-        }
-      ],
-      "awayXI": [
-        {
-          "name": "Caprile",
-          "prob": 1.0
-        },
-        {
-          "name": "Zè Pedro",
-          "prob": 1.0
-        },
-        {
-          "name": "Deiola",
-          "prob": 1.0
-        },
-        {
-          "name": "Kofler",
-          "prob": 1.0
-        },
-        {
-          "name": "Grandu",
-          "prob": 1.0
-        },
-        {
-          "name": "Adopo",
-          "prob": 1.0
-        },
-        {
-          "name": "Romano",
-          "prob": 1.0
-        },
-        {
-          "name": "Fazzini",
-          "prob": 1.0
-        },
-        {
-          "name": "Obert",
-          "prob": 1.0
-        },
-        {
-          "name": "Maldini",
-          "prob": 1.0
-        },
-        {
-          "name": "Mendy P.",
-          "prob": 1.0
-        }
-      ],
-      "homeOut": [
-        "Rodriguez Je.",
-        "Kean",
-        "Diao",
-        "Addai"
-      ],
-      "awayOut": [
-        "Winks",
-        "Felici",
-        "Mina",
-        "Liteta"
-      ]
-    },
-    {
-      "home": "Lazio",
-      "away": "Lecce",
-      "kickoff_local": "2026-11-21T15:00",
-      "date": "2026-11-21",
-      "time": "15:00",
-      "homeModule": "4-3-3",
-      "awayModule": "4-3-3",
-      "source": "SOS Fanta",
-      "homeXI": [
-        {
-          "name": "Mandas",
-          "prob": 1.0
-        },
-        {
-          "name": "Floriani Mussolini",
-          "prob": 1.0
-        },
-        {
-          "name": "Leite",
-          "prob": 1.0
-        },
-        {
-          "name": "Doekhi",
-          "prob": 1.0
-        },
-        {
-          "name": "Pedraza",
-          "prob": 1.0
-        },
-        {
-          "name": "Frattesi",
-          "prob": 1.0
-        },
-        {
-          "name": "Belahyane",
-          "prob": 1.0
-        },
-        {
-          "name": "Taylor K.",
-          "prob": 1.0
-        },
-        {
-          "name": "Isaksen",
-          "prob": 1.0
-        },
-        {
-          "name": "Pinamonti",
-          "prob": 1.0
-        },
-        {
-          "name": "Noslin",
-          "prob": 1.0
-        }
-      ],
-      "awayXI": [
-        {
-          "name": "Falcone",
-          "prob": 1.0
-        },
-        {
-          "name": "Veiga D.",
-          "prob": 1.0
-        },
-        {
-          "name": "Siebert",
-          "prob": 1.0
-        },
-        {
-          "name": "Tiago Gabriel",
-          "prob": 0.95
-        },
-        {
-          "name": "Gallo",
-          "prob": 0.95
-        },
-        {
-          "name": "Coulibaly L.",
-          "prob": 1.0
-        },
-        {
-          "name": "Kaba",
-          "prob": 1.0
-        },
-        {
-          "name": "Maleh",
-          "prob": 1.0
-        },
-        {
-          "name": "N'Dri",
-          "prob": 1.0
-        },
-        {
-          "name": "Geubbels",
-          "prob": 1.0
-        },
-        {
-          "name": "Fatah",
-          "prob": 1.0
-        }
-      ],
-      "homeOut": [
-        "Zaccagni",
-        "Sutalo J.",
-        "Tavares N.",
-        "Marusic"
-      ],
-      "awayOut": [
-        "Laerke",
-        "Penev",
-        "Ilic",
-        "Pierotti"
-      ]
-    },
-    {
-      "home": "Parma",
-      "away": "Roma",
-      "kickoff_local": "2026-11-21T18:00",
-      "date": "2026-11-21",
-      "time": "18:00",
-      "homeModule": "3-5-2",
-      "awayModule": "3-4-2-1",
-      "source": "SOS Fanta",
-      "homeXI": [
-        {
-          "name": "Daffara",
-          "prob": 1.0
-        },
-        {
-          "name": "Delprato",
-          "prob": 1.0
-        },
-        {
-          "name": "Troilo",
-          "prob": 1.0
-        },
-        {
-          "name": "Carboni F.",
-          "prob": 1.0
-        },
-        {
-          "name": "Britschgi",
-          "prob": 1.0
-        },
-        {
-          "name": "Keita M.",
-          "prob": 1.0
-        },
-        {
-          "name": "Sierro",
-          "prob": 1.0
-        },
-        {
-          "name": "Fabbian",
-          "prob": 1.0
-        },
-        {
-          "name": "Valeri",
-          "prob": 1.0
-        },
-        {
-          "name": "Lontani",
-          "prob": 1.0
-        },
-        {
-          "name": "Tourè E.",
-          "prob": 1.0
-        }
-      ],
-      "awayXI": [
-        {
-          "name": "Svilar",
-          "prob": 1.0
-        },
-        {
-          "name": "Mancini",
-          "prob": 1.0
-        },
-        {
-          "name": "Balerdi",
-          "prob": 1.0
-        },
-        {
-          "name": "Hermoso",
-          "prob": 1.0
-        },
-        {
-          "name": "Lulli",
-          "prob": 1.0
-        },
-        {
-          "name": "Konè M.",
-          "prob": 1.0
-        },
-        {
-          "name": "Cristante",
-          "prob": 1.0
-        },
-        {
-          "name": "Molina N.",
-          "prob": 1.0
-        },
-        {
-          "name": "Dybala",
-          "prob": 1.0
-        },
-        {
-          "name": "Mora",
-          "prob": 1.0
-        },
-        {
-          "name": "Malen",
-          "prob": 1.0
-        }
-      ],
-      "homeOut": [
-        "Valenti",
-        "De Martis",
-        "Drobnic",
-        "Ndiaye",
-        "Romero D."
-      ],
-      "awayOut": [
-        "Pellegrini Lo.",
-        "Rensch"
-      ]
-    },
-    {
-      "home": "Napoli",
-      "away": "Torino",
-      "kickoff_local": "2026-11-21T20:45",
-      "date": "2026-11-21",
+      "home": "Venezia",
+      "away": "Bologna",
+      "kickoff_local": "2026-11-27T20:45",
+      "date": "2026-11-27",
       "time": "20:45",
       "homeModule": "3-5-2",
-      "awayModule": "3-5-2",
+      "awayModule": "3-4-3",
       "source": "SOS Fanta",
       "homeXI": [
-        {
-          "name": "Milinkovic-Savic V.",
-          "prob": 1.0
-        },
-        {
-          "name": "Beukema",
-          "prob": 1.0
-        },
-        {
-          "name": "Rrahmani",
-          "prob": 1.0
-        },
-        {
-          "name": "Marin R.",
-          "prob": 1.0
-        },
-        {
-          "name": "Politano",
-          "prob": 1.0
-        },
-        {
-          "name": "Zambo Anguissa",
-          "prob": 1.0
-        },
-        {
-          "name": "Gilmour",
-          "prob": 1.0
-        },
-        {
-          "name": "Mctominay",
-          "prob": 1.0
-        },
-        {
-          "name": "Spinazzola",
-          "prob": 1.0
-        },
-        {
-          "name": "Hojlund",
-          "prob": 1.0
-        },
-        {
-          "name": "Vergara",
-          "prob": 1.0
-        }
-      ],
-      "awayXI": [
-        {
-          "name": "Perri",
-          "prob": 1.0
-        },
-        {
-          "name": "Coco",
-          "prob": 1.0
-        },
-        {
-          "name": "Ismajli",
-          "prob": 1.0
-        },
-        {
-          "name": "Comuzzo",
-          "prob": 1.0
-        },
-        {
-          "name": "Belghali",
-          "prob": 1.0
-        },
-        {
-          "name": "Gineitis",
-          "prob": 1.0
-        },
-        {
-          "name": "Mandragora",
-          "prob": 1.0
-        },
-        {
-          "name": "Braganca",
-          "prob": 1.0
-        },
-        {
-          "name": "Cacciamani",
-          "prob": 1.0
-        },
-        {
-          "name": "Adams C.",
-          "prob": 1.0
-        },
-        {
-          "name": "Simeone",
-          "prob": 1.0
-        }
-      ],
-      "homeOut": [
-        "Meret",
-        "Neres",
-        "Santos A.",
-        "Badiashile",
-        "Di Lorenzo",
-        "Lobotka",
-        "Buongiorno"
-      ],
-      "awayOut": []
-    },
-    {
-      "home": "Juventus",
-      "away": "Venezia",
-      "kickoff_local": "2026-11-22T12:30",
-      "date": "2026-11-22",
-      "time": "12:30",
-      "homeModule": "4-3-3",
-      "awayModule": "3-5-2",
-      "source": "SOS Fanta",
-      "homeXI": [
-        {
-          "name": "Vicario",
-          "prob": 1.0
-        },
-        {
-          "name": "Celik",
-          "prob": 1.0
-        },
-        {
-          "name": "Bremer",
-          "prob": 1.0
-        },
-        {
-          "name": "Kelly L.",
-          "prob": 1.0
-        },
-        {
-          "name": "Cabal",
-          "prob": 1.0
-        },
-        {
-          "name": "Mckennie",
-          "prob": 1.0
-        },
-        {
-          "name": "Douglas Luiz",
-          "prob": 1.0
-        },
-        {
-          "name": "Koopmeiners",
-          "prob": 1.0
-        },
-        {
-          "name": "Zhegrova",
-          "prob": 1.0
-        },
-        {
-          "name": "Kolo Muani",
-          "prob": 1.0
-        },
-        {
-          "name": "Alajbegovic",
-          "prob": 1.0
-        }
-      ],
-      "awayXI": [
         {
           "name": "Stankovic F.",
           "prob": 1.0
@@ -548,7 +49,7 @@
           "prob": 1.0
         },
         {
-          "name": "Lauberbach",
+          "name": "Yeboah J.",
           "prob": 1.0
         },
         {
@@ -556,155 +57,13 @@
           "prob": 1.0
         }
       ],
-      "homeOut": [
-        "Thuram K.",
-        "Milik",
-        "Locatelli",
-        "Kalulu",
-        "Grabara",
-        "Yildiz",
-        "Gonzalez N."
-      ],
-      "awayOut": [
-        "Pozzi",
-        "Franjic",
-        "Sverko",
-        "Adorante",
-        "Basic",
-        "Mazzocchi",
-        "Correia T."
-      ]
-    },
-    {
-      "home": "Sassuolo",
-      "away": "Genoa",
-      "kickoff_local": "2026-11-22T15:00",
-      "date": "2026-11-22",
-      "time": "15:00",
-      "homeModule": "3-4-3",
-      "awayModule": "3-4-2-1",
-      "source": "SOS Fanta",
-      "homeXI": [
-        {
-          "name": "Muric",
-          "prob": 1.0
-        },
-        {
-          "name": "Walukiewicz",
-          "prob": 1.0
-        },
-        {
-          "name": "Idzes",
-          "prob": 1.0
-        },
-        {
-          "name": "Candè",
-          "prob": 1.0
-        },
-        {
-          "name": "Van Der Brempt",
-          "prob": 1.0
-        },
-        {
-          "name": "Thorstvedt",
-          "prob": 1.0
-        },
-        {
-          "name": "Matic",
-          "prob": 1.0
-        },
-        {
-          "name": "Obrador",
-          "prob": 1.0
-        },
-        {
-          "name": "Berardi",
-          "prob": 1.0
-        },
-        {
-          "name": "Esposito Se.",
-          "prob": 1.0
-        },
-        {
-          "name": "Laurientè",
-          "prob": 1.0
-        }
-      ],
       "awayXI": [
-        {
-          "name": "Bijlow",
-          "prob": 1.0
-        },
-        {
-          "name": "Marcandalli",
-          "prob": 1.0
-        },
-        {
-          "name": "Ostigard",
-          "prob": 1.0
-        },
-        {
-          "name": "Vasquez",
-          "prob": 1.0
-        },
-        {
-          "name": "Ehizibue",
-          "prob": 1.0
-        },
-        {
-          "name": "Traorè Hj.",
-          "prob": 1.0
-        },
-        {
-          "name": "Amorim",
-          "prob": 1.0
-        },
-        {
-          "name": "Ellertsson",
-          "prob": 1.0
-        },
-        {
-          "name": "Baldanzi",
-          "prob": 1.0
-        },
-        {
-          "name": "Messias",
-          "prob": 1.0
-        },
-        {
-          "name": "Osmajic",
-          "prob": 1.0
-        }
-      ],
-      "homeOut": [
-        "Boloca",
-        "Leysen F.",
-        "Russo A.",
-        "Konè I.",
-        "Volpato",
-        "Adzic"
-      ],
-      "awayOut": [
-        "Havel",
-        "Robinho Junior"
-      ]
-    },
-    {
-      "home": "Bologna",
-      "away": "Udinese",
-      "kickoff_local": "2026-11-22T15:00",
-      "date": "2026-11-22",
-      "time": "15:00",
-      "homeModule": "3-4-3",
-      "awayModule": "3-4-2-1",
-      "source": "SOS Fanta",
-      "homeXI": [
         {
           "name": "Skorupski",
           "prob": 1.0
         },
         {
-          "name": "Darmian",
+          "name": "Vitik",
           "prob": 1.0
         },
         {
@@ -728,11 +87,11 @@
           "prob": 1.0
         },
         {
-          "name": "Bernardeschi",
+          "name": "Alhassane",
           "prob": 1.0
         },
         {
-          "name": "Orsolini",
+          "name": "Bernardeschi",
           "prob": 1.0
         },
         {
@@ -740,133 +99,43 @@
           "prob": 1.0
         },
         {
-          "name": "Cambiaghi",
-          "prob": 1.0
-        }
-      ],
-      "awayXI": [
-        {
-          "name": "Okoye",
-          "prob": 1.0
-        },
-        {
-          "name": "Palma",
-          "prob": 1.0
-        },
-        {
-          "name": "Kabasele",
-          "prob": 1.0
-        },
-        {
-          "name": "Solet",
-          "prob": 1.0
-        },
-        {
-          "name": "Abankwah",
-          "prob": 1.0
-        },
-        {
-          "name": "Piotrowski",
-          "prob": 1.0
-        },
-        {
-          "name": "Karlstrom",
-          "prob": 1.0
-        },
-        {
-          "name": "Kamara H.",
-          "prob": 1.0
-        },
-        {
-          "name": "Lovric",
-          "prob": 1.0
-        },
-        {
-          "name": "Ekkelenkamp",
-          "prob": 1.0
-        },
-        {
-          "name": "Zaniolo",
-          "prob": 1.0
+          "name": "Mbangula",
+          "prob": 0.95
         }
       ],
       "homeOut": [
-        "Enem",
-        "Holm",
-        "Miranda J.",
-        "El Azzouzi O.",
-        "Heggem"
+        "Sverko",
+        "Correia T.",
+        "Pozzi",
+        "Franjic",
+        "Duncan"
       ],
       "awayOut": [
-        "Gueye",
-        "Bertola",
-        "Ebosse",
-        "Davis K."
+        "Miranda J.",
+        "El Azzouzi O.",
+        "Happonen",
+        "Enem",
+        "Holm",
+        "De Silvestri"
       ]
     },
     {
-      "home": "Milan",
-      "away": "Frosinone",
-      "kickoff_local": "2026-11-22T18:00",
-      "date": "2026-11-22",
-      "time": "18:00",
-      "homeModule": "4-4-1-1",
-      "awayModule": "4-2-3-1",
+      "home": "Frosinone",
+      "away": "Parma",
+      "kickoff_local": "2026-11-28T15:00",
+      "date": "2026-11-28",
+      "time": "15:00",
+      "homeModule": "4-2-3-1",
+      "awayModule": "3-5-2",
       "source": "SOS Fanta",
       "homeXI": [
-        {
-          "name": "Maignan",
-          "prob": 0.95
-        },
-        {
-          "name": "Gila",
-          "prob": 0.95
-        },
-        {
-          "name": "De Winter",
-          "prob": 0.95
-        },
-        {
-          "name": "Diawara S.",
-          "prob": 0.51
-        },
-        {
-          "name": "Bartesaghi",
-          "prob": 0.51
-        },
-        {
-          "name": "Moreira",
-          "prob": 0.95
-        },
-        {
-          "name": "Modric",
-          "prob": 0.95
-        },
-        {
-          "name": "Musah",
-          "prob": 0.51
-        },
-        {
-          "name": "Rabiot",
-          "prob": 0.95
-        },
-        {
-          "name": "Pulisic",
-          "prob": 0.95
-        },
-        {
-          "name": "Ramos G.",
-          "prob": 0.95
-        }
-      ],
-      "awayXI": [
         {
           "name": "Palmisani",
           "prob": 0.95
         },
         {
-          "name": "Tchato",
-          "prob": 0.51
+          "name": "Oyono A.",
+          "prob": 0.95
         },
         {
           "name": "Calvani",
@@ -877,7 +146,7 @@
           "prob": 0.51
         },
         {
-          "name": "Oyono A.",
+          "name": "Bracaglia",
           "prob": 0.95
         },
         {
@@ -901,109 +170,215 @@
           "prob": 0.95
         },
         {
-          "name": "Birligea",
-          "prob": 0.51
-        }
-      ],
-      "homeOut": [
-        "Loftus-Cheek",
-        "Saelemaekers",
-        "Tomori",
-        "Terracciano",
-        "Gabbia",
-        "Chukwueze"
-      ],
-      "awayOut": [
-        "Kone B.",
-        "Grillitsch",
-        "Raimondo",
-        "Bracaglia",
-        "Gelli F.",
-        "Lolic"
-      ]
-    },
-    {
-      "home": "Atalanta",
-      "away": "Inter",
-      "kickoff_local": "2026-11-22T20:45",
-      "date": "2026-11-22",
-      "time": "20:45",
-      "homeModule": "4-2-3-1",
-      "awayModule": "3-5-2",
-      "source": "SOS Fanta",
-      "homeXI": [
-        {
-          "name": "Carnesecchi",
-          "prob": 0.95
-        },
-        {
-          "name": "Bellanova",
-          "prob": 0.51
-        },
-        {
-          "name": "Scalvini",
-          "prob": 0.95
-        },
-        {
-          "name": "Kolasinac",
-          "prob": 0.95
-        },
-        {
-          "name": "Zappacosta",
-          "prob": 0.51
-        },
-        {
-          "name": "Kessiè",
-          "prob": 0.51
-        },
-        {
-          "name": "Ederson D.S.",
-          "prob": 0.95
-        },
-        {
-          "name": "Elmas",
-          "prob": 0.51
-        },
-        {
-          "name": "De Ketelaere",
-          "prob": 0.95
-        },
-        {
-          "name": "Rowe",
-          "prob": 0.51
-        },
-        {
-          "name": "Krstovic",
+          "name": "Bobcek",
           "prob": 0.95
         }
       ],
       "awayXI": [
         {
-          "name": "Martinez Jo.",
+          "name": "Daffara",
           "prob": 0.95
         },
         {
-          "name": "Pavard",
+          "name": "Delprato",
+          "prob": 0.95
+        },
+        {
+          "name": "Troilo",
+          "prob": 0.95
+        },
+        {
+          "name": "Ndiaye",
           "prob": 0.51
         },
         {
-          "name": "Bisseck",
-          "prob": 0.55
-        },
-        {
-          "name": "Bastoni",
+          "name": "Britschgi",
           "prob": 0.95
         },
         {
-          "name": "Spence",
+          "name": "Keita M.",
+          "prob": 0.95
+        },
+        {
+          "name": "Sierro",
+          "prob": 0.51
+        },
+        {
+          "name": "Fabbian",
+          "prob": 0.95
+        },
+        {
+          "name": "Valeri",
+          "prob": 0.95
+        },
+        {
+          "name": "Tourè E.",
+          "prob": 0.51
+        },
+        {
+          "name": "Elphege",
+          "prob": 0.95
+        }
+      ],
+      "homeOut": [
+        "Kone B.",
+        "Gelli F.",
+        "Lolic",
+        "Birligea"
+      ],
+      "awayOut": [
+        "Romero D.",
+        "Valenti",
+        "De Martis",
+        "Drobnic"
+      ]
+    },
+    {
+      "home": "Torino",
+      "away": "Lazio",
+      "kickoff_local": "2026-11-28T18:00",
+      "date": "2026-11-28",
+      "time": "18:00",
+      "homeModule": "3-5-2",
+      "awayModule": "4-3-3",
+      "source": "SOS Fanta",
+      "homeXI": [
+        {
+          "name": "Perri",
+          "prob": 0.95
+        },
+        {
+          "name": "Coco",
+          "prob": 0.95
+        },
+        {
+          "name": "Comuzzo",
+          "prob": 0.95
+        },
+        {
+          "name": "Comert",
+          "prob": 0.95
+        },
+        {
+          "name": "Fortini",
+          "prob": 0.51
+        },
+        {
+          "name": "Fitz-Jim",
+          "prob": 0.51
+        },
+        {
+          "name": "Mandragora",
+          "prob": 0.95
+        },
+        {
+          "name": "Vlasic",
+          "prob": 0.95
+        },
+        {
+          "name": "Cacciamani",
+          "prob": 0.95
+        },
+        {
+          "name": "Adams C.",
+          "prob": 0.95
+        },
+        {
+          "name": "Simeone",
+          "prob": 0.95
+        }
+      ],
+      "awayXI": [
+        {
+          "name": "Mandas",
+          "prob": 0.95
+        },
+        {
+          "name": "Floriani Mussolini",
+          "prob": 0.95
+        },
+        {
+          "name": "Leite",
+          "prob": 0.51
+        },
+        {
+          "name": "Provstgaard",
+          "prob": 0.95
+        },
+        {
+          "name": "Pedraza",
+          "prob": 0.95
+        },
+        {
+          "name": "Frattesi",
+          "prob": 0.95
+        },
+        {
+          "name": "Belahyane",
+          "prob": 0.95
+        },
+        {
+          "name": "Dele-Bashiru",
+          "prob": 0.95
+        },
+        {
+          "name": "Isaksen",
+          "prob": 0.95
+        },
+        {
+          "name": "Noslin",
           "prob": 0.55
+        },
+        {
+          "name": "Zaccagni",
+          "prob": 0.55
+        }
+      ],
+      "homeOut": [
+        "Biraghi",
+        "Rodriguez R.",
+        "Ismajli",
+        "Belghali"
+      ],
+      "awayOut": [
+        "Sutalo J.",
+        "Tavares N.",
+        "Marusic",
+        "Taylor K."
+      ]
+    },
+    {
+      "home": "Inter",
+      "away": "Genoa",
+      "kickoff_local": "2026-11-28T20:45",
+      "date": "2026-11-28",
+      "time": "20:45",
+      "homeModule": "3-5-2",
+      "awayModule": "3-4-2-1",
+      "source": "SOS Fanta",
+      "homeXI": [
+        {
+          "name": "Provedel",
+          "prob": 0.55
+        },
+        {
+          "name": "Bisseck",
+          "prob": 0.95
+        },
+        {
+          "name": "Akanji",
+          "prob": 0.55
+        },
+        {
+          "name": "Carlos Augusto",
+          "prob": 0.95
+        },
+        {
+          "name": "Diouf",
+          "prob": 0.51
         },
         {
           "name": "Barella",
-          "prob": 0.55
-        },
-        {
-          "name": "Calhanoglu",
           "prob": 0.95
         },
         {
@@ -1011,80 +386,132 @@
           "prob": 0.55
         },
         {
+          "name": "Jones C.",
+          "prob": 0.51
+        },
+        {
           "name": "Dimarco",
           "prob": 0.95
         },
         {
-          "name": "Esposito F.P.",
+          "name": "Thuram",
+          "prob": 0.51
+        },
+        {
+          "name": "Martinez L.",
+          "prob": 0.95
+        }
+      ],
+      "awayXI": [
+        {
+          "name": "Bijlow",
           "prob": 0.95
         },
         {
-          "name": "Thuram",
+          "name": "Marcandalli",
+          "prob": 0.95
+        },
+        {
+          "name": "Otoa",
+          "prob": 0.95
+        },
+        {
+          "name": "Vasquez",
+          "prob": 0.95
+        },
+        {
+          "name": "Ehizibue",
+          "prob": 0.95
+        },
+        {
+          "name": "Traorè Hj.",
+          "prob": 0.95
+        },
+        {
+          "name": "Frendrup",
+          "prob": 0.95
+        },
+        {
+          "name": "Ellertsson",
+          "prob": 0.95
+        },
+        {
+          "name": "Messias",
           "prob": 0.6
+        },
+        {
+          "name": "El Shaarawy",
+          "prob": 0.51
+        },
+        {
+          "name": "Osmajic",
+          "prob": 0.95
         }
       ],
       "homeOut": [
-        "Pompei",
-        "Hien",
-        "Kossounou"
+        "Bonny",
+        "Calhanoglu",
+        "Bastoni"
       ],
       "awayOut": [
-        "Bonny",
-        "Zielinski"
+        "Havel",
+        "Robinho Junior",
+        "Colombo",
+        "Ostigard"
       ]
     },
     {
-      "home": "Monza",
+      "home": "Udinese",
       "away": "Fiorentina",
-      "kickoff_local": "2026-11-23T20:45",
-      "date": "2026-11-23",
-      "time": "20:45",
+      "kickoff_local": "2026-11-29T12:30",
+      "date": "2026-11-29",
+      "time": "12:30",
       "homeModule": "3-4-2-1",
       "awayModule": "4-2-3-1",
       "source": "SOS Fanta",
       "homeXI": [
         {
-          "name": "Tornqvist",
+          "name": "Okoye",
           "prob": 0.95
         },
         {
-          "name": "Kouadio",
-          "prob": 0.95
-        },
-        {
-          "name": "Goglichidze",
-          "prob": 0.95
-        },
-        {
-          "name": "Lucchesi",
-          "prob": 0.95
-        },
-        {
-          "name": "Tourè I.",
+          "name": "Palma",
           "prob": 0.51
         },
         {
-          "name": "Akinsanmiro",
+          "name": "Kabasele",
           "prob": 0.95
         },
         {
-          "name": "Foe Ondoa",
-          "prob": 0.51
-        },
-        {
-          "name": "Mangas",
+          "name": "Solet",
           "prob": 0.95
         },
         {
-          "name": "Robinson J.",
+          "name": "Abankwah",
           "prob": 0.51
         },
         {
-          "name": "Mota",
+          "name": "Piotrowski",
+          "prob": 0.51
+        },
+        {
+          "name": "Karlstrom",
+          "prob": 0.95
+        },
+        {
+          "name": "Kamara H.",
+          "prob": 0.95
+        },
+        {
+          "name": "Lovric",
           "prob": 0.6
         },
         {
-          "name": "Varela G.",
+          "name": "Ekkelenkamp",
+          "prob": 0.95
+        },
+        {
+          "name": "Zaniolo",
           "prob": 0.95
         }
       ],
@@ -1102,7 +529,7 @@
           "prob": 0.95
         },
         {
-          "name": "Viery",
+          "name": "Ranieri L.",
           "prob": 0.95
         },
         {
@@ -1111,11 +538,11 @@
         },
         {
           "name": "Ndour",
-          "prob": 0.51
+          "prob": 0.95
         },
         {
-          "name": "Oulai",
-          "prob": 0.51
+          "name": "Fagioli",
+          "prob": 0.95
         },
         {
           "name": "Mastantuono",
@@ -1123,7 +550,7 @@
         },
         {
           "name": "Goncalves P.",
-          "prob": 0.95
+          "prob": 0.51
         },
         {
           "name": "Njie",
@@ -1131,16 +558,593 @@
         },
         {
           "name": "Pellegrino M.",
+          "prob": 0.6
+        }
+      ],
+      "homeOut": [
+        "Gueye",
+        "Bertola",
+        "Ebosse",
+        "Davis K."
+      ],
+      "awayOut": [
+        "Parisi",
+        "Pongracic",
+        "Viery"
+      ]
+    },
+    {
+      "home": "Sassuolo",
+      "away": "Napoli",
+      "kickoff_local": "2026-11-29T15:00",
+      "date": "2026-11-29",
+      "time": "15:00",
+      "homeModule": "3-4-3",
+      "awayModule": "4-3-3",
+      "source": "SOS Fanta",
+      "homeXI": [
+        {
+          "name": "Muric",
+          "prob": 0.95
+        },
+        {
+          "name": "Walukiewicz",
+          "prob": 0.95
+        },
+        {
+          "name": "Idzes",
+          "prob": 0.95
+        },
+        {
+          "name": "Candè",
+          "prob": 0.51
+        },
+        {
+          "name": "Van Der Brempt",
+          "prob": 0.6
+        },
+        {
+          "name": "Thorstvedt",
+          "prob": 0.95
+        },
+        {
+          "name": "Matic",
+          "prob": 0.95
+        },
+        {
+          "name": "Obrador",
+          "prob": 0.51
+        },
+        {
+          "name": "Berardi",
+          "prob": 0.95
+        },
+        {
+          "name": "Esposito Se.",
+          "prob": 0.95
+        },
+        {
+          "name": "Laurientè",
+          "prob": 0.95
+        }
+      ],
+      "awayXI": [
+        {
+          "name": "Milinkovic-Savic V.",
+          "prob": 0.95
+        },
+        {
+          "name": "Spinazzola",
+          "prob": 0.95
+        },
+        {
+          "name": "Beukema",
+          "prob": 0.55
+        },
+        {
+          "name": "Rrahmani",
+          "prob": 0.95
+        },
+        {
+          "name": "Olivera",
+          "prob": 0.95
+        },
+        {
+          "name": "Zambo Anguissa",
+          "prob": 0.95
+        },
+        {
+          "name": "Gilmour",
+          "prob": 0.95
+        },
+        {
+          "name": "Mctominay",
+          "prob": 0.95
+        },
+        {
+          "name": "Politano",
+          "prob": 0.95
+        },
+        {
+          "name": "Hojlund",
+          "prob": 0.95
+        },
+        {
+          "name": "Lang",
           "prob": 0.95
         }
       ],
       "homeOut": [
-        "Maye",
-        "Folorunsho"
+        "Boloca",
+        "Leysen F.",
+        "Russo A.",
+        "Konè I.",
+        "Adzic",
+        "Bakola"
       ],
       "awayOut": [
-        "Parisi",
-        "Pongracic"
+        "De Bruyne",
+        "Badiashile",
+        "Meret",
+        "Santos A.",
+        "Lobotka",
+        "Buongiorno",
+        "Vergara",
+        "Di Lorenzo"
+      ]
+    },
+    {
+      "home": "Roma",
+      "away": "Monza",
+      "kickoff_local": "2026-11-29T18:00",
+      "date": "2026-11-29",
+      "time": "18:00",
+      "homeModule": "3-4-2-1",
+      "awayModule": "3-4-2-1",
+      "source": "SOS Fanta",
+      "homeXI": [
+        {
+          "name": "Svilar",
+          "prob": 0.95
+        },
+        {
+          "name": "Ghilardi",
+          "prob": 0.51
+        },
+        {
+          "name": "Ndicka",
+          "prob": 0.95
+        },
+        {
+          "name": "Hermoso",
+          "prob": 0.51
+        },
+        {
+          "name": "Lulli",
+          "prob": 0.51
+        },
+        {
+          "name": "Konè M.",
+          "prob": 0.95
+        },
+        {
+          "name": "Cristante",
+          "prob": 0.95
+        },
+        {
+          "name": "Wesley",
+          "prob": 0.51
+        },
+        {
+          "name": "Dybala",
+          "prob": 0.95
+        },
+        {
+          "name": "Mora",
+          "prob": 0.55
+        },
+        {
+          "name": "Malen",
+          "prob": 0.95
+        }
+      ],
+      "awayXI": [
+        {
+          "name": "Thiam",
+          "prob": 0.51
+        },
+        {
+          "name": "Kouadio",
+          "prob": 0.55
+        },
+        {
+          "name": "Goglichidze",
+          "prob": 0.95
+        },
+        {
+          "name": "Carboni A.",
+          "prob": 0.95
+        },
+        {
+          "name": "Birindelli",
+          "prob": 0.55
+        },
+        {
+          "name": "Akinsanmiro",
+          "prob": 0.95
+        },
+        {
+          "name": "Colombo L.",
+          "prob": 0.6
+        },
+        {
+          "name": "Mangas",
+          "prob": 0.95
+        },
+        {
+          "name": "Pessina",
+          "prob": 0.95
+        },
+        {
+          "name": "Robinson J.",
+          "prob": 0.6
+        },
+        {
+          "name": "Varela G.",
+          "prob": 0.95
+        }
+      ],
+      "homeOut": [
+        "Pellegrini Lo.",
+        "Rensch"
+      ],
+      "awayOut": [
+        "Ngonge",
+        "Ciurria",
+        "Maye",
+        "Folorunsho"
+      ]
+    },
+    {
+      "home": "Como",
+      "away": "Juventus",
+      "kickoff_local": "2026-11-29T20:45",
+      "date": "2026-11-29",
+      "time": "20:45",
+      "homeModule": "4-2-3-1",
+      "awayModule": "4-3-3",
+      "source": "SOS Fanta",
+      "homeXI": [
+        {
+          "name": "Butez",
+          "prob": 0.51
+        },
+        {
+          "name": "Couto",
+          "prob": 0.95
+        },
+        {
+          "name": "Chalobah T.",
+          "prob": 0.51
+        },
+        {
+          "name": "Ramon",
+          "prob": 0.95
+        },
+        {
+          "name": "Kaiki",
+          "prob": 0.51
+        },
+        {
+          "name": "Perrone",
+          "prob": 0.95
+        },
+        {
+          "name": "Milla",
+          "prob": 0.55
+        },
+        {
+          "name": "Da Cunha",
+          "prob": 0.95
+        },
+        {
+          "name": "Paz N.",
+          "prob": 0.95
+        },
+        {
+          "name": "Baturina",
+          "prob": 0.95
+        },
+        {
+          "name": "Douvikas",
+          "prob": 0.95
+        }
+      ],
+      "awayXI": [
+        {
+          "name": "Vicario",
+          "prob": 0.95
+        },
+        {
+          "name": "Celik",
+          "prob": 0.6
+        },
+        {
+          "name": "Bremer",
+          "prob": 0.95
+        },
+        {
+          "name": "Lucumì",
+          "prob": 0.55
+        },
+        {
+          "name": "Cabal",
+          "prob": 0.51
+        },
+        {
+          "name": "Mckennie",
+          "prob": 0.95
+        },
+        {
+          "name": "Douglas Luiz",
+          "prob": 0.95
+        },
+        {
+          "name": "Koopmeiners",
+          "prob": 0.95
+        },
+        {
+          "name": "Conceicao",
+          "prob": 0.51
+        },
+        {
+          "name": "Woltemade",
+          "prob": 0.95
+        },
+        {
+          "name": "Kolo Muani",
+          "prob": 0.95
+        }
+      ],
+      "homeOut": [
+        "Rodriguez Je.",
+        "Kean"
+      ],
+      "awayOut": [
+        "Thuram K.",
+        "Milik",
+        "Locatelli",
+        "Grabara",
+        "Yildiz"
+      ]
+    },
+    {
+      "home": "Lecce",
+      "away": "Atalanta",
+      "kickoff_local": "2026-11-30T18:30",
+      "date": "2026-11-30",
+      "time": "18:30",
+      "homeModule": "4-3-3",
+      "awayModule": "4-2-3-1",
+      "source": "SOS Fanta",
+      "homeXI": [
+        {
+          "name": "Falcone",
+          "prob": 0.95
+        },
+        {
+          "name": "Veiga D.",
+          "prob": 0.95
+        },
+        {
+          "name": "Gaspar K.",
+          "prob": 0.51
+        },
+        {
+          "name": "Tiago Gabriel",
+          "prob": 0.95
+        },
+        {
+          "name": "Gallo",
+          "prob": 0.95
+        },
+        {
+          "name": "Coulibaly L.",
+          "prob": 0.95
+        },
+        {
+          "name": "Ngom",
+          "prob": 0.95
+        },
+        {
+          "name": "Maleh",
+          "prob": 0.95
+        },
+        {
+          "name": "N'Dri",
+          "prob": 0.95
+        },
+        {
+          "name": "Geubbels",
+          "prob": 0.51
+        },
+        {
+          "name": "Fatah",
+          "prob": 0.51
+        }
+      ],
+      "awayXI": [
+        {
+          "name": "Sportiello",
+          "prob": 0.95
+        },
+        {
+          "name": "Bellanova",
+          "prob": 0.95
+        },
+        {
+          "name": "Scalvini",
+          "prob": 0.95
+        },
+        {
+          "name": "Kolasinac",
+          "prob": 0.6
+        },
+        {
+          "name": "Zappacosta",
+          "prob": 0.95
+        },
+        {
+          "name": "Kessiè",
+          "prob": 0.95
+        },
+        {
+          "name": "Ederson D.S.",
+          "prob": 0.95
+        },
+        {
+          "name": "Elmas",
+          "prob": 0.51
+        },
+        {
+          "name": "De Ketelaere",
+          "prob": 0.95
+        },
+        {
+          "name": "Zalewski",
+          "prob": 0.51
+        },
+        {
+          "name": "Krstovic",
+          "prob": 0.95
+        }
+      ],
+      "homeOut": [
+        "Laerke",
+        "Penev",
+        "Ilic",
+        "Pierotti",
+        "Kaba"
+      ],
+      "awayOut": [
+        "Carnesecchi",
+        "Pompei",
+        "Hien",
+        "Kossounou"
+      ]
+    },
+    {
+      "home": "Cagliari",
+      "away": "Milan",
+      "kickoff_local": "2026-11-30T20:45",
+      "date": "2026-11-30",
+      "time": "20:45",
+      "homeModule": "3-5-2",
+      "awayModule": "4-3-3",
+      "source": "SOS Fanta",
+      "homeXI": [
+        {
+          "name": "Caprile",
+          "prob": 0.95
+        },
+        {
+          "name": "Zè Pedro",
+          "prob": 0.95
+        },
+        {
+          "name": "Kofler",
+          "prob": 0.95
+        },
+        {
+          "name": "Rodriguez Ju.",
+          "prob": 0.95
+        },
+        {
+          "name": "Grandu",
+          "prob": 0.51
+        },
+        {
+          "name": "Romano",
+          "prob": 0.95
+        },
+        {
+          "name": "Deiola",
+          "prob": 0.95
+        },
+        {
+          "name": "Fazzini",
+          "prob": 0.95
+        },
+        {
+          "name": "Obert",
+          "prob": 0.95
+        },
+        {
+          "name": "Maldini",
+          "prob": 0.95
+        },
+        {
+          "name": "Nzola",
+          "prob": 0.51
+        }
+      ],
+      "awayXI": [
+        {
+          "name": "Maignan",
+          "prob": 0.95
+        },
+        {
+          "name": "Gila",
+          "prob": 0.95
+        },
+        {
+          "name": "De Winter",
+          "prob": 0.95
+        },
+        {
+          "name": "Pavlovic",
+          "prob": 0.95
+        },
+        {
+          "name": "Diawara S.",
+          "prob": 0.95
+        },
+        {
+          "name": "Rabiot",
+          "prob": 0.95
+        },
+        {
+          "name": "Jashari",
+          "prob": 0.95
+        },
+        {
+          "name": "Musah",
+          "prob": 0.95
+        },
+        {
+          "name": "Moreira",
+          "prob": 0.95
+        },
+        {
+          "name": "Ramos G.",
+          "prob": 0.51
+        },
+        {
+          "name": "Pulisic",
+          "prob": 0.95
+        }
+      ],
+      "homeOut": [
+        "Felici",
+        "Liteta"
+      ],
+      "awayOut": [
+        "Loftus-Cheek",
+        "Saelemaekers",
+        "Terracciano",
+        "Gabbia",
+        "Chukwueze",
+        "Modric"
       ]
     }
   ]

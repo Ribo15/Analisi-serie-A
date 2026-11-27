@@ -12,6 +12,8 @@ for (const path of [
   'beta/data-predictions-g10.js',
   'beta/data-lineups-g10.js',
   'beta/data-v12.js',
+  'beta/data-v13.js',
+  'beta/data-predictions-g13.js',
 ]) {
   vm.runInNewContext(fs.readFileSync(path, 'utf8'), ctx, {filename: path});
 }
@@ -20,12 +22,12 @@ const payload = JSON.parse(fs.readFileSync('lineups-preview.json', 'utf8'));
 const now = Date.parse(payload.generated_at_utc) + 1000;
 const clone = value => JSON.parse(JSON.stringify(value));
 const fixture = data.calendar.find(x => +x.round === +data.betaSnapshot.predictionRound);
-const excel = data.lineups.find(x => x.home === fixture.home && x.away === fixture.away);
+const excel = data.lineups.find(x => x.home === fixture.home && x.away === fixture.away && +x.round === +fixture.round);
 
 test('all 10 matches match the frozen Excel schedule', () => {
   const result = validate(payload, data, now);
   assert.equal(result.byFixture.size, 10);
-  assert.equal(result.round, 12);
+  assert.equal(result.round, data.betaSnapshot.predictionRound);
 });
 test('valid external lineups overlay does not mutate Excel data', () => {
   const original = JSON.stringify(data);
@@ -41,7 +43,7 @@ test('valid external lineups overlay does not mutate Excel data', () => {
 test('unrelated fixtures and historical rounds keep Excel data', () => {
   const service = create(data, {now: () => now, notify: () => {}});
   service.loadValidated(payload);
-  assert.equal(service.forMatch({...fixture, round: 11}, excel), excel);
+  assert.equal(service.forMatch({...fixture, round: fixture.round - 1}, excel), excel);
   assert.equal(service.forMatch({...fixture, date: '2026-12-31'}, excel), excel);
 });
 test('reject wrong fixture instead of contaminating current round', () => {

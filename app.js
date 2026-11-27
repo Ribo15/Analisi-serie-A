@@ -445,7 +445,7 @@ allHost.querySelector('#downloadIdeas')?.addEventListener('click',downloadIdeas)
     }
     const round=Number(sel.value||rounds[0]);
     // Ordina prima per giorno, poi per ora: i calendari Excel possono avere righe non cronologiche.
-    const calendarTime=v=>{const m=String(v||'').match(/^(\\d{1,2}):(\\d{2})/);return m?(Number(m[1])*60+Number(m[2])):9999;};
+    const calendarTime=v=>{const m=String(v||'').match(/^(\d{1,2}):(\d{2})/);return m?(Number(m[1])*60+Number(m[2])):9999;};
     const list=(D.calendar||[]).filter(x=>+x.round===round).slice().sort((a,b)=>
       String(a.date||'').localeCompare(String(b.date||'')) ||
       calendarTime(a.time)-calendarTime(b.time) ||

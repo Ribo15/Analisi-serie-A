@@ -9,7 +9,6 @@
   const marker='serieADataLab.wallet.settlement.'+ns+'.'+VERSION;
   const backup='serieADataLab.wallet.backup.'+ns+'.'+VERSION;
   const stake=5, round=13;
-  const excelPicks=new Set(['Udinese|Fiorentina|gol','Como|Juventus|gol','Venezia|Bologna|2','Lecce|Atalanta|2']);
   try {
     if(localStorage.getItem(marker)===VERSION)return;
     const raw=localStorage.getItem(KEY);
@@ -18,12 +17,9 @@
     if(!Array.isArray(rows))return;
     function matchExcelBet(b){
       if(!b||b.type!=='bet'||Number(b.round)!==round||Number(b.amount)!==stake)return false;
-      if(Number(b.id)===26001301)return true;
-      if(b.excelSynced!==true)return false;
-      const picks=Array.isArray(b.selections)?b.selections:[];
-      const intersections=picks.filter(p=>
-        excelPicks.has([p.home,p.away,String(p.market||'').trim().toLowerCase()].join('|'))).length;
-      return intersections>=2;
+      // Identificativo originale Excel, oppure schedina locale gia' associata
+      // all'unica giocata Excel G13 dall'importatore precedente.
+      return Number(b.id)===26001301 || b.excelSynced===true;
     }
     const matches=rows.map((b,i)=>({b,i})).filter(x=>matchExcelBet(x.b));
     if(matches.length!==1){

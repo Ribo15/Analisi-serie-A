@@ -1,6 +1,6 @@
 {
   "source": "https://www.sosfanta.com/lista-formazioni/probabili-formazioni-serie-a/",
-  "generated_at_utc": "2026-11-27T19:11:38.975612+00:00",
+  "generated_at_utc": "2026-11-28T09:47:06.127972+00:00",
   "lineups": [
     {
       "home": "Venezia",
@@ -100,7 +100,7 @@
         },
         {
           "name": "Mbangula",
-          "prob": 0.95
+          "prob": 1.0
         }
       ],
       "homeOut": [
@@ -429,7 +429,7 @@
         },
         {
           "name": "Frendrup",
-          "prob": 0.95
+          "prob": 0.51
         },
         {
           "name": "Ellertsson",
@@ -437,7 +437,7 @@
         },
         {
           "name": "Messias",
-          "prob": 0.6
+          "prob": 0.95
         },
         {
           "name": "El Shaarawy",
@@ -454,10 +454,10 @@
         "Bastoni"
       ],
       "awayOut": [
-        "Havel",
         "Robinho Junior",
         "Colombo",
-        "Ostigard"
+        "Ostigard",
+        "Baldanzi"
       ]
     },
     {
